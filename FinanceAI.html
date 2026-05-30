@@ -393,6 +393,43 @@ select option{background:var(--bg3)}
 .consol-name{display:flex;align-items:center;gap:8px;color:var(--text2)}
 .consol-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 
+/* ── MÊS A MÊS + NOMENCLATURA ── */
+.month-tabs-wrap{display:flex;align-items:center;gap:8px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px}
+.month-tab{padding:5px 14px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border2);background:transparent;color:var(--text2);white-space:nowrap;transition:all .15s;font-family:'DM Sans',sans-serif;flex-shrink:0}
+.month-tab.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
+.month-tab:hover:not(.active){border-color:var(--border3);color:var(--text)}
+.month-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;margin-bottom:12px}
+.ms-card{background:var(--bg4);border:1px solid var(--border);border-radius:var(--r2);padding:10px 12px}
+.ms-label{font-size:10px;color:var(--text3);margin-bottom:3px;text-transform:uppercase;letter-spacing:.04em}
+.ms-val{font-size:15px;font-weight:600;font-family:'DM Mono',monospace}
+.search-bar{display:flex;gap:8px;margin-bottom:12px;align-items:center}
+.search-input{flex:1;background:var(--bg4);border:1px solid var(--border2);border-radius:var(--r2);color:var(--text);padding:7px 12px;font-size:13px;outline:none;font-family:'DM Sans',sans-serif;transition:border-color .2s}
+.search-input:focus{border-color:var(--accent)60}
+.search-input::placeholder{color:var(--text3)}
+.search-clear{padding:7px 12px;background:transparent;border:1px solid var(--border2);border-radius:var(--r2);color:var(--text2);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap}
+.search-clear:hover{border-color:var(--border3);color:var(--text)}
+.nomen-item{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--bg4);border:1px solid var(--border);border-radius:var(--r2);margin-bottom:6px;gap:10px;font-size:13px}
+.nomen-from{font-weight:500;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nomen-arrow{color:var(--text3);flex-shrink:0;font-size:16px}
+.nomen-to{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.nomen-cat{font-size:11px;font-weight:500}
+.nomen-type{font-size:11px;padding:2px 7px;border-radius:8px;font-weight:500}
+.nomen-type.receita{background:var(--accent-dim);color:var(--accent);border:1px solid #22d17a30}
+.nomen-type.despesa{background:var(--red-dim);color:var(--red);border:1px solid #ff4d4d30}
+.nomen-del{background:none;border:none;color:var(--text3);cursor:pointer;font-size:15px;padding:0 2px;flex-shrink:0}
+.nomen-del:hover{color:var(--red)}
+.add-nomen-form{background:var(--bg4);border:1px solid var(--border2);border-radius:var(--r);padding:14px;margin-bottom:12px}
+.add-nomen-grid{display:grid;grid-template-columns:1fr auto 1fr auto;gap:8px;align-items:center;margin-bottom:8px}
+.nomen-arrow-icon{color:var(--text3);text-align:center;font-size:18px}
+.highlight-match{background:var(--amber-dim);border-radius:2px;padding:0 2px;color:var(--amber)}
+.month-bar-chart{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.month-bar-row{display:flex;align-items:center;gap:8px;font-size:12px}
+.month-bar-label{width:70px;color:var(--text2);text-align:right;flex-shrink:0;font-size:11px}
+.month-bar-track{flex:1;height:18px;background:var(--bg4);border-radius:4px;overflow:hidden;position:relative}
+.month-bar-fill{height:100%;border-radius:4px;transition:width .5s cubic-bezier(.4,0,.2,1);display:flex;align-items:center;padding-left:6px}
+.month-bar-fill-label{font-size:10px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden}
+.month-bar-val{width:80px;text-align:right;color:var(--text2);font-family:'DM Mono',monospace;font-size:11px;flex-shrink:0}
+
 /* ── EMPTY ── */
 .empty{text-align:center;padding:40px 20px;color:var(--text3)}
 .empty i{font-size:34px;margin-bottom:10px;display:block;opacity:.4}
@@ -438,7 +475,9 @@ select option{background:var(--bg3)}
   <div class="topbar-nav">
     <button class="tpill active" onclick="navTo('importar')"><i class="ti ti-upload"></i> Importar</button>
     <button class="tpill" onclick="navTo('extrato')"><i class="ti ti-file-invoice"></i> Extrato</button>
+    <button class="tpill" onclick="navTo('mensal')"><i class="ti ti-calendar-stats"></i> Mensal</button>
     <button class="tpill" onclick="navTo('extrato')"><i class="ti ti-file-invoice"></i> Extrato</button>
+    <button class="tpill" onclick="navTo('mensal')"><i class="ti ti-calendar-stats"></i> Mensal</button>
     <button class="tpill" onclick="navTo('validar')"><i class="ti ti-shield-check"></i> Validar</button>
     <button class="tpill" onclick="navTo('contas')"><i class="ti ti-wallet"></i> Contas</button>
     <button class="tpill" onclick="navTo('dashboard')"><i class="ti ti-chart-pie"></i> Dashboard</button>
@@ -807,6 +846,20 @@ select option{background:var(--bg3)}
     <!-- ALERTS -->
     <div id="extrato-alerts"></div>
 
+    <!-- MONTH TABS -->
+    <div class="month-tabs-wrap" id="month-tabs-wrap" style="display:none">
+      <span style="font-size:11px;color:var(--text3);flex-shrink:0">Mês:</span>
+      <button class="month-tab active" onclick="selectMonth('todos')">Todos</button>
+      <div id="month-tabs-dynamic"></div>
+    </div>
+
+    <!-- SEARCH BAR -->
+    <div class="search-bar">
+      <input class="search-input" id="trans-search" type="text" placeholder="🔍 Buscar por descrição, estabelecimento, valor... Ex: Marinha, Uber, 150.00"
+        oninput="onTransSearch(this.value)"/>
+      <button class="search-clear" onclick="clearSearch()">Limpar</button>
+    </div>
+
     <!-- FILTERS -->
     <div class="filter-row">
       <span style="font-size:11px;color:var(--text3)">Filtrar:</span>
@@ -935,6 +988,102 @@ select option{background:var(--bg3)}
 
   <!-- ACCOUNT DETAIL -->
   <div id="acc-detail" style="display:none"></div>
+</div>
+
+
+<!-- VISÃO MENSAL -->
+<div class="section" id="sec-mensal">
+  <div class="sec-header">
+    <div class="sec-title">Visão mês a mês</div>
+    <div class="sec-sub">Evolução das suas finanças ao longo dos meses</div>
+  </div>
+  <div id="mensal-content">
+    <div class="empty"><i class="ti ti-calendar-stats"></i><p>Importe e confirme seus extratos<br>para ver a visão mês a mês.</p></div>
+  </div>
+</div>
+
+<!-- NOMENCLATURAS -->
+<div class="section" id="sec-nomenclatura">
+  <div class="sec-header">
+    <div class="sec-title">Dicionário de nomenclaturas</div>
+    <div class="sec-sub">Ensine ao sistema como classificar termos específicos do seu banco — vale para todos os extratos futuros</div>
+  </div>
+
+  <!-- ADD RULE -->
+  <div class="card">
+    <div class="card-title"><i class="ti ti-plus"></i> Adicionar regra de classificação</div>
+    <div class="add-nomen-form">
+      <div style="font-size:12px;color:var(--text2);margin-bottom:8px">Quando a descrição <strong>contiver</strong> este texto:</div>
+      <input type="text" id="nomen-from" placeholder='Ex: CREDITO MARINHA, PIX SALARIO, PGTO FATURA...' style="margin-bottom:10px"/>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+        <div>
+          <div style="font-size:11px;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em">Classificar como</div>
+          <select id="nomen-tipo">
+            <option value="receita">💰 Receita (entrada)</option>
+            <option value="despesa">💸 Despesa (saída)</option>
+            <option value="ignore">🚫 Ignorar (não lançar)</option>
+          </select>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em">Categoria</div>
+          <select id="nomen-cat">
+            <option value="salario">💰 Salário / renda principal</option>
+            <option value="outros-rec">💵 Outras receitas</option>
+            <option value="alimentacao">🍽️ Alimentação</option>
+            <option value="transporte">🚗 Transporte</option>
+            <option value="moradia">🏠 Moradia</option>
+            <option value="saude">❤️ Saúde</option>
+            <option value="educacao">📚 Educação</option>
+            <option value="lazer">🎭 Lazer</option>
+            <option value="contas">💡 Contas/Serviços</option>
+            <option value="cartao">💳 Pagamento cartão</option>
+            <option value="investimento">📈 Investimento</option>
+            <option value="transferencia">↔️ Transferência</option>
+            <option value="juros">🔴 Juros/Encargos</option>
+            <option value="tarifa">🏦 Tarifa bancária</option>
+            <option value="outros">📦 Outros</option>
+          </select>
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:6px">Observação (opcional)</div>
+      <input type="text" id="nomen-obs" placeholder="Ex: Soldo militar — considerar como renda fixa mensal" style="margin-bottom:10px"/>
+      <button class="btn-primary" style="margin-top:0" onclick="addNomenclatura()"><i class="ti ti-plus"></i> Salvar regra</button>
+    </div>
+
+    <!-- EXAMPLES -->
+    <div style="font-size:12px;color:var(--text2);margin-bottom:8px">Exemplos rápidos — clique para adicionar:</div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px">
+      <button class="hint-pill" style="cursor:pointer" onclick="addExemplo('CREDITO MARINHA','receita','salario','Soldo da Marinha — renda principal')">+ Crédito Marinha = Salário</button>
+      <button class="hint-pill" style="cursor:pointer" onclick="addExemplo('PGTO FATURA','despesa','cartao','Pagamento de fatura de cartão')">+ Pgto Fatura = Cartão</button>
+      <button class="hint-pill" style="cursor:pointer" onclick="addExemplo('TARIFA','despesa','tarifa','Tarifa bancária')">+ Tarifa = Tarifa bancária</button>
+      <button class="hint-pill" style="cursor:pointer" onclick="addExemplo('IOF','despesa','juros','IOF — imposto sobre operações financeiras')">+ IOF = Juros</button>
+      <button class="hint-pill" style="cursor:pointer" onclick="addExemplo('SALARIO','receita','salario','Crédito de salário')">+ Salário = Renda</button>
+      <button class="hint-pill" style="cursor:pointer" onclick="addExemplo('ENC FINANC','despesa','juros','Encargos financeiros — rotativo do cartão')">+ Enc Financ = Juros</button>
+      <button class="hint-pill" style="cursor:pointer" onclick="addExemplo('UBER','despesa','transporte','Transporte por aplicativo')">+ Uber = Transporte</button>
+      <button class="hint-pill" style="cursor:pointer" onclick="addExemplo('IFOOD','despesa','alimentacao','Delivery de comida')">+ iFood = Alimentação</button>
+    </div>
+  </div>
+
+  <!-- SEARCH RULES -->
+  <div class="card">
+    <div class="card-title"><i class="ti ti-list"></i> Regras cadastradas (<span id="nomen-count">0</span>)</div>
+    <div class="search-bar" style="margin-bottom:10px">
+      <input class="search-input" id="nomen-search" type="text" placeholder="🔍 Buscar regra..."
+        oninput="renderNomenclaturas(this.value)"/>
+    </div>
+    <div id="nomen-list"><div style="font-size:13px;color:var(--text3);text-align:center;padding:20px">Nenhuma regra cadastrada ainda.</div></div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="card" style="background:var(--bg4);border:none">
+    <div class="card-title"><i class="ti ti-bulb"></i> Como funciona</div>
+    <div style="font-size:12px;color:var(--text2);line-height:1.8">
+      Quando você importa um extrato, o sistema verifica automaticamente cada transação contra as regras cadastradas aqui.<br>
+      <strong style="color:var(--text)">Prioridade:</strong> suas regras manuais têm sempre prioridade sobre a classificação da IA.<br>
+      <strong style="color:var(--text)">A busca não diferencia maiúsculas/minúsculas</strong> — "marinha", "MARINHA" e "Marinha" são iguais.<br>
+      <strong style="color:var(--text)">Regras são salvas no OneDrive</strong> e aplicadas em todos os extratos futuros automaticamente.
+    </div>
+  </div>
 </div>
 
 </div><!-- /content -->
@@ -1103,16 +1252,18 @@ async function odSave() {
   if (!odToken) { showToast('Conecte o OneDrive primeiro.', 'warn'); return; }
   setOdStatus('syncing', 'Salvando...');
   const payload = JSON.stringify({
-    version: 3,
+    version: 4,
     savedAt: new Date().toISOString(),
     items,
     debts,
     contas,
     transacoes,
+    nomenclaturas,
     nid,
     ndid,
     ncid,
     ntid,
+    nnid,
     plano: {
       renda: document.getElementById('r-renda').value,
       desp: document.getElementById('r-desp').value,
@@ -1156,13 +1307,14 @@ async function odLoad() {
       if (data.debts) { debts = data.debts; ndid = data.ndid || debts.length + 1; }
       if (data.contas) { contas = data.contas; ncid = data.ncid || contas.length + 1; }
       if (data.transacoes) { transacoes = data.transacoes; ntid = data.ntid || transacoes.length + 1; }
+      if (data.nomenclaturas) { nomenclaturas = data.nomenclaturas; nnid = data.nnid || nomenclaturas.length + 1; }
       if (data.plano) {
         if (data.plano.renda) document.getElementById('r-renda').value = data.plano.renda;
         if (data.plano.desp) document.getElementById('r-desp').value = data.plano.desp;
         if (data.plano.min) document.getElementById('r-min').value = data.plano.min;
         if (data.plano.extra) document.getElementById('r-extra').value = data.plano.extra;
       }
-      renderVal(); renderDebts(); renderContas(); updateContaTotals(); updateBadges();
+      renderVal(); renderDebts(); renderContas(); updateContaTotals(); renderNomenclaturas(''); updateBadges();
       const saved = data.savedAt ? new Date(data.savedAt).toLocaleDateString('pt-BR') : '';
       setOdStatus('connected', 'Dados carregados');
       document.getElementById('od-last').textContent = saved ? '· Backup: ' + saved : '';
@@ -1244,10 +1396,12 @@ function navTo(n) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   const ni = document.getElementById('nav-' + n); if (ni) ni.classList.add('active');
   document.getElementById('sec-' + n).classList.add('active');
-  const tabMap = ['importar','extrato','contas','validar','dashboard','graficos','dividas','mercado','plano'];
+  const tabMap = ['importar','extrato','mensal','contas','validar','dashboard','graficos','dividas','mercado','plano'];
   const pi = tabMap.indexOf(n);
   if (pi >= 0) document.querySelectorAll('.tpill')[pi].classList.add('active');
   if (n === 'extrato') renderExtrato();
+  if (n === 'mensal') renderMensal();
+  if (n === 'nomenclatura') renderNomenclaturas('');
   if (n === 'contas') renderContas();
   if (n === 'dashboard') updateDash();
   if (n === 'graficos') renderCharts();
@@ -1983,23 +2137,28 @@ async function processBankFiles(files) {
 }
 
 async function extractPDFAndAnalyze(file) {
-  setBankProgress(true, 'Lendo PDF...');
+  setBankProgress(true, 'Lendo PDF — extraindo todas as páginas...');
   setStep(1, 'active');
-  let pdfText = '';
+  let allPages = [];
+  let totalPages = 0;
   try {
     if (typeof pdfjsLib !== 'undefined') {
       pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
       const arrayBuffer = await file.arrayBuffer();
       const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
-      const pages = Math.min(pdf.numPages, 30);
-      for (let i = 1; i <= pages; i++) {
+      totalPages = pdf.numPages;
+      document.getElementById('bank-prog-title').textContent = 'Lendo ' + totalPages + ' páginas do PDF...';
+      for (let i = 1; i <= totalPages; i++) {
         const page = await pdf.getPage(i);
         const tc = await page.getTextContent();
-        pdfText += tc.items.map(item => item.str).join(' ') + '\n';
+        const pageText = tc.items.map(item => item.str).join(' ');
+        allPages.push(pageText);
+        // Update progress bar proportionally
+        const pct = Math.round((i / totalPages) * 35);
+        document.getElementById('bank-prog-fill').style.width = pct + '%';
       }
       setStep(1, 'done');
     } else {
-      // Fallback: read as binary and send as base64
       const rd = new FileReader();
       rd.onload = ev => analyzeBankContent(null, null, ev.target.result, file.name);
       rd.readAsDataURL(file);
@@ -2007,9 +2166,87 @@ async function extractPDFAndAnalyze(file) {
     }
   } catch(e) {
     setStep(1, 'done');
-    pdfText = '[PDF lido via fallback — ' + file.name + ']';
+    await analyzeBankContent('[PDF lido via fallback — ' + file.name + ']', null, null, file.name);
+    return;
   }
-  await analyzeBankContent(pdfText, null, null, file.name);
+
+  // Split into chunks of ~4000 chars each and analyze all
+  const CHUNK_SIZE = 4000;
+  const fullText = allPages.join('\n');
+  const chunks = [];
+  for (let i = 0; i < fullText.length; i += CHUNK_SIZE) {
+    chunks.push(fullText.slice(i, i + CHUNK_SIZE));
+  }
+
+  document.getElementById('bank-prog-title').textContent =
+    'Analisando ' + chunks.length + ' blocos (' + totalPages + ' páginas, ' + Math.round(fullText.length/1000) + 'KB)...';
+  setStep(2, 'active');
+
+  let allTransacoes = [];
+  for (let ci = 0; ci < chunks.length; ci++) {
+    const pct = 35 + Math.round((ci / chunks.length) * 55);
+    document.getElementById('bank-prog-fill').style.width = pct + '%';
+    document.getElementById('bank-prog-title').textContent =
+      'Bloco ' + (ci+1) + ' de ' + chunks.length + ' — identificando transações...';
+    const trans = await analyzeChunk(chunks[ci], file.name, ci+1, chunks.length);
+    allTransacoes = allTransacoes.concat(trans);
+  }
+
+  // Deduplicate by desc+valor+data
+  const seen = new Set();
+  allTransacoes = allTransacoes.filter(t => {
+    const key = (t.data||'') + '|' + (t.desc||'') + '|' + (t.valor||0);
+    if (seen.has(key)) return false;
+    seen.add(key); return true;
+  });
+
+  setStep(3, 'done'); setStep(4, 'active');
+  document.getElementById('bank-prog-title').textContent =
+    'Encontradas ' + allTransacoes.length + ' transações — identificando juros e alertas...';
+
+  setTimeout(() => {
+    setStep(4, 'done'); setStep(5, 'active');
+    setTimeout(() => {
+      setStep(5, 'done');
+      document.getElementById('bank-prog-fill').style.width = '100%';
+      document.getElementById('bank-prog-title').textContent =
+        allTransacoes.length + ' transações processadas de ' + totalPages + ' páginas!';
+      setTimeout(() => setBankProgress(false), 1500);
+      addTransacoes(allTransacoes.map(p => ({...p, id:ntid++, banco:selectedBank, fonte:file.name, confirmada:false})));
+      renderExtrato();
+      navTo('extrato');
+      showToast(allTransacoes.length + ' transações importadas de ' + totalPages + ' páginas!', 'success');
+    }, 600);
+  }, 800);
+}
+
+async function analyzeChunk(chunkText, src, chunkNum, totalChunks) {
+  const bank = BANK_NAMES[selectedBank] || 'banco';
+  const sys = `Você é especialista em extratos bancários brasileiros do ${bank}.
+Analise este TRECHO de extrato e extraia APENAS as transações financeiras encontradas neste trecho.
+Retorne APENAS array JSON válido, sem markdown, sem explicações:
+[{"data":"DD/MM/AAAA","desc":"descrição","valor":0.00,"tipo":"debito|credito","categoria":"alimentacao|transporte|moradia|saude|educacao|lazer|contas|cartao|salario|transferencia|juros|tarifa|compras|outros","estabelecimento":"nome","confianca":"alta|media|baixa","obs":"classificação em 1 frase","flag":"normal|suspeita|juros|cartao|tarifa","pergunta":"pergunta sobre a transação ou vazio","juros_valor":0,"juros_tipo":"rotativo|parcelamento|mora|IOF|tarifa|"}]
+Se não houver transações neste trecho retorne [].
+Não repita transações que pareçam duplicadas.`;
+
+  try {
+    const r = await fetch(ANTHROPIC_API, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        model: MODEL,
+        max_tokens: 2000,
+        system: sys,
+        messages: [{role:'user', content: 'Banco: ' + bank + '\nTrecho ' + chunkNum + '/' + totalChunks + ':\n' + chunkText + '\n\nExtraia as transações deste trecho.'}]
+      })
+    });
+    const d = await r.json();
+    const raw = (d.content||[]).map(c => c.text||'').join('').trim().replace(/```json|```/g,'').trim();
+    if (!raw || raw === '[]') return [];
+    return JSON.parse(raw);
+  } catch(e) {
+    return [];
+  }
 }
 
 function setBankProgress(show, title) {
@@ -2063,7 +2300,7 @@ Se não encontrar transações claras, retorne [].`;
 Arquivo: ${src}
 
 Conteúdo do extrato:
-${(text||fileText||'').slice(0,6000)}
+${(text||fileText||'').slice(0,8000)}
 
 Extraia TODAS as transações e identifique juros, suspeitas e categorias.`;
 
@@ -2233,6 +2470,406 @@ function askAIAboutExtrato() {
   const suspeitas = transacoes.filter(t=>t.flag==='suspeita');
   const msg = 'Analisei meu extrato bancario e encontrei: total de juros ' + fmt(juros) + '/mes, ' + suspeitas.length + ' transacoes suspeitas: ' + suspeitas.map(t=>t.desc+' '+fmt(t.valor)).join(', ') + '. Me da um plano de acao para reduzir custos e questionar essas transacoes com o banco.';
   sendToAI(msg);
+}
+
+
+// ══════════════════════════════════════════════════════
+// NOMENCLATURAS + VISÃO MENSAL + PESQUISA
+// ══════════════════════════════════════════════════════
+let nomenclaturas = [];
+let nnid = 1;
+let selectedMonth = 'todos';
+let searchTerm = '';
+
+// ── APPLY NOMENCLATURES to a transaction description ──
+function applyNomenclatura(desc) {
+  const upper = (desc||'').toUpperCase();
+  for (const r of nomenclaturas) {
+    if (upper.includes(r.from.toUpperCase())) {
+      return {tipo: r.tipo, categoria: r.cat, obs: r.obs || r.from, matched: r.from};
+    }
+  }
+  return null;
+}
+
+// ── APPLY RULES TO ALL TRANSACOES (called after import) ──
+function applyAllNomenclaturas() {
+  let applied = 0;
+  transacoes.forEach(t => {
+    if (t.confirmada) return;
+    const match = applyNomenclatura(t.desc);
+    if (match) {
+      if (match.tipo !== 'ignore') {
+        t.tipo = match.tipo === 'receita' ? 'credito' : 'debito';
+        t.categoria = match.categoria;
+        t.flag = match.tipo === 'receita' ? 'normal' : t.flag;
+        t.obs = match.obs + ' (regra automática)';
+        t.confianca = 'alta';
+      } else {
+        t._ignore = true;
+      }
+      applied++;
+    }
+  });
+  transacoes = transacoes.filter(t => !t._ignore);
+  if (applied > 0) showToast(applied + ' transações reclassificadas pelas suas regras!', 'success');
+}
+
+// ── ADD NOMENCLATURA ──
+function addNomenclatura() {
+  const from = document.getElementById('nomen-from').value.trim();
+  const tipo = document.getElementById('nomen-tipo').value;
+  const cat = document.getElementById('nomen-cat').value;
+  const obs = document.getElementById('nomen-obs').value.trim();
+  if (!from) { showToast('Digite o texto a identificar.', 'warn'); return; }
+  // Check duplicate
+  if (nomenclaturas.some(r => r.from.toUpperCase() === from.toUpperCase())) {
+    showToast('Já existe uma regra para "' + from + '".', 'warn'); return;
+  }
+  nomenclaturas.push({id: nnid++, from, tipo, cat, obs});
+  document.getElementById('nomen-from').value = '';
+  document.getElementById('nomen-obs').value = '';
+  renderNomenclaturas('');
+  scheduleAutoSave();
+  // Re-apply to existing transacoes
+  applyAllNomenclaturas();
+  renderTransList();
+  showToast('Regra "' + from + '" salva!', 'success');
+}
+
+function addExemplo(from, tipo, cat, obs) {
+  document.getElementById('nomen-from').value = from;
+  document.getElementById('nomen-tipo').value = tipo;
+  document.getElementById('nomen-cat').value = cat;
+  document.getElementById('nomen-obs').value = obs;
+  showToast('Preencha e clique em Salvar regra.', 'info');
+}
+
+function deleteNomenclatura(id) {
+  nomenclaturas = nomenclaturas.filter(r => r.id !== id);
+  renderNomenclaturas('');
+  scheduleAutoSave();
+  showToast('Regra removida.', 'info');
+}
+
+function renderNomenclaturas(search) {
+  const el = document.getElementById('nomen-list');
+  const count = document.getElementById('nomen-count');
+  if (!nomenclaturas.length) {
+    el.innerHTML = '<div style="font-size:13px;color:var(--text3);text-align:center;padding:20px">Nenhuma regra cadastrada ainda.<br>Adicione a primeira regra acima.</div>';
+    if (count) count.textContent = '0';
+    return;
+  }
+  const q = (search||'').toLowerCase();
+  const filtered = q ? nomenclaturas.filter(r => r.from.toLowerCase().includes(q) || (r.obs||'').toLowerCase().includes(q)) : nomenclaturas;
+  if (count) count.textContent = nomenclaturas.length;
+  if (!filtered.length) { el.innerHTML = '<div style="font-size:13px;color:var(--text3);text-align:center;padding:16px">Nenhuma regra encontrada.</div>'; return; }
+  const catLabels = {salario:'Salário',alimentacao:'Alimentação',transporte:'Transporte',moradia:'Moradia',saude:'Saúde',educacao:'Educação',lazer:'Lazer',contas:'Contas',cartao:'Cartão',investimento:'Investimento',transferencia:'Transferência',juros:'Juros',tarifa:'Tarifa',outros:'Outros','outros-rec':'Outras receitas'};
+  el.innerHTML = filtered.map(r => {
+    const highlight = q ? r.from.replace(new RegExp('(' + q + ')', 'gi'), '<span class="highlight-match">$1</span>') : esc(r.from);
+    const typeClass = r.tipo === 'receita' ? 'receita' : r.tipo === 'ignore' ? 'despesa' : 'despesa';
+    const typeLabel = r.tipo === 'receita' ? '↑ Receita' : r.tipo === 'ignore' ? '🚫 Ignorar' : '↓ Despesa';
+    return `<div class="nomen-item">
+      <div class="nomen-from" title="${esc(r.from)}">${highlight}</div>
+      <div class="nomen-arrow">→</div>
+      <div class="nomen-to">
+        <span class="nomen-type ${typeClass}">${typeLabel}</span>
+        <span class="nomen-cat" style="color:var(--text2)">${catLabels[r.cat]||r.cat}</span>
+        ${r.obs?`<span style="font-size:10px;color:var(--text3);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(r.obs)}">${esc(r.obs)}</span>`:''}
+      </div>
+      <button class="nomen-del" onclick="deleteNomenclatura(${r.id})" title="Remover regra">×</button>
+    </div>`;
+  }).join('');
+}
+
+// ── SEARCH IN EXTRATO ──
+function onTransSearch(val) {
+  searchTerm = val.toLowerCase().trim();
+  renderTransList();
+}
+function clearSearch() {
+  document.getElementById('trans-search').value = '';
+  searchTerm = '';
+  renderTransList();
+}
+
+// ── MONTH TABS ──
+function buildMonthTabs() {
+  const months = new Map();
+  transacoes.forEach(t => {
+    if (!t.data) return;
+    const parts = t.data.split('/');
+    if (parts.length >= 2) {
+      const key = parts[1] + '/' + (parts[2]||'');
+      const label = getMonthLabel(parts[1], parts[2]);
+      months.set(key, label);
+    }
+  });
+  const wrap = document.getElementById('month-tabs-wrap');
+  const dyn = document.getElementById('month-tabs-dynamic');
+  if (!dyn) return;
+  if (months.size > 1) {
+    wrap.style.display = 'flex';
+    // Sort by year+month
+    const sorted = Array.from(months.entries()).sort((a,b) => {
+      const [ma,ya] = a[0].split('/');const [mb,yb] = b[0].split('/');
+      return (ya||'0').localeCompare(yb||'0') || ma.localeCompare(mb);
+    });
+    dyn.innerHTML = sorted.map(([key,label]) =>
+      `<button class="month-tab${selectedMonth===key?' active':''}" onclick="selectMonth('${key}')">${label}</button>`
+    ).join('');
+  } else {
+    wrap.style.display = 'none';
+  }
+}
+
+function getMonthLabel(m, y) {
+  const months = {
+    '01':'Jan','02':'Fev','03':'Mar','04':'Abr','05':'Mai','06':'Jun',
+    '07':'Jul','08':'Ago','09':'Set','10':'Out','11':'Nov','12':'Dez'
+  };
+  const yr = y ? '/'+y.slice(-2) : '';
+  return (months[m]||m) + yr;
+}
+
+function selectMonth(key) {
+  selectedMonth = key;
+  // Update active tab
+  document.querySelectorAll('.month-tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  renderTransList();
+  renderExtratoSummary();
+}
+
+// ── OVERRIDE filterTrans to also call buildMonthTabs ──
+const _origFilterTrans = filterTrans;
+function filterTrans(f) {
+  transFilter = f;
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  event.target.classList.add('active');
+  renderTransList();
+}
+
+// ── OVERRIDE renderTransList to support month+search ──
+function renderTransList() {
+  buildMonthTabs();
+  const el = document.getElementById('trans-list');
+  if (!el) return;
+  let filtered = transacoes;
+
+  // Apply month filter
+  if (selectedMonth !== 'todos') {
+    const [fm, fy] = selectedMonth.split('/');
+    filtered = filtered.filter(t => {
+      if (!t.data) return false;
+      const parts = t.data.split('/');
+      return parts[1] === fm && (!fy || parts[2] === fy || (parts[2]||'').endsWith(fy));
+    });
+  }
+
+  // Apply type filter
+  if (transFilter === 'despesa') filtered = filtered.filter(t => t.tipo==='debito');
+  else if (transFilter === 'receita') filtered = filtered.filter(t => t.tipo==='credito');
+  else if (transFilter === 'juros') filtered = filtered.filter(t => t.flag==='juros');
+  else if (transFilter === 'suspeita') filtered = filtered.filter(t => t.flag==='suspeita');
+  else if (transFilter === 'cartao') filtered = filtered.filter(t => t.flag==='cartao');
+
+  // Apply search
+  if (searchTerm) {
+    filtered = filtered.filter(t =>
+      (t.desc||'').toLowerCase().includes(searchTerm) ||
+      (t.estabelecimento||'').toLowerCase().includes(searchTerm) ||
+      (t.categoria||'').toLowerCase().includes(searchTerm) ||
+      String(t.valor||'').includes(searchTerm) ||
+      (t.data||'').includes(searchTerm)
+    );
+  }
+
+  if (!filtered.length) {
+    el.innerHTML = '<div class="empty"><i class="ti ti-filter"></i><p>Nenhuma transação encontrada.</p></div>';
+    return;
+  }
+
+  const cats = ['alimentacao','transporte','moradia','saude','educacao','lazer','contas','cartao','salario','transferencia','juros','tarifa','compras','outros'];
+
+  function highlight(text) {
+    if (!searchTerm || !text) return esc(text||'');
+    return esc(text).replace(new RegExp('(' + esc(searchTerm) + ')', 'gi'), '<span class="highlight-match">$1</span>');
+  }
+
+  el.innerHTML = filtered.map(t => {
+    const flagClass = t.flag==='juros'?'juros':t.flag==='suspeita'?'suspeita':t.flag==='tarifa'?'suspeita':'';
+    const aiClass = t.flag==='juros'?'danger-ai':t.flag==='suspeita'||t.flag==='tarifa'?'warn-ai':'';
+    const nomMatch = applyNomenclatura(t.desc);
+    const ruleTag = nomMatch ? `<span class="badge b-inv" title="Regra: ${esc(nomMatch.matched)}">📋 Regra</span>` : '';
+    return `<div class="trans-item ${flagClass}${t.confirmada?' confirmada':''}" id="ti-${t.id}">
+      <div class="trans-header">
+        <div>
+          <div class="trans-desc">${CAT_ICONS[t.categoria]||'📦'} ${highlight(t.desc)}</div>
+          <div class="trans-meta">
+            <span>${t.data||''}</span>
+            ${t.estabelecimento?`<span>${highlight(t.estabelecimento)}</span>`:''}
+            <span class="badge ${t.tipo==='credito'?'b-rec':'b-desp'}">${t.tipo==='credito'?'Crédito':'Débito'}</span>
+            ${ruleTag}
+            ${t.flag==='juros'?'<span class="badge b-alto">JUROS</span>':''}
+            ${t.flag==='suspeita'?'<span class="badge b-med">⚠️ QUESTIONAR</span>':''}
+            ${t.flag==='cartao'?'<span class="badge b-div">💳 FATURA</span>':''}
+            ${t.flag==='tarifa'?'<span class="badge b-div">TARIFA</span>':''}
+          </div>
+        </div>
+        <span class="trans-val ${t.tipo==='credito'?'credito':'debito'}">${t.tipo==='debito'?'-':'+'} ${fmt(t.valor)}</span>
+      </div>
+      ${t.obs?`<div class="trans-ai ${aiClass}">${esc(t.obs)}</div>`:''}
+      ${t.pergunta?`<div class="question-bubble"><i class="ti ti-help-circle"></i><span>${esc(t.pergunta)}</span></div>`:''}
+      ${t.confirmada?`<div class="confirmed-check"><i class="ti ti-check"></i> Confirmada</div>`:
+      `<div class="trans-actions">
+        <select class="cat-select" onchange="updTrans(${t.id},'categoria',this.value)">
+          ${cats.map(c=>`<option value="${c}"${c===t.categoria?' selected':''}>${(CAT_ICONS[c]||'')+' '+c}</option>`).join('')}
+        </select>
+        <button class="btn-sm btn-ok" onclick="confirmTrans(${t.id})"><i class="ti ti-check"></i> Confirmar</button>
+        <button class="btn-sm btn-q" onclick="questionTrans(${t.id})"><i class="ti ti-help"></i> IA ↗</button>
+        <button class="btn-sm btn-rm" onclick="removeTrans(${t.id})">Remover</button>
+      </div>`}
+    </div>`;
+  }).join('');
+}
+
+// ── VISÃO MENSAL ──
+function renderMensal() {
+  const el = document.getElementById('mensal-content');
+  if (!transacoes.length && !items.filter(i=>i.confirmado).length) {
+    el.innerHTML = '<div class="empty"><i class="ti ti-calendar-stats"></i><p>Importe e confirme seus extratos<br>para ver a visão mês a mês.</p></div>';
+    return;
+  }
+
+  // Collect all transactions (confirmed items + transacoes confirmadas)
+  const allTrans = [
+    ...transacoes.filter(t=>t.confirmada).map(t=>({
+      mes: getMesKey(t.data),
+      tipo: t.tipo==='credito'?'receita':'despesa',
+      valor: t.valor, categoria: t.categoria, desc: t.desc,
+      juros: t.flag==='juros'?t.valor:0
+    })),
+    ...items.filter(i=>i.confirmado).map(i=>({
+      mes: 'atual',
+      tipo: i.tipo, valor: i.valor, categoria: i.categoria, desc: i.desc, juros:0
+    }))
+  ];
+
+  // Group by month
+  const byMonth = {};
+  allTrans.forEach(t => {
+    if (!byMonth[t.mes]) byMonth[t.mes] = {receita:0,despesa:0,juros:0,cats:{}};
+    if (t.tipo==='receita') byMonth[t.mes].receita += t.valor;
+    else byMonth[t.mes].despesa += t.valor;
+    byMonth[t.mes].juros += t.juros||0;
+    byMonth[t.mes].cats[t.categoria] = (byMonth[t.mes].cats[t.categoria]||0) + t.valor;
+  });
+
+  const months = Object.keys(byMonth).filter(k=>k!=='atual').sort();
+  if (byMonth['atual']) months.push('atual');
+
+  if (!months.length) {
+    el.innerHTML = '<div class="empty"><i class="ti ti-calendar"></i><p>Nenhum dado mensal disponível ainda.</p></div>';
+    return;
+  }
+
+  const maxDesp = Math.max(...months.map(m=>byMonth[m].despesa), 1);
+
+  let html = '';
+
+  // Year overview chart
+  html += `<div class="card"><div class="card-title"><i class="ti ti-chart-bar"></i> Despesas por mês</div>
+    <div class="month-bar-chart">`;
+  months.forEach(m => {
+    const d = byMonth[m];
+    const pct = Math.round(d.despesa/maxDesp*100);
+    const label = m === 'atual' ? 'Atual' : formatMesKey(m);
+    html += `<div class="month-bar-row">
+      <div class="month-bar-label">${label}</div>
+      <div class="month-bar-track">
+        <div class="month-bar-fill" style="width:${pct}%;background:${d.despesa>d.receita?'var(--red)':'var(--amber)'}">
+          <span class="month-bar-fill-label">${fmt(d.despesa)}</span>
+        </div>
+      </div>
+      <div class="month-bar-val" style="color:${d.receita-d.despesa>=0?'var(--accent)':'var(--red)'}">${fmt(d.receita-d.despesa)}</div>
+    </div>`;
+  });
+  html += '</div></div>';
+
+  // Month by month detail
+  months.forEach(m => {
+    const d = byMonth[m];
+    const saldo = d.receita - d.despesa;
+    const label = m === 'atual' ? 'Lançamentos avulsos' : formatMesKey(m);
+    const topCats = Object.entries(d.cats).sort((a,b)=>b[1]-a[1]).slice(0,4);
+
+    html += `<div class="card">
+      <div class="card-title"><i class="ti ti-calendar" style="color:${saldo>=0?'var(--accent)':'var(--red)'}"></i> ${label}</div>
+      <div class="month-summary">
+        <div class="ms-card"><div class="ms-label">Receitas</div><div class="ms-val green">${fmt(d.receita)}</div></div>
+        <div class="ms-card"><div class="ms-label">Despesas</div><div class="ms-val red">${fmt(d.despesa)}</div></div>
+        <div class="ms-card"><div class="ms-label">Saldo</div><div class="ms-val ${saldo>=0?'green':'red'}">${fmt(saldo)}</div></div>
+        ${d.juros>0?`<div class="ms-card"><div class="ms-label">Juros pagos</div><div class="ms-val red">${fmt(d.juros)}</div></div>`:''}
+      </div>
+      ${topCats.length?`<div style="font-size:11px;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em">Maiores categorias</div>
+        ${topCats.map(([cat,val])=>`<div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid var(--border);color:var(--text2)"><span>${CAT_ICONS[cat]||'📦'} ${cat}</span><span class="mono" style="color:var(--text)">${fmt(val)}</span></div>`).join('')}`:''}
+      ${d.juros>0?`<div class="alert-banner a-danger" style="margin-top:8px"><i class="ti ti-flame"></i><span>Este mês você pagou <strong>${fmt(d.juros)}</strong> em juros.</span></div>`:''}
+    </div>`;
+  });
+
+  // Annual summary
+  if (months.length > 1) {
+    const totalRec = months.reduce((s,m)=>s+byMonth[m].receita,0);
+    const totalDesp = months.reduce((s,m)=>s+byMonth[m].despesa,0);
+    const totalJuros = months.reduce((s,m)=>s+byMonth[m].juros,0);
+    html += `<div class="card" style="border-color:var(--accent)30;background:var(--accent-dim)">
+      <div class="card-title"><i class="ti ti-trophy"></i> Resumo do período (${months.length} meses)</div>
+      <div class="month-summary">
+        <div class="ms-card"><div class="ms-label">Total receitas</div><div class="ms-val green">${fmt(totalRec)}</div></div>
+        <div class="ms-card"><div class="ms-label">Total despesas</div><div class="ms-val red">${fmt(totalDesp)}</div></div>
+        <div class="ms-card"><div class="ms-label">Saldo período</div><div class="ms-val ${totalRec-totalDesp>=0?'green':'red'}">${fmt(totalRec-totalDesp)}</div></div>
+        ${totalJuros>0?`<div class="ms-card"><div class="ms-label">Total em juros</div><div class="ms-val red">${fmt(totalJuros)}</div></div>`:''}
+        <div class="ms-card"><div class="ms-label">Média mensal gasto</div><div class="ms-val amber">${fmt(totalDesp/months.length)}</div></div>
+      </div>
+      ${totalJuros>0?`<div class="alert-banner a-danger"><i class="ti ti-flame"></i><span>No período você pagou <strong>${fmt(totalJuros)}</strong> em juros. Anualizado: <strong>${fmt(totalJuros/months.length*12)}</strong>/ano.</span></div>`:''}
+      <button class="btn-ghost" onclick="sendToAI('Meu resumo financeiro de ${months.length} meses: receitas ${fmt(totalRec)}, despesas ${fmt(totalDesp)}, saldo ${fmt(totalRec-totalDesp)}, juros ${fmt(totalJuros)}. Media mensal de gastos ${fmt(totalDesp/months.length)}. Me da uma analise detalhada e plano de acao.')"><i class="ti ti-sparkles"></i> Análise completa do período com IA ↗</button>
+    </div>`;
+  }
+
+  el.innerHTML = html;
+}
+
+function getMesKey(data) {
+  if (!data) return 'sem-data';
+  const p = data.split('/');
+  return p.length >= 3 ? p[2]+'/'+p[1] : p.length>=2 ? '2026/'+p[1] : 'sem-data';
+}
+function formatMesKey(key) {
+  const months = {'01':'Janeiro','02':'Fevereiro','03':'Março','04':'Abril','05':'Maio','06':'Junho','07':'Julho','08':'Agosto','09':'Setembro','10':'Outubro','11':'Novembro','12':'Dezembro'};
+  const [y,m] = key.split('/');
+  return (months[m]||m) + (y?' / '+y:'');
+}
+
+// ── HOOK INTO addTransacoes to apply nomenclaturas ──
+const _origAddTrans = addTransacoes;
+function addTransacoes(novas) {
+  // Apply nomenclatura rules before adding
+  novas.forEach(t => {
+    const match = applyNomenclatura(t.desc);
+    if (match) {
+      if (match.tipo === 'ignore') { t._ignore = true; return; }
+      t.tipo = match.tipo === 'receita' ? 'credito' : 'debito';
+      t.categoria = match.categoria;
+      t.obs = (match.obs||match.from) + ' (regra automática)';
+      t.confianca = 'alta';
+      t.flag = match.tipo === 'receita' ? 'normal' : t.flag;
+    }
+  });
+  novas = novas.filter(t => !t._ignore);
+  novas.forEach(t => { if(!t.id) t.id = ntid++; transacoes.push(t); });
+  const nb = document.getElementById('nb-ext');
+  if (nb) { const p = transacoes.filter(t=>!t.confirmada).length; nb.textContent=p; nb.className='nav-badge'+(p>0?' show':''); }
 }
 
 
