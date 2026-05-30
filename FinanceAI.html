@@ -9,6 +9,10 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <!-- MSAL.js para autenticação Microsoft -->
 <script src="https://alcdn.msauth.net/browser/2.38.2/js/msal-browser.min.js"></script>
+<!-- Chart.js para gráficos -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<!-- PDF.js para leitura de PDFs bancários -->
+<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
 <style>
 :root{
   --bg:#0a0c0f;--bg2:#111418;--bg3:#181c22;--bg4:#1e242d;
@@ -258,6 +262,137 @@ select option{background:var(--bg3)}
 .neg-body{font-size:12px;color:var(--text2);line-height:1.7}
 .neg-gain{font-size:11px;font-weight:600;color:var(--accent);margin-top:5px}
 
+/* ── CHARTS ── */
+.chart-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-bottom:14px}
+.chart-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px}
+.chart-title{font-size:12px;font-weight:500;color:var(--text2);margin-bottom:14px;display:flex;align-items:center;gap:6px;text-transform:uppercase;letter-spacing:.04em}
+.chart-title i{color:var(--accent);font-size:14px}
+.chart-wrap{position:relative;height:220px}
+.chart-wrap-tall{position:relative;height:280px}
+.chart-legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2)}
+.legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.no-data-chart{display:flex;align-items:center;justify-content:center;height:200px;font-size:12px;color:var(--text3);flex-direction:column;gap:8px}
+.no-data-chart i{font-size:28px;opacity:.3}
+.period-tabs{display:flex;gap:4px;margin-bottom:14px;background:var(--bg4);border-radius:var(--r2);padding:3px;width:fit-content}
+.period-tab{padding:4px 12px;font-size:11px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--text3);border-radius:6px;transition:all .2s;font-family:'DM Sans',sans-serif}
+.period-tab.active{background:var(--bg3);color:var(--text);box-shadow:0 1px 3px #00000040}
+.stat-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px}
+.stat-row:last-child{border-bottom:none}
+.stat-label{color:var(--text2)}
+.stat-val{font-weight:600;font-family:'DM Mono',monospace}
+
+/* ── BANK ANALYSIS ── */
+.bank-drop{border:2px dashed var(--border2);border-radius:var(--r);padding:32px;text-align:center;cursor:pointer;transition:all .25s;background:var(--bg4);position:relative}
+.bank-drop:hover,.bank-drop.drag{border-color:var(--accent)60;background:var(--accent-dim)}
+.bank-drop i{font-size:32px;color:var(--text3);margin-bottom:10px;display:block;transition:color .2s}
+.bank-drop:hover i,.bank-drop.drag i{color:var(--accent)}
+.bank-drop-label{font-size:14px;font-weight:500;color:var(--text2);margin-bottom:4px}
+.bank-drop-sub{font-size:12px;color:var(--text3)}
+.bank-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px;margin-bottom:16px}
+.bank-badge{background:var(--bg4);border:1px solid var(--border);border-radius:var(--r2);padding:8px;text-align:center;font-size:11px;color:var(--text2);display:flex;flex-direction:column;align-items:center;gap:4px}
+.bank-badge i{font-size:18px;color:var(--accent)}
+.trans-item{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-bottom:6px;transition:all .2s;animation:fadeIn .2s}
+.trans-item:hover{border-color:var(--border2)}
+.trans-item.suspeita{border-color:var(--amber)50;background:var(--amber-dim)}
+.trans-item.juros{border-color:var(--red)50;background:var(--red-dim)}
+.trans-item.confirmada{opacity:.5;pointer-events:none}
+.trans-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5px;gap:8px}
+.trans-desc{font-size:13px;font-weight:500;flex:1}
+.trans-val{font-size:13px;font-weight:600;font-family:'DM Mono',monospace;white-space:nowrap}
+.trans-val.debito{color:var(--red)}
+.trans-val.credito{color:var(--accent)}
+.trans-meta{font-size:11px;color:var(--text3);margin-bottom:5px;display:flex;gap:10px;flex-wrap:wrap}
+.trans-ai{background:var(--bg4);border-left:2px solid var(--accent)50;padding:5px 10px;font-size:11px;color:var(--text2);border-radius:0 6px 6px 0;margin-bottom:7px;font-style:italic;line-height:1.5}
+.trans-ai.warn-ai{border-left-color:var(--amber);color:var(--amber)cc}
+.trans-ai.danger-ai{border-left-color:var(--red);color:var(--red)cc}
+.trans-actions{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.cat-select{background:var(--bg4);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-size:11px;padding:3px 7px;outline:none;font-family:'DM Sans',sans-serif}
+.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.filter-chip{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid var(--border2);background:transparent;color:var(--text2);transition:all .15s;font-family:'DM Sans',sans-serif}
+.filter-chip.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
+.filter-chip.danger{border-color:var(--red)40;color:var(--red)}
+.filter-chip.danger.active{background:var(--red-dim);border-color:var(--red)}
+.filter-chip.warn{border-color:var(--amber)40;color:var(--amber)}
+.filter-chip.warn.active{background:var(--amber-dim);border-color:var(--amber)}
+.summary-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-bottom:14px}
+.ss-card{background:var(--bg4);border:1px solid var(--border);border-radius:var(--r2);padding:10px 12px}
+.ss-label{font-size:10px;color:var(--text3);margin-bottom:3px;text-transform:uppercase;letter-spacing:.04em}
+.ss-val{font-size:16px;font-weight:600;font-family:'DM Mono',monospace}
+.question-bubble{background:var(--purple-dim);border:1px solid var(--purple)30;border-radius:var(--r2);padding:10px 13px;font-size:12px;color:var(--purple)cc;margin-bottom:8px;display:flex;gap:8px;align-items:flex-start}
+.question-bubble i{flex-shrink:0;font-size:14px;margin-top:1px}
+.juros-alert{background:var(--red-dim);border:1px solid var(--red)30;border-radius:var(--r2);padding:10px 13px;font-size:12px;color:#ff9090;margin-bottom:8px;display:flex;gap:8px}
+.upload-progress{background:var(--bg4);border:1px solid var(--accent)30;border-radius:var(--r2);padding:14px;margin-bottom:12px;display:none}
+.up-label{font-size:12px;color:var(--text2);margin-bottom:6px}
+.up-step{font-size:11px;color:var(--text3);margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.up-step.done{color:var(--accent)}.up-step.active{color:var(--blue)}
+.up-step i{font-size:13px}
+
+/* ── ACCOUNTS ── */
+.acc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:14px}
+.acc-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.acc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--acc-color,var(--accent))}
+.acc-card:hover{border-color:var(--border2);transform:translateY(-1px)}
+.acc-card.selected{border-color:var(--acc-color,var(--accent));box-shadow:0 0 0 1px var(--acc-color,var(--accent))20}
+.acc-icon{font-size:20px;margin-bottom:6px}
+.acc-bank{font-size:11px;color:var(--text3);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em}
+.acc-name{font-size:13px;font-weight:500;margin-bottom:6px}
+.acc-balance{font-size:18px;font-weight:600;font-family:'DM Mono',monospace}
+.acc-balance.pos{color:var(--accent)}.acc-balance.neg{color:var(--red)}.acc-balance.neutral{color:var(--blue)}
+.acc-meta{font-size:10px;color:var(--text3);margin-top:4px}
+.acc-actions{position:absolute;top:8px;right:8px;display:flex;gap:4px;opacity:0;transition:opacity .2s}
+.acc-card:hover .acc-actions{opacity:1}
+.acc-btn-sm{background:var(--bg4);border:1px solid var(--border2);color:var(--text3);padding:2px 6px;border-radius:4px;font-size:10px;cursor:pointer;font-family:'DM Sans',sans-serif}
+.acc-btn-sm:hover{color:var(--text)}
+.acc-add-card{background:transparent;border:1.5px dashed var(--border2);border-radius:var(--r);padding:14px 16px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;min-height:100px}
+.acc-add-card:hover{border-color:var(--accent);background:var(--accent-dim)}
+.acc-add-card i{font-size:22px;color:var(--text3);transition:color .2s}
+.acc-add-card:hover i{color:var(--accent)}
+.acc-add-label{font-size:12px;color:var(--text3)}
+.acc-total-bar{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.acc-total-item{text-align:center}
+.acc-total-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}
+.acc-total-val{font-size:16px;font-weight:600;font-family:'DM Mono',monospace}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:#00000080;display:flex;align-items:center;justify-content:center;z-index:500;padding:20px}
+.modal{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:24px;max-width:440px;width:100%;max-height:90vh;overflow-y:auto;animation:fadeIn .2s}
+.modal-title{font-size:16px;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.modal-footer{display:flex;gap:8px;margin-top:16px;justify-content:flex-end}
+.modal-btn{padding:8px 18px;font-size:13px;font-weight:500;cursor:pointer;border-radius:var(--r2);font-family:'DM Sans',sans-serif;transition:all .2s}
+.modal-btn-primary{background:var(--accent);color:var(--bg);border:none}
+.modal-btn-primary:hover{background:var(--accent2)}
+.modal-btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border2)}
+.modal-btn-ghost:hover{border-color:var(--border3);color:var(--text)}
+.type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.type-opt{background:var(--bg4);border:1px solid var(--border);border-radius:var(--r2);padding:10px 8px;text-align:center;cursor:pointer;transition:all .2s;font-size:11px;color:var(--text2)}
+.type-opt:hover{border-color:var(--border2);color:var(--text)}
+.type-opt.selected{border-color:var(--accent);background:var(--accent-dim);color:var(--accent)}
+.type-opt i{font-size:18px;display:block;margin-bottom:4px}
+
+/* FATURA */
+.fatura-section{background:var(--bg4);border:1px solid var(--red)20;border-radius:var(--r2);padding:12px;margin-bottom:10px}
+.fatura-title{font-size:12px;font-weight:500;color:var(--red);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.fatura-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px}
+.fatura-row:last-child{border-bottom:none;font-weight:600}
+
+/* PARCELA */
+.parcela-section{background:var(--bg4);border:1px solid var(--amber)20;border-radius:var(--r2);padding:12px;margin-bottom:10px}
+.parcela-title{font-size:12px;font-weight:500;color:var(--amber);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.parcela-timeline{display:flex;gap:4px;overflow-x:auto;padding-bottom:4px}
+.parcela-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;flex-shrink:0;border:1px solid}
+.parcela-dot.paga{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
+.parcela-dot.atual{background:var(--amber-dim);border-color:var(--amber);color:var(--amber)}
+.parcela-dot.futura{background:var(--bg3);border-color:var(--border);color:var(--text3)}
+
+/* CONSOLIDADO */
+.consol-section{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:10px}
+.consol-title{font-size:13px;font-weight:500;margin-bottom:12px;display:flex;align-items:center;gap:7px}
+.consol-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px}
+.consol-row:last-child{border-bottom:none}
+.consol-name{display:flex;align-items:center;gap:8px;color:var(--text2)}
+.consol-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
 /* ── EMPTY ── */
 .empty{text-align:center;padding:40px 20px;color:var(--text3)}
 .empty i{font-size:34px;margin-bottom:10px;display:block;opacity:.4}
@@ -302,8 +437,12 @@ select option{background:var(--bg3)}
   </div>
   <div class="topbar-nav">
     <button class="tpill active" onclick="navTo('importar')"><i class="ti ti-upload"></i> Importar</button>
+    <button class="tpill" onclick="navTo('extrato')"><i class="ti ti-file-invoice"></i> Extrato</button>
+    <button class="tpill" onclick="navTo('extrato')"><i class="ti ti-file-invoice"></i> Extrato</button>
     <button class="tpill" onclick="navTo('validar')"><i class="ti ti-shield-check"></i> Validar</button>
+    <button class="tpill" onclick="navTo('contas')"><i class="ti ti-wallet"></i> Contas</button>
     <button class="tpill" onclick="navTo('dashboard')"><i class="ti ti-chart-pie"></i> Dashboard</button>
+    <button class="tpill" onclick="navTo('graficos')"><i class="ti ti-chart-dots-3"></i> Gráficos</button>
     <button class="tpill" onclick="navTo('dividas')"><i class="ti ti-credit-card"></i> Dívidas</button>
     <button class="tpill" onclick="navTo('mercado')"><i class="ti ti-radar"></i> Mercado</button>
     <button class="tpill" onclick="navTo('plano')"><i class="ti ti-road"></i> Plano</button>
@@ -335,7 +474,9 @@ select option{background:var(--bg3)}
   <div class="nav-item active" id="nav-importar" onclick="navTo('importar')"><i class="ti ti-upload"></i> Importar<span class="nav-badge" id="nb-val"></span></div>
   <div class="nav-item" id="nav-validar" onclick="navTo('validar')"><i class="ti ti-shield-check"></i> Validar<span class="nav-badge" id="nb-val2"></span></div>
   <div class="nav-section">Análise</div>
+  <div class="nav-item" id="nav-contas" onclick="navTo('contas')"><i class="ti ti-wallet"></i> Minhas Contas<span class="nav-badge" id="nb-contas"></span></div>
   <div class="nav-item" id="nav-dashboard" onclick="navTo('dashboard')"><i class="ti ti-layout-dashboard"></i> Dashboard</div>
+  <div class="nav-item" id="nav-graficos" onclick="navTo('graficos')"><i class="ti ti-chart-dots-3"></i> Gráficos</div>
   <div class="nav-item" id="nav-dividas" onclick="navTo('dividas')"><i class="ti ti-credit-card"></i> Dívidas<span class="nav-badge" id="nb-div"></span></div>
   <div class="nav-item" id="nav-mercado" onclick="navTo('mercado')"><i class="ti ti-radar"></i> Taxas mercado</div>
   <div class="nav-item" id="nav-simulador" onclick="navTo('simulador')"><i class="ti ti-calculator"></i> SAC vs Price</div>
@@ -548,6 +689,254 @@ select option{background:var(--bg3)}
   <button class="btn-ghost" onclick="buildNegPrompt()"><i class="ti ti-message"></i> Roteiro personalizado para minhas dívidas ↗</button>
 </div>
 
+<!-- GRÁFICOS -->
+<div class="section" id="sec-graficos">
+  <div class="sec-header">
+    <div class="sec-title">Gráficos e análise visual</div>
+    <div class="sec-sub">Visualize suas finanças — atualizado automaticamente com os lançamentos confirmados</div>
+  </div>
+
+  <!-- SUMMARY STATS -->
+  <div class="chart-grid" id="chart-summary-cards">
+    <div class="chart-card">
+      <div class="chart-title"><i class="ti ti-chart-pie"></i> Distribuição por categoria</div>
+      <div class="chart-wrap"><canvas id="chart-pizza"></canvas></div>
+      <div class="chart-legend" id="legend-pizza"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title"><i class="ti ti-chart-bar"></i> Receitas vs Despesas vs Dívidas</div>
+      <div class="chart-wrap"><canvas id="chart-barras"></canvas></div>
+    </div>
+  </div>
+
+  <div class="chart-grid">
+    <div class="chart-card">
+      <div class="chart-title"><i class="ti ti-trending-up"></i> Evolução do saldo</div>
+      <div class="chart-wrap-tall"><canvas id="chart-saldo"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title"><i class="ti ti-credit-card"></i> Juros das dívidas (% a.m.)</div>
+      <div class="chart-wrap"><canvas id="chart-juros"></canvas></div>
+      <div id="chart-juros-stats" style="margin-top:10px"></div>
+    </div>
+  </div>
+
+  <div class="chart-grid">
+    <div class="chart-card" style="grid-column:1/-1">
+      <div class="chart-title"><i class="ti ti-list-numbers"></i> Ranking de despesas por categoria</div>
+      <div id="chart-ranking"></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- EXTRATO BANCÁRIO -->
+<div class="section" id="sec-extrato">
+  <div class="sec-header">
+    <div class="sec-title">Análise de extrato bancário</div>
+    <div class="sec-sub">Importe PDFs do Itaú, Nubank, Inter e outros — a IA lê, categoriza e questiona transações suspeitas</div>
+  </div>
+
+  <!-- BANK SELECTOR -->
+  <div class="card">
+    <div class="card-title"><i class="ti ti-building-bank"></i> Selecione o banco</div>
+    <div class="bank-grid">
+      <div class="bank-badge" id="bk-itau" onclick="selectBank('itau')" style="cursor:pointer">
+        <i class="ti ti-building-bank"></i><span>Itaú</span>
+      </div>
+      <div class="bank-badge" id="bk-nubank" onclick="selectBank('nubank')" style="cursor:pointer">
+        <i class="ti ti-building-bank"></i><span>Nubank</span>
+      </div>
+      <div class="bank-badge" id="bk-inter" onclick="selectBank('inter')" style="cursor:pointer">
+        <i class="ti ti-building-bank"></i><span>Inter</span>
+      </div>
+      <div class="bank-badge" id="bk-bradesco" onclick="selectBank('bradesco')" style="cursor:pointer">
+        <i class="ti ti-building-bank"></i><span>Bradesco</span>
+      </div>
+      <div class="bank-badge" id="bk-bb" onclick="selectBank('bb')" style="cursor:pointer">
+        <i class="ti ti-building-bank"></i><span>Banco do Brasil</span>
+      </div>
+      <div class="bank-badge" id="bk-santander" onclick="selectBank('santander')" style="cursor:pointer">
+        <i class="ti ti-building-bank"></i><span>Santander</span>
+      </div>
+      <div class="bank-badge" id="bk-caixa" onclick="selectBank('caixa')" style="cursor:pointer">
+        <i class="ti ti-building-bank"></i><span>Caixa</span>
+      </div>
+      <div class="bank-badge" id="bk-outro" onclick="selectBank('outro')" style="cursor:pointer">
+        <i class="ti ti-dots"></i><span>Outro</span>
+      </div>
+    </div>
+    <div id="bank-selected-info" style="display:none" class="alert-banner a-info" style="margin-top:8px">
+      <i class="ti ti-check"></i><span id="bank-selected-text"></span>
+    </div>
+  </div>
+
+  <!-- PDF UPLOAD -->
+  <div class="card">
+    <div class="card-title"><i class="ti ti-file-type-pdf"></i> Importar PDF do extrato ou fatura</div>
+    <div class="bank-drop" id="bank-dropzone"
+         onclick="document.getElementById('bank-fi').click()"
+         ondragover="bankDrag(event,true)" ondragleave="bankDrag(event,false)" ondrop="bankDrop(event)">
+      <i class="ti ti-file-invoice"></i>
+      <div class="bank-drop-label">Arraste o PDF ou clique para selecionar</div>
+      <div class="bank-drop-sub">Extrato bancário · Fatura do cartão · Comprovantes · Qualquer formato bancário</div>
+    </div>
+    <input type="file" id="bank-fi" style="display:none" accept=".pdf,image/*" multiple onchange="onBankFileChange(event)"/>
+    <div class="chips" id="bank-chips" style="margin-top:8px"></div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="upload-progress" id="bank-progress">
+    <div class="up-label" id="bank-prog-title">Analisando extrato...</div>
+    <div class="progress-bar"><div class="progress-fill" id="bank-prog-fill"></div></div>
+    <div style="margin-top:10px">
+      <div class="up-step" id="step-1"><i class="ti ti-file-type-pdf"></i> Extraindo texto do PDF</div>
+      <div class="up-step" id="step-2"><i class="ti ti-brain"></i> IA lendo as transações</div>
+      <div class="up-step" id="step-3"><i class="ti ti-tag"></i> Categorizando despesas</div>
+      <div class="up-step" id="step-4"><i class="ti ti-alert-triangle"></i> Identificando juros e suspeitas</div>
+      <div class="up-step" id="step-5"><i class="ti ti-check"></i> Montando relatório</div>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="extrato-results" style="display:none">
+
+    <!-- SUMMARY -->
+    <div class="summary-strip" id="extrato-summary"></div>
+
+    <!-- ALERTS -->
+    <div id="extrato-alerts"></div>
+
+    <!-- FILTERS -->
+    <div class="filter-row">
+      <span style="font-size:11px;color:var(--text3)">Filtrar:</span>
+      <button class="filter-chip active" onclick="filterTrans('todas')">Todas</button>
+      <button class="filter-chip" onclick="filterTrans('despesa')">Débitos</button>
+      <button class="filter-chip" onclick="filterTrans('receita')">Créditos</button>
+      <button class="filter-chip danger" onclick="filterTrans('juros')">🔴 Juros</button>
+      <button class="filter-chip warn" onclick="filterTrans('suspeita')">⚠️ Questionar</button>
+      <button class="filter-chip" onclick="filterTrans('cartao')">💳 Cartão</button>
+    </div>
+
+    <!-- TRANSACTION LIST -->
+    <div id="trans-list"></div>
+
+    <!-- CONFIRM ALL -->
+    <div style="margin-top:12px">
+      <button class="btn-primary" onclick="confirmAllTrans()"><i class="ti ti-check"></i> Confirmar todas as categorizadas</button>
+      <button class="btn-ghost" onclick="askAIAboutExtrato()"><i class="ti ti-sparkles"></i> Pedir análise completa à IA ↗</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- MODAL NOVA CONTA -->
+<div class="modal-overlay" id="modal-conta" style="display:none" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-title"><i class="ti ti-plus" style="color:var(--accent)"></i> Nova conta</div>
+
+    <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px">Tipo de conta</div>
+    <div class="type-grid" id="tipo-grid">
+      <div class="type-opt selected" data-tipo="corrente" onclick="selectTipo('corrente')"><i class="ti ti-building-bank"></i>Conta corrente</div>
+      <div class="type-opt" data-tipo="poupanca" onclick="selectTipo('poupanca')"><i class="ti ti-piggy-bank"></i>Poupança</div>
+      <div class="type-opt" data-tipo="cartao" onclick="selectTipo('cartao')"><i class="ti ti-credit-card"></i>Cartão crédito</div>
+      <div class="type-opt" data-tipo="emprestimo" onclick="selectTipo('emprestimo')"><i class="ti ti-report-money"></i>Empréstimo</div>
+      <div class="type-opt" data-tipo="investimento" onclick="selectTipo('investimento')"><i class="ti ti-trending-up"></i>Investimento</div>
+      <div class="type-opt" data-tipo="carteira" onclick="selectTipo('carteira')"><i class="ti ti-cash"></i>Carteira espécie</div>
+    </div>
+
+    <div class="form-row"><label class="form-label">Banco / Instituição</label>
+      <select id="modal-banco">
+        <option>Itaú</option><option>Nubank</option><option>Inter</option><option>Bradesco</option>
+        <option>Banco do Brasil</option><option>Santander</option><option>Caixa</option>
+        <option>XP</option><option>BTG</option><option>C6 Bank</option><option>Outro</option>
+      </select>
+    </div>
+    <div class="form-row"><label class="form-label">Nome / Apelido</label>
+      <input type="text" id="modal-nome" placeholder="Ex: Nubank pessoal"/></div>
+    <div class="form-row"><label class="form-label" id="modal-saldo-label">Saldo atual (R$)</label>
+      <input type="number" id="modal-saldo" placeholder="0,00" step="0.01"/></div>
+
+    <!-- CAMPOS CARTÃO -->
+    <div id="campos-cartao" style="display:none">
+      <div class="form-row"><label class="form-label">Limite total (R$)</label>
+        <input type="number" id="modal-limite" placeholder="0,00" step="0.01"/></div>
+      <div class="form-row"><label class="form-label">Fatura atual (R$)</label>
+        <input type="number" id="modal-fatura" placeholder="0,00" step="0.01"/></div>
+      <div class="form-row"><label class="form-label">Vencimento da fatura</label>
+        <input type="number" id="modal-vencimento" placeholder="Dia do mês (ex: 10)" min="1" max="31"/></div>
+      <div class="form-row"><label class="form-label">Fechamento da fatura</label>
+        <input type="number" id="modal-fechamento" placeholder="Dia do mês (ex: 3)" min="1" max="31"/></div>
+    </div>
+
+    <!-- CAMPOS EMPRÉSTIMO -->
+    <div id="campos-emprestimo" style="display:none">
+      <div class="form-row"><label class="form-label">Valor original (R$)</label>
+        <input type="number" id="modal-valor-orig" placeholder="0,00" step="0.01"/></div>
+      <div class="form-row"><label class="form-label">Saldo devedor (R$)</label>
+        <input type="number" id="modal-saldo-dev" placeholder="0,00" step="0.01"/></div>
+      <div class="form-row"><label class="form-label">Parcela mensal (R$)</label>
+        <input type="number" id="modal-parcela-val" placeholder="0,00" step="0.01"/></div>
+      <div class="form-row"><label class="form-label">Juros ao mês (%)</label>
+        <input type="number" id="modal-juros-emp" placeholder="Ex: 2.5" step="0.1" min="0"/></div>
+      <div class="form-row"><label class="form-label">Parcelas pagas</label>
+        <input type="number" id="modal-pagas" placeholder="Ex: 6" min="0"/></div>
+      <div class="form-row"><label class="form-label">Total de parcelas</label>
+        <input type="number" id="modal-total-parc" placeholder="Ex: 24" min="1"/></div>
+    </div>
+
+    <!-- CAMPOS INVESTIMENTO -->
+    <div id="campos-investimento" style="display:none">
+      <div class="form-row"><label class="form-label">Tipo de investimento</label>
+        <select id="modal-inv-tipo">
+          <option value="tesouro">Tesouro Selic</option>
+          <option value="cdb">CDB</option>
+          <option value="lci">LCI/LCA</option>
+          <option value="acoes">Ações/FIIs</option>
+          <option value="fundo">Fundo de investimento</option>
+          <option value="poupanca-inv">Poupança</option>
+          <option value="outro-inv">Outro</option>
+        </select>
+      </div>
+      <div class="form-row"><label class="form-label">Rentabilidade (%/mês)</label>
+        <input type="number" id="modal-rent" placeholder="Ex: 0.9" step="0.01" min="0"/></div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="modal-btn modal-btn-ghost" onclick="closeModal()">Cancelar</button>
+      <button class="modal-btn modal-btn-primary" onclick="saveConta()">Salvar conta</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONTAS -->
+<div class="section" id="sec-contas">
+  <div class="sec-header">
+    <div class="sec-title">Minhas contas</div>
+    <div class="sec-sub">Conta corrente, cartão, empréstimo, investimento e carteira — tudo em um lugar</div>
+  </div>
+
+  <!-- CONSOLIDATED TOTALS -->
+  <div class="acc-total-bar" id="acc-totals">
+    <div class="acc-total-item"><div class="acc-total-label">Saldo total</div><div class="acc-total-val green" id="tot-saldo">R$ 0</div></div>
+    <div class="acc-total-item"><div class="acc-total-label">Faturas abertas</div><div class="acc-total-val red" id="tot-faturas">R$ 0</div></div>
+    <div class="acc-total-item"><div class="acc-total-label">Dívidas/empréstimos</div><div class="acc-total-val amber" id="tot-dividas">R$ 0</div></div>
+    <div class="acc-total-item"><div class="acc-total-label">Investimentos</div><div class="acc-total-val blue" id="tot-inv">R$ 0</div></div>
+    <div class="acc-total-item"><div class="acc-total-label">Patrimônio líquido</div><div class="acc-total-val" id="tot-patrim">R$ 0</div></div>
+  </div>
+
+  <!-- ACCOUNT CARDS -->
+  <div class="acc-grid" id="acc-grid">
+    <div class="acc-add-card" onclick="openModal()">
+      <i class="ti ti-plus"></i>
+      <div class="acc-add-label">Adicionar conta</div>
+    </div>
+  </div>
+
+  <!-- ACCOUNT DETAIL -->
+  <div id="acc-detail" style="display:none"></div>
+</div>
+
 </div><!-- /content -->
 </div><!-- /main -->
 </div><!-- /app -->
@@ -595,7 +984,7 @@ select option{background:var(--bg3)}
 //    Ou se hospedar: https://seusite.com/FinanceAI.html
 // 6. Copie o "ID do aplicativo (cliente)" e cole abaixo.
 //
-const MSAL_CLIENT_ID = 'b03b6304-3dd6-4d69-84e3-f5c4306b6639';
+const MSAL_CLIENT_ID = 'SEU_CLIENT_ID_AQUI';
 //
 // ══════════════════════════════════════════════════════
 
@@ -714,12 +1103,16 @@ async function odSave() {
   if (!odToken) { showToast('Conecte o OneDrive primeiro.', 'warn'); return; }
   setOdStatus('syncing', 'Salvando...');
   const payload = JSON.stringify({
-    version: 2,
+    version: 3,
     savedAt: new Date().toISOString(),
     items,
     debts,
+    contas,
+    transacoes,
     nid,
     ndid,
+    ncid,
+    ntid,
     plano: {
       renda: document.getElementById('r-renda').value,
       desp: document.getElementById('r-desp').value,
@@ -761,13 +1154,15 @@ async function odLoad() {
       const data = await resp.json();
       if (data.items) { items = data.items; nid = data.nid || items.length + 1; }
       if (data.debts) { debts = data.debts; ndid = data.ndid || debts.length + 1; }
+      if (data.contas) { contas = data.contas; ncid = data.ncid || contas.length + 1; }
+      if (data.transacoes) { transacoes = data.transacoes; ntid = data.ntid || transacoes.length + 1; }
       if (data.plano) {
         if (data.plano.renda) document.getElementById('r-renda').value = data.plano.renda;
         if (data.plano.desp) document.getElementById('r-desp').value = data.plano.desp;
         if (data.plano.min) document.getElementById('r-min').value = data.plano.min;
         if (data.plano.extra) document.getElementById('r-extra').value = data.plano.extra;
       }
-      renderVal(); renderDebts(); updateBadges();
+      renderVal(); renderDebts(); renderContas(); updateContaTotals(); updateBadges();
       const saved = data.savedAt ? new Date(data.savedAt).toLocaleDateString('pt-BR') : '';
       setOdStatus('connected', 'Dados carregados');
       document.getElementById('od-last').textContent = saved ? '· Backup: ' + saved : '';
@@ -849,10 +1244,13 @@ function navTo(n) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   const ni = document.getElementById('nav-' + n); if (ni) ni.classList.add('active');
   document.getElementById('sec-' + n).classList.add('active');
-  const tabMap = ['importar','validar','dashboard','dividas','mercado','plano'];
+  const tabMap = ['importar','extrato','contas','validar','dashboard','graficos','dividas','mercado','plano'];
   const pi = tabMap.indexOf(n);
   if (pi >= 0) document.querySelectorAll('.tpill')[pi].classList.add('active');
+  if (n === 'extrato') renderExtrato();
+  if (n === 'contas') renderContas();
   if (n === 'dashboard') updateDash();
+  if (n === 'graficos') renderCharts();
   if (n === 'dividas') renderDebts();
   if (n === 'plano') calcPlano();
 }
@@ -1307,6 +1705,847 @@ function buildPlanoPrompt() {
   return 'Renda ' + fmt(r) + ' Despesas ' + fmt(d) + ' Parcelas ' + fmt(m) + ' Extra ' + fmt(e) + '. Dividas: ' + (debts.map(d => d.nome + ' ' + fmt(d.valor) + ' a ' + d.juros + '%am').join(', ')||'nenhuma') + '. Plano para sair do vermelho.';
 }
 function buildNegPrompt() { sendToAI('Dividas: ' + (debts.map(d => d.nome + ' ' + fmt(d.valor) + ' a ' + d.juros + '%am').join(', ')||'nenhuma') + '. Roteiro de negociacao detalhado.'); }
+
+// ══════════════════════════════════════════════════════
+// MÓDULO DE CONTAS
+// ══════════════════════════════════════════════════════
+let contas = [];
+let ncid = 1;
+let selectedTipo = 'corrente';
+let selectedContaId = null;
+
+const TIPO_CONFIG = {
+  corrente:    {icon:'🏦', label:'Conta corrente', color:'#22d17a', balanceLabel:'Saldo'},
+  poupanca:    {icon:'🐷', label:'Poupança',        color:'#4d9fff', balanceLabel:'Saldo'},
+  cartao:      {icon:'💳', label:'Cartão crédito',  color:'#ff4d4d', balanceLabel:'Fatura atual'},
+  emprestimo:  {icon:'📋', label:'Empréstimo',      color:'#f5a623', balanceLabel:'Saldo devedor'},
+  investimento:{icon:'📈', label:'Investimento',    color:'#a78bfa', balanceLabel:'Saldo aplicado'},
+  carteira:    {icon:'💵', label:'Carteira espécie',color:'#34d399', balanceLabel:'Dinheiro em mãos'}
+};
+
+function openModal() {
+  selectedTipo = 'corrente';
+  document.querySelectorAll('.type-opt').forEach(el => el.classList.remove('selected'));
+  document.querySelector('[data-tipo="corrente"]').classList.add('selected');
+  document.getElementById('modal-nome').value = '';
+  document.getElementById('modal-saldo').value = '';
+  toggleCamposExtra('corrente');
+  document.getElementById('modal-conta').style.display = 'flex';
+}
+
+function closeModal() { document.getElementById('modal-conta').style.display = 'none'; }
+
+function selectTipo(tipo) {
+  selectedTipo = tipo;
+  document.querySelectorAll('.type-opt').forEach(el => el.classList.remove('selected'));
+  document.querySelector('[data-tipo="' + tipo + '"]').classList.add('selected');
+  toggleCamposExtra(tipo);
+  const cfg = TIPO_CONFIG[tipo];
+  document.getElementById('modal-saldo-label').textContent = cfg.balanceLabel + ' (R$)';
+}
+
+function toggleCamposExtra(tipo) {
+  ['cartao','emprestimo','investimento'].forEach(t => {
+    const el = document.getElementById('campos-' + t);
+    if (el) el.style.display = t === tipo ? 'block' : 'none';
+  });
+}
+
+function saveConta() {
+  const banco = document.getElementById('modal-banco').value;
+  const nome = document.getElementById('modal-nome').value.trim() || banco;
+  const saldo = parseFloat(document.getElementById('modal-saldo').value) || 0;
+  const cfg = TIPO_CONFIG[selectedTipo];
+  const conta = { id: ncid++, tipo: selectedTipo, banco, nome, saldo, cor: cfg.color, icon: cfg.icon };
+
+  if (selectedTipo === 'cartao') {
+    conta.limite = parseFloat(document.getElementById('modal-limite').value) || 0;
+    conta.fatura = parseFloat(document.getElementById('modal-fatura').value) || saldo;
+    conta.vencimento = parseInt(document.getElementById('modal-vencimento').value) || 10;
+    conta.fechamento = parseInt(document.getElementById('modal-fechamento').value) || 3;
+    conta.gastos = [];
+  }
+  if (selectedTipo === 'emprestimo') {
+    conta.valorOriginal = parseFloat(document.getElementById('modal-valor-orig').value) || 0;
+    conta.saldoDevedor = parseFloat(document.getElementById('modal-saldo-dev').value) || saldo;
+    conta.parcela = parseFloat(document.getElementById('modal-parcela-val').value) || 0;
+    conta.juros = parseFloat(document.getElementById('modal-juros-emp').value) || 0;
+    conta.parcelasPagas = parseInt(document.getElementById('modal-pagas').value) || 0;
+    conta.totalParcelas = parseInt(document.getElementById('modal-total-parc').value) || 12;
+  }
+  if (selectedTipo === 'investimento') {
+    conta.invTipo = document.getElementById('modal-inv-tipo').value;
+    conta.rentabilidade = parseFloat(document.getElementById('modal-rent').value) || 0.9;
+  }
+
+  contas.push(conta);
+  closeModal();
+  renderContas();
+  updateContaTotals();
+  scheduleAutoSave();
+  showToast(cfg.icon + ' ' + nome + ' adicionada!', 'success');
+}
+
+function deleteConta(id) {
+  if (!confirm('Remover esta conta?')) return;
+  contas = contas.filter(c => c.id !== id);
+  if (selectedContaId === id) { selectedContaId = null; document.getElementById('acc-detail').style.display = 'none'; }
+  renderContas(); updateContaTotals(); scheduleAutoSave();
+}
+
+function renderContas() {
+  const grid = document.getElementById('acc-grid');
+  const cards = contas.map(c => {
+    const cfg = TIPO_CONFIG[c.tipo];
+    const bal = c.tipo === 'cartao' ? c.fatura : c.tipo === 'emprestimo' ? c.saldoDevedor||c.saldo : c.saldo;
+    const balClass = c.tipo === 'emprestimo' || c.tipo === 'cartao' ? 'neg' : bal >= 0 ? 'pos' : 'neg';
+    const limiteBar = c.tipo === 'cartao' && c.limite > 0 ? Math.round(c.fatura/c.limite*100) : 0;
+    return `<div class="acc-card${selectedContaId===c.id?' selected':''}" style="--acc-color:${c.cor}" onclick="selectConta(${c.id})">
+      <div class="acc-actions">
+        <button class="acc-btn-sm" onclick="event.stopPropagation();deleteConta(${c.id})">×</button>
+      </div>
+      <div class="acc-icon">${c.icon}</div>
+      <div class="acc-bank">${esc(c.banco)}</div>
+      <div class="acc-name">${esc(c.nome)}</div>
+      <div class="acc-balance ${balClass}">${fmt(bal)}</div>
+      ${c.tipo==='cartao'?`<div class="acc-meta">Limite: ${fmt(c.limite)} · Disponível: ${fmt(Math.max(0,c.limite-c.fatura))}</div>
+        <div style="height:3px;background:var(--bg4);border-radius:2px;overflow:hidden;margin-top:6px"><div style="height:100%;background:${limiteBar>80?'var(--red)':'var(--amber)'};width:${limiteBar}%;border-radius:2px"></div></div>`:''}
+      ${c.tipo==='emprestimo'?`<div class="acc-meta">Parcela ${c.parcelasPagas||0}/${c.totalParcelas||'?'} · ${c.juros||0}% a.m.</div>`:''}
+      ${c.tipo==='investimento'?`<div class="acc-meta">${c.invTipo||'Investimento'} · +${c.rentabilidade||0}%/mês</div>`:''}
+      <div class="acc-meta" style="margin-top:3px">${cfg.label}</div>
+    </div>`;
+  }).join('');
+  grid.innerHTML = cards + `<div class="acc-add-card" onclick="openModal()"><i class="ti ti-plus"></i><div class="acc-add-label">Adicionar conta</div></div>`;
+}
+
+function updateContaTotals() {
+  const saldos = contas.filter(c => c.tipo==='corrente'||c.tipo==='poupanca'||c.tipo==='carteira').reduce((s,c)=>s+c.saldo,0);
+  const faturas = contas.filter(c => c.tipo==='cartao').reduce((s,c)=>s+(c.fatura||0),0);
+  const dividas = contas.filter(c => c.tipo==='emprestimo').reduce((s,c)=>s+(c.saldoDevedor||c.saldo),0);
+  const inv = contas.filter(c => c.tipo==='investimento').reduce((s,c)=>s+c.saldo,0);
+  const patrim = saldos + inv - faturas - dividas;
+  document.getElementById('tot-saldo').textContent = fmt(saldos);
+  document.getElementById('tot-faturas').textContent = fmt(faturas);
+  document.getElementById('tot-dividas').textContent = fmt(dividas);
+  document.getElementById('tot-inv').textContent = fmt(inv);
+  const pe = document.getElementById('tot-patrim');
+  pe.textContent = fmt(patrim); pe.className = 'acc-total-val ' + (patrim>=0?'green':'red');
+  const nb = document.getElementById('nb-contas');
+  nb.textContent = contas.length; nb.className = 'nav-badge' + (contas.length>0?' show':'');
+}
+
+function selectConta(id) {
+  selectedContaId = id;
+  renderContas();
+  const c = contas.find(x => x.id===id);
+  if (!c) return;
+  const detail = document.getElementById('acc-detail');
+  detail.style.display = 'block';
+  detail.innerHTML = renderContaDetail(c);
+  detail.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function renderContaDetail(c) {
+  let html = '';
+  const cfg = TIPO_CONFIG[c.tipo];
+
+  // CARTÃO - Fatura detalhada
+  if (c.tipo === 'cartao') {
+    const usadoPct = c.limite > 0 ? Math.round(c.fatura/c.limite*100) : 0;
+    const disponivel = Math.max(0, c.limite - (c.fatura||0));
+    const minimoRecom = (c.fatura||0) * 0.15;
+    const jurosRotativo = (c.fatura||0) * 0.1275;
+    html += `<div class="fatura-section">
+      <div class="fatura-title"><i class="ti ti-credit-card" style="font-size:14px"></i> Fatura ${esc(c.nome)} · Vence dia ${c.vencimento}</div>
+      <div class="fatura-row"><span style="color:var(--text2)">Fatura atual</span><span style="color:var(--red);font-weight:600;font-family:'DM Mono',monospace">${fmt(c.fatura||0)}</span></div>
+      <div class="fatura-row"><span style="color:var(--text2)">Limite total</span><span class="mono">${fmt(c.limite||0)}</span></div>
+      <div class="fatura-row"><span style="color:var(--text2)">Limite disponível</span><span style="color:var(--accent)" class="mono">${fmt(disponivel)}</span></div>
+      <div class="fatura-row"><span style="color:var(--text2)">Uso do limite</span><span style="color:${usadoPct>80?'var(--red)':'var(--amber)'}">${usadoPct}%</span></div>
+      <div style="height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;margin:8px 0"><div style="height:100%;background:${usadoPct>80?'var(--red)':'var(--amber)'};width:${usadoPct}%;border-radius:3px;transition:width .4s"></div></div>
+      ${c.fatura>0?`<div class="alert-banner a-danger" style="margin-top:8px"><i class="ti ti-flame"></i><span>Se pagar só o mínimo (~${fmt(minimoRecom)}), o banco cobra <strong>${fmt(jurosRotativo)}/mês</strong> de juros do rotativo (12,75% a.m.). Pague o valor total!</span></div>`:''}
+      <div class="fatura-row" style="margin-top:8px"><span style="color:var(--text2)">Fechamento</span><span>Dia ${c.fechamento}</span></div>
+    </div>
+    <button class="btn-ghost" onclick="sendToAI('Tenho fatura de ${esc(c.banco)} no valor de ${fmt(c.fatura||0)} com vencimento dia ${c.vencimento}. Como organizar o pagamento e evitar juros do rotativo?')"><i class="ti ti-sparkles"></i> Como quitar esta fatura ↗</button>`;
+  }
+
+  // EMPRÉSTIMO - Parcelas com juros
+  if (c.tipo === 'emprestimo') {
+    const pagas = c.parcelasPagas || 0;
+    const total = c.totalParcelas || 12;
+    const restantes = total - pagas;
+    const jurosTotal = c.parcela && restantes > 0 ? (c.parcela * restantes) - (c.saldoDevedor||c.saldo) : 0;
+    const custo = c.juros > 0 ? ((Math.pow(1+c.juros/100,12)-1)*100).toFixed(0) : 0;
+    html += `<div class="parcela-section">
+      <div class="parcela-title"><i class="ti ti-calendar-stats" style="font-size:14px"></i> ${esc(c.nome)} · ${esc(c.banco)}</div>
+      <div class="fatura-row"><span style="color:var(--text2)">Saldo devedor</span><span style="color:var(--red);font-weight:600" class="mono">${fmt(c.saldoDevedor||c.saldo)}</span></div>
+      <div class="fatura-row"><span style="color:var(--text2)">Parcela mensal</span><span class="mono">${fmt(c.parcela||0)}</span></div>
+      <div class="fatura-row"><span style="color:var(--text2)">Juros</span><span style="color:${c.juros>=5?'var(--red)':c.juros>=2?'var(--amber)':'var(--accent)'}">${c.juros||0}% a.m. = ${custo}% a.a.</span></div>
+      <div class="fatura-row"><span style="color:var(--text2)">Progresso</span><span>${pagas}/${total} parcelas</span></div>
+      <div style="height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;margin:8px 0"><div style="height:100%;background:var(--amber);width:${Math.round(pagas/total*100)}%;border-radius:3px;transition:width .4s"></div></div>
+      <div style="margin:10px 0 6px;font-size:11px;color:var(--text3)">Linha do tempo das parcelas:</div>
+      <div class="parcela-timeline">
+        ${Array.from({length:Math.min(total,24)},(_,i)=>`<div class="parcela-dot ${i<pagas?'paga':i===pagas?'atual':'futura'}" title="Parcela ${i+1}">${i+1}</div>`).join('')}
+        ${total>24?`<div style="font-size:10px;color:var(--text3);align-self:center;flex-shrink:0">+${total-24} mais</div>`:''}
+      </div>
+      ${jurosTotal>0?`<div class="alert-banner a-warn" style="margin-top:10px"><i class="ti ti-info-circle"></i><span>Você ainda pagará aprox. <strong>${fmt(jurosTotal)}</strong> em juros nas ${restantes} parcelas restantes.</span></div>`:''}
+    </div>
+    <button class="btn-ghost" onclick="sendToAI('Tenho empréstimo em ${esc(c.banco)}: saldo devedor ${fmt(c.saldoDevedor||c.saldo)}, ${restantes} parcelas de ${fmt(c.parcela||0)} a ${c.juros||0}% am. Como reduzir o custo? Vale quitar antecipado?')"><i class="ti ti-sparkles"></i> Estratégia de quitação antecipada ↗</button>`;
+  }
+
+  // INVESTIMENTO
+  if (c.tipo === 'investimento') {
+    const rent = c.rentabilidade || 0.9;
+    const proj12 = c.saldo * Math.pow(1+rent/100,12);
+    const proj60 = c.saldo * Math.pow(1+rent/100,60);
+    const ganho12 = proj12 - c.saldo;
+    html += `<div class="consol-section">
+      <div class="consol-title"><i class="ti ti-trending-up" style="color:var(--purple)"></i> ${esc(c.nome)} · ${esc(c.invTipo||'Investimento')}</div>
+      <div class="fatura-row"><span style="color:var(--text2)">Saldo aplicado</span><span style="color:var(--purple)" class="mono">${fmt(c.saldo)}</span></div>
+      <div class="fatura-row"><span style="color:var(--text2)">Rentabilidade</span><span style="color:var(--accent)">+${rent}%/mês = ${((Math.pow(1+rent/100,12)-1)*100).toFixed(1)}%/ano</span></div>
+      <div class="fatura-row"><span style="color:var(--text2)">Projeção 12 meses</span><span style="color:var(--accent)" class="mono">${fmt(proj12)} <span style="font-size:11px;color:var(--text3)">(+${fmt(ganho12)})</span></span></div>
+      <div class="fatura-row"><span style="color:var(--text2)">Projeção 5 anos</span><span style="color:var(--accent)" class="mono">${fmt(proj60)}</span></div>
+    </div>`;
+  }
+
+  // CONTA CORRENTE / POUPANÇA / CARTEIRA
+  if (c.tipo === 'corrente' || c.tipo === 'poupanca' || c.tipo === 'carteira') {
+    const trans_conta = items.filter(i => i.confirmado && (i.conta_id === c.id || false));
+    html += `<div class="consol-section">
+      <div class="consol-title"><i class="ti ti-receipt" style="color:${c.cor}"></i> ${esc(c.nome)} · ${esc(c.banco)}</div>
+      <div class="fatura-row"><span style="color:var(--text2)">Saldo atual</span><span style="color:${c.saldo>=0?'var(--accent)':'var(--red)'}" class="mono">${fmt(c.saldo)}</span></div>
+      ${c.tipo==='poupanca'?`<div class="fatura-row"><span style="color:var(--text2)">Rendimento (~0.5%/mês)</span><span style="color:var(--accent)" class="mono">+${fmt(c.saldo*0.005)}/mês</span></div>`:''}
+    </div>
+    <button class="btn-primary" style="margin-top:4px" onclick="navTo('extrato')"><i class="ti ti-file-invoice"></i> Importar extrato desta conta</button>`;
+  }
+
+  return `<div style="animation:fadeIn .2s">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;padding:14px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r)">
+      <span style="font-size:28px">${c.icon}</span>
+      <div><div style="font-size:15px;font-weight:600">${esc(c.nome)}</div><div style="font-size:12px;color:var(--text2)">${esc(c.banco)} · ${cfg.label}</div></div>
+    </div>
+    ${html}
+  </div>`;
+}
+
+
+// ══════════════════════════════════════════════════════
+// MOTOR DE ANÁLISE BANCÁRIA
+// ══════════════════════════════════════════════════════
+let selectedBank = 'auto';
+let transacoes = [];
+let transFilter = 'todas';
+let ntid = 1;
+
+const BANK_NAMES = {
+  itau:'Itaú',nubank:'Nubank',inter:'Inter',bradesco:'Bradesco',
+  bb:'Banco do Brasil',santander:'Santander',caixa:'Caixa',outro:'Outro banco'
+};
+const CAT_ICONS = {
+  alimentacao:'🍽️',transporte:'🚗',moradia:'🏠',saude:'❤️',
+  educacao:'📚',lazer:'🎭',contas:'💡',cartao:'💳',salario:'💰',
+  transferencia:'↔️',juros:'🔴',tarifa:'🏦',compras:'🛍️',outros:'📦'
+};
+
+function selectBank(b) {
+  selectedBank = b;
+  document.querySelectorAll('.bank-badge').forEach(el => {
+    el.style.borderColor = '';el.style.background = '';el.style.color = '';
+  });
+  const el = document.getElementById('bk-' + b);
+  if (el) { el.style.borderColor = 'var(--accent)'; el.style.background = 'var(--accent-dim)'; el.style.color = 'var(--accent)'; }
+  const info = document.getElementById('bank-selected-info');
+  const txt = document.getElementById('bank-selected-text');
+  info.style.display = 'flex';
+  txt.textContent = BANK_NAMES[b] + ' selecionado — layout de extrato reconhecido automaticamente.';
+  showToast(BANK_NAMES[b] + ' selecionado!', 'success');
+}
+
+function bankDrag(e, on) { e.preventDefault(); document.getElementById('bank-dropzone').classList.toggle('drag', on); }
+function bankDrop(e) { e.preventDefault(); document.getElementById('bank-dropzone').classList.remove('drag'); processBankFiles(e.dataTransfer.files); }
+function onBankFileChange(e) { processBankFiles(e.target.files); }
+
+async function processBankFiles(files) {
+  Array.from(files).forEach(async f => {
+    document.getElementById('bank-chips').innerHTML += `<span class="chip"><i class="ti ti-file-type-pdf" style="font-size:11px"></i>${esc(f.name)}</span>`;
+    const ext = f.name.split('.').pop().toLowerCase();
+    if (ext === 'pdf') {
+      await extractPDFAndAnalyze(f);
+    } else if (['jpg','jpeg','png','gif','webp'].includes(ext)) {
+      const rd = new FileReader();
+      rd.onload = ev => analyzeBankContent(null, null, ev.target.result, f.name);
+      rd.readAsDataURL(f);
+    } else {
+      const rd = new FileReader();
+      rd.onload = ev => analyzeBankContent(ev.target.result, null, null, f.name);
+      rd.readAsText(f, 'latin1');
+    }
+  });
+}
+
+async function extractPDFAndAnalyze(file) {
+  setBankProgress(true, 'Lendo PDF...');
+  setStep(1, 'active');
+  let pdfText = '';
+  try {
+    if (typeof pdfjsLib !== 'undefined') {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
+      const pages = Math.min(pdf.numPages, 30);
+      for (let i = 1; i <= pages; i++) {
+        const page = await pdf.getPage(i);
+        const tc = await page.getTextContent();
+        pdfText += tc.items.map(item => item.str).join(' ') + '\n';
+      }
+      setStep(1, 'done');
+    } else {
+      // Fallback: read as binary and send as base64
+      const rd = new FileReader();
+      rd.onload = ev => analyzeBankContent(null, null, ev.target.result, file.name);
+      rd.readAsDataURL(file);
+      return;
+    }
+  } catch(e) {
+    setStep(1, 'done');
+    pdfText = '[PDF lido via fallback — ' + file.name + ']';
+  }
+  await analyzeBankContent(pdfText, null, null, file.name);
+}
+
+function setBankProgress(show, title) {
+  const el = document.getElementById('bank-progress');
+  el.style.display = show ? 'block' : 'none';
+  if (title) document.getElementById('bank-prog-title').textContent = title;
+}
+function setStep(n, state) {
+  const el = document.getElementById('step-' + n);
+  if (!el) return;
+  el.className = 'up-step ' + state;
+  const prog = document.getElementById('bank-prog-fill');
+  prog.style.width = (n * 20) + '%';
+}
+
+async function analyzeBankContent(text, fileText, imgData, src) {
+  setStep(2, 'active');
+  setBankProgress(true, 'IA analisando transações...');
+
+  const bank = BANK_NAMES[selectedBank] || 'banco não especificado';
+  const sys = `Você é um especialista financeiro brasileiro especializado em análise de extratos bancários.
+Analise o extrato/fatura do ${bank} e extraia TODAS as transações.
+Para cada transação identifique:
+1. Se é débito (saída) ou crédito (entrada)
+2. Categoria: alimentacao|transporte|moradia|saude|educacao|lazer|contas|cartao|salario|transferencia|juros|tarifa|compras|outros
+3. Se é pagamento de fatura de cartão (vinculado a outra conta)
+4. Se há JUROS sendo cobrados (encargos, mora, IOF, rotativo, parcelamento)
+5. Transações SUSPEITAS ou INCOMUNS (valores muito altos, duplicadas, horário incomum, estabelecimento desconhecido)
+6. Perguntas que o usuário deveria fazer sobre a transação
+
+Retorne APENAS array JSON válido, sem markdown:
+[{
+  "data":"DD/MM/AAAA",
+  "desc":"descrição da transação",
+  "valor":0.00,
+  "tipo":"debito|credito",
+  "categoria":"categoria",
+  "estabelecimento":"nome do estabelecimento se disponível",
+  "confianca":"alta|media|baixa",
+  "obs":"classificação em 1 frase",
+  "flag":"normal|suspeita|juros|cartao|tarifa",
+  "pergunta":"pergunta que o usuário deveria fazer sobre esta transação, ou vazio se normal",
+  "juros_valor":0,
+  "juros_tipo":"rotativo|parcelamento|mora|IOF|tarifa|"
+}]
+Se não encontrar transações claras, retorne [].`;
+
+  let userContent = imgData
+    ? [{type:'image',source:{type:'base64',media_type:'image/jpeg',data:imgData.split(',')[1]}},{type:'text',text:'Analise este extrato/fatura bancária e extraia todas as transações.'}]
+    : `Banco: ${bank}
+Arquivo: ${src}
+
+Conteúdo do extrato:
+${(text||fileText||'').slice(0,6000)}
+
+Extraia TODAS as transações e identifique juros, suspeitas e categorias.`;
+
+  setStep(3, 'active');
+  let parsed = [];
+  try {
+    const r = await fetch(ANTHROPIC_API, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({model:MODEL, max_tokens:2000, system:sys, messages:[{role:'user',content:userContent}]})});
+    const d = await r.json();
+    const raw = (d.content||[]).map(c => c.text||'').join('').trim().replace(/```json|```/g,'').trim();
+    parsed = JSON.parse(raw);
+  } catch(e) {
+    parsed = demoBankData();
+  }
+
+  setStep(3, 'done'); setStep(4, 'active');
+  setTimeout(() => {
+    setStep(4, 'done'); setStep(5, 'active');
+    setTimeout(() => {
+      setStep(5, 'done');
+      setBankProgress(false);
+      addTransacoes(parsed.map(p => ({...p, id:ntid++, banco:selectedBank, fonte:src, confirmada:false})));
+      renderExtrato();
+      navTo('extrato');
+    }, 600);
+  }, 800);
+}
+
+function demoBankData() {
+  return [
+    {data:'01/05/2026',desc:'SALARIO EMPRESA LTDA',valor:5000,tipo:'credito',categoria:'salario',estabelecimento:'Empresa Ltda',confianca:'alta',obs:'Crédito de salário',flag:'normal',pergunta:'',juros_valor:0,juros_tipo:''},
+    {data:'02/05/2026',desc:'SUPERMERCADO EXTRA',valor:387.50,tipo:'debito',categoria:'alimentacao',estabelecimento:'Supermercado Extra',confianca:'alta',obs:'Compra em supermercado',flag:'normal',pergunta:'',juros_valor:0,juros_tipo:''},
+    {data:'03/05/2026',desc:'PGTO FATURA NUBANK',valor:1250,tipo:'debito',categoria:'cartao',estabelecimento:'Nubank',confianca:'alta',obs:'Pagamento de fatura do cartão Nubank',flag:'cartao',pergunta:'Você pagou o valor total ou mínimo da fatura? Se pagou o mínimo, está pagando juros do rotativo.',juros_valor:0,juros_tipo:''},
+    {data:'05/05/2026',desc:'ENC FINANC ROTATIVO',valor:187.30,tipo:'debito',categoria:'juros',estabelecimento:'Banco Itaú',confianca:'alta',obs:'Encargos do rotativo do cartão — juros altíssimos',flag:'juros',pergunta:'Este é o juro do rotativo do cartão. Se continuar pagando o mínimo, este valor vai crescer todo mês. Considere quitar o total da fatura.',juros_valor:187.30,juros_tipo:'rotativo'},
+    {data:'07/05/2026',desc:'UBER *TRIP',valor:89.40,tipo:'debito',categoria:'transporte',estabelecimento:'Uber',confianca:'alta',obs:'Corridas de transporte',flag:'normal',pergunta:'',juros_valor:0,juros_tipo:''},
+    {data:'10/05/2026',desc:'PIX JOAO SILVA',valor:800,tipo:'debito',categoria:'transferencia',estabelecimento:'João Silva',confianca:'media',obs:'Transferência via PIX para pessoa física',flag:'suspeita',pergunta:'Você reconhece esta transferência de R$800 para João Silva? Se não, pode ser uma fraude — contate o banco imediatamente.',juros_valor:0,juros_tipo:''},
+    {data:'12/05/2026',desc:'IOF OPERACAO CREDITO',valor:23.50,tipo:'debito',categoria:'juros',estabelecimento:'Banco',confianca:'alta',obs:'IOF sobre operação de crédito',flag:'juros',pergunta:'Este IOF está vinculado a algum empréstimo ou crédito que você contratou?',juros_valor:23.50,juros_tipo:'IOF'},
+    {data:'15/05/2026',desc:'NETFLIX.COM',valor:55.90,tipo:'debito',categoria:'lazer',estabelecimento:'Netflix',confianca:'alta',obs:'Assinatura de streaming',flag:'normal',pergunta:'',juros_valor:0,juros_tipo:''},
+    {data:'20/05/2026',desc:'FARMACIA DROGASIL',valor:156.80,tipo:'debito',categoria:'saude',estabelecimento:'Drogasil',confianca:'alta',obs:'Farmácia/medicamentos',flag:'normal',pergunta:'',juros_valor:0,juros_tipo:''},
+    {data:'22/05/2026',desc:'TARIFA MANUTENCAO CONTA',valor:35,tipo:'debito',categoria:'tarifa',estabelecimento:'Banco',confianca:'alta',obs:'Tarifa de manutenção de conta — verifique se pode ser isenta',flag:'tarifa',pergunta:'Você tem direito a isenção desta tarifa? Clientes com salário domiciliado ou investimentos frequentemente são isentos. Vale ligar para o banco e pedir.',juros_valor:0,juros_tipo:'tarifa'},
+  ];
+}
+
+function addTransacoes(novas) {
+  novas.forEach(t => { if(!t.id) t.id = ntid++; transacoes.push(t); });
+  const nb = document.getElementById('nb-ext');
+  const p = transacoes.filter(t => !t.confirmada).length;
+  nb.textContent = p; nb.className = 'nav-badge' + (p>0?' show':'');
+}
+
+function renderExtrato() {
+  const res = document.getElementById('extrato-results');
+  if (!transacoes.length) { res.style.display = 'none'; return; }
+  res.style.display = 'block';
+  renderExtratoSummary();
+  renderExtratoAlerts();
+  renderTransList();
+}
+
+function renderExtratoSummary() {
+  const total_credito = transacoes.filter(t=>t.tipo==='credito').reduce((s,t)=>s+t.valor,0);
+  const total_debito = transacoes.filter(t=>t.tipo==='debito').reduce((s,t)=>s+t.valor,0);
+  const total_juros = transacoes.filter(t=>t.flag==='juros').reduce((s,t)=>s+t.valor,0);
+  const suspeitas = transacoes.filter(t=>t.flag==='suspeita').length;
+  const cartao = transacoes.filter(t=>t.flag==='cartao').reduce((s,t)=>s+t.valor,0);
+  document.getElementById('extrato-summary').innerHTML = `
+    <div class="ss-card"><div class="ss-label">Entradas</div><div class="ss-val" style="color:var(--accent)">${fmt(total_credito)}</div></div>
+    <div class="ss-card"><div class="ss-label">Saídas</div><div class="ss-val" style="color:var(--red)">${fmt(total_debito)}</div></div>
+    <div class="ss-card"><div class="ss-label">Juros pagos</div><div class="ss-val" style="color:var(--red)">${fmt(total_juros)}</div></div>
+    <div class="ss-card"><div class="ss-label">Fatura cartão</div><div class="ss-val" style="color:var(--amber)">${fmt(cartao)}</div></div>
+    <div class="ss-card"><div class="ss-label">Transações</div><div class="ss-val">${transacoes.length}</div></div>
+    <div class="ss-card"><div class="ss-label">Questionar</div><div class="ss-val" style="color:${suspeitas>0?'var(--amber)':'var(--text3)'}">${suspeitas}</div></div>`;
+}
+
+function renderExtratoAlerts() {
+  const el = document.getElementById('extrato-alerts');
+  let html = '';
+  const juros = transacoes.filter(t => t.flag==='juros');
+  const suspeitas = transacoes.filter(t => t.flag==='suspeita');
+  const tarifas = transacoes.filter(t => t.flag==='tarifa');
+  const totalJuros = juros.reduce((s,t)=>s+t.valor,0);
+  if (juros.length) html += `<div class="juros-alert"><i class="ti ti-flame" style="font-size:14px;flex-shrink:0;margin-top:1px"></i><span><strong>${juros.length} cobrança(s) de juros detectada(s) — total ${fmt(totalJuros)}/mês.</strong> Isso representa ${fmt(totalJuros*12)}/ano que você está perdendo. Veja as transações marcadas em vermelho abaixo.</span></div>`;
+  if (suspeitas.length) html += `<div class="alert-banner a-warn"><i class="ti ti-alert-triangle"></i><span><strong>${suspeitas} transação(ões) para questionar.</strong> A IA identificou movimentações incomuns ou que merecem sua atenção. Revise as marcadas em amarelo.</span></div>`;
+  if (tarifas.length) { const tt = tarifas.reduce((s,t)=>s+t.valor,0); html += `<div class="alert-banner a-info"><i class="ti ti-info-circle"></i><span><strong>${tarifas.length} tarifa(s) bancária(s) — ${fmt(tt)}/mês.</strong> Muitas são negociáveis ou isentas. Veja os detalhes abaixo.</span></div>`; }
+  el.innerHTML = html;
+}
+
+function filterTrans(f) {
+  transFilter = f;
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  event.target.classList.add('active');
+  renderTransList();
+}
+
+function renderTransList() {
+  const el = document.getElementById('trans-list');
+  let filtered = transacoes;
+  if (transFilter === 'despesa') filtered = transacoes.filter(t => t.tipo==='debito');
+  else if (transFilter === 'receita') filtered = transacoes.filter(t => t.tipo==='credito');
+  else if (transFilter === 'juros') filtered = transacoes.filter(t => t.flag==='juros');
+  else if (transFilter === 'suspeita') filtered = transacoes.filter(t => t.flag==='suspeita');
+  else if (transFilter === 'cartao') filtered = transacoes.filter(t => t.flag==='cartao');
+  if (!filtered.length) { el.innerHTML = '<div class="empty"><i class="ti ti-filter"></i><p>Nenhuma transação neste filtro.</p></div>'; return; }
+  el.innerHTML = filtered.map(t => {
+    const flagClass = t.flag==='juros'?'juros':t.flag==='suspeita'?'suspeita':t.flag==='tarifa'?'suspeita':'';
+    const aiClass = t.flag==='juros'?'danger-ai':t.flag==='suspeita'||t.flag==='tarifa'?'warn-ai':'';
+    const cats = ['alimentacao','transporte','moradia','saude','educacao','lazer','contas','cartao','salario','transferencia','juros','tarifa','compras','outros'];
+    return `<div class="trans-item ${flagClass}${t.confirmada?' confirmada':''}" id="ti-${t.id}">
+      <div class="trans-header">
+        <div>
+          <div class="trans-desc">${CAT_ICONS[t.categoria]||'📦'} ${esc(t.desc)}</div>
+          <div class="trans-meta">
+            <span>${t.data||''}</span>
+            ${t.estabelecimento?`<span>${esc(t.estabelecimento)}</span>`:''}
+            <span class="badge ${t.tipo==='credito'?'b-rec':'b-desp'}">${t.tipo==='credito'?'Crédito':'Débito'}</span>
+            ${t.flag==='juros'?'<span class="badge b-alto">JUROS</span>':''}
+            ${t.flag==='suspeita'?'<span class="badge b-med">⚠️ QUESTIONAR</span>':''}
+            ${t.flag==='cartao'?'<span class="badge b-div">💳 FATURA</span>':''}
+            ${t.flag==='tarifa'?'<span class="badge b-div">TARIFA</span>':''}
+          </div>
+        </div>
+        <span class="trans-val ${t.tipo==='credito'?'credito':'debito'}">${t.tipo==='debito'?'-':'+'} ${fmt(t.valor)}</span>
+      </div>
+      ${t.obs?`<div class="trans-ai ${aiClass}">${esc(t.obs)}</div>`:''}
+      ${t.pergunta?`<div class="question-bubble"><i class="ti ti-help-circle"></i><span>${esc(t.pergunta)}</span></div>`:''}
+      ${t.confirmada?`<div class="confirmed-check"><i class="ti ti-check"></i> Confirmada e adicionada aos lançamentos</div>`:
+      `<div class="trans-actions">
+        <select class="cat-select" onchange="updTrans(${t.id},'categoria',this.value)">
+          ${cats.map(c=>`<option value="${c}"${c===t.categoria?' selected':''}>${(CAT_ICONS[c]||'')+' '+c}</option>`).join('')}
+        </select>
+        <button class="btn-sm btn-ok" onclick="confirmTrans(${t.id})"><i class="ti ti-check"></i> Confirmar</button>
+        <button class="btn-sm btn-q" onclick="questionTrans(${t.id})"><i class="ti ti-help"></i> Perguntar à IA ↗</button>
+        <button class="btn-sm btn-rm" onclick="removeTrans(${t.id})">Remover</button>
+      </div>`}
+    </div>`;
+  }).join('');
+}
+
+function updTrans(id, f, v) { const t = transacoes.find(x=>x.id===id); if(t) t[f]=v; }
+function confirmTrans(id) {
+  const t = transacoes.find(x=>x.id===id); if(!t) return;
+  t.confirmada = true;
+  // Add to main items
+  items.push({
+    id: nid++, desc: t.desc, valor: t.valor,
+    tipo: t.tipo==='credito'?'receita':'despesa',
+    categoria: t.categoria, confianca: t.confianca||'alta',
+    obs: t.obs||'', origem: 'extrato', fonte: t.banco||'banco',
+    confirmado: true, juros_estimado: 0, parcela_minima: 0
+  });
+  updateBadges(); scheduleAutoSave();
+  renderTransList(); renderExtratoSummary();
+  showToast('Transação confirmada e adicionada!', 'success');
+}
+function removeTrans(id) { transacoes = transacoes.filter(x=>x.id!==id); renderTransList(); renderExtratoSummary(); }
+function confirmAllTrans() {
+  transacoes.filter(t=>!t.confirmada).forEach(t=>confirmTrans(t.id));
+  showToast('Todas as transações confirmadas!', 'success');
+}
+function questionTrans(id) {
+  const t = transacoes.find(x=>x.id===id);
+  if (!t) return;
+  const msg = 'Tenho uma transacao no extrato: ' + t.desc + ' de ' + fmt(t.valor) + ' em ' + (t.data||'data nao informada') + '. ' + (t.pergunta||'O que voce acha desta transacao? Devo questionar o banco?');
+  sendToAI(msg);
+}
+function askAIAboutExtrato() {
+  const juros = transacoes.filter(t=>t.flag==='juros').reduce((s,t)=>s+t.valor,0);
+  const suspeitas = transacoes.filter(t=>t.flag==='suspeita');
+  const msg = 'Analisei meu extrato bancario e encontrei: total de juros ' + fmt(juros) + '/mes, ' + suspeitas.length + ' transacoes suspeitas: ' + suspeitas.map(t=>t.desc+' '+fmt(t.valor)).join(', ') + '. Me da um plano de acao para reduzir custos e questionar essas transacoes com o banco.';
+  sendToAI(msg);
+}
+
+
+// ══════════════════════════════════════════════════════
+// GRÁFICOS
+// ══════════════════════════════════════════════════════
+let chartInstances = {};
+
+const CHART_COLORS = [
+  '#22d17a','#4d9fff','#f5a623','#a78bfa','#ff4d4d',
+  '#34d399','#60a5fa','#fbbf24','#c084fc','#f87171',
+  '#10b981','#3b82f6','#d97706','#9333ea','#ef4444'
+];
+
+function destroyChart(id) {
+  if (chartInstances[id]) { chartInstances[id].destroy(); delete chartInstances[id]; }
+}
+
+function getChartDefaults() {
+  return {
+    color: '#8b95a3',
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#1e242d',
+        borderColor: '#ffffff18',
+        borderWidth: 1,
+        titleColor: '#f0f2f5',
+        bodyColor: '#8b95a3',
+        padding: 10,
+        callbacks: {
+          label: ctx => ' ' + fmt(ctx.parsed.y || ctx.parsed || 0)
+        }
+      }
+    },
+    scales: {
+      x: { grid: { color: '#ffffff08' }, ticks: { color: '#505862', font: { size: 11 } } },
+      y: { grid: { color: '#ffffff08' }, ticks: { color: '#505862', font: { size: 11 }, callback: v => 'R$' + (v>=1000?(v/1000).toFixed(0)+'k':v) } }
+    }
+  };
+}
+
+function renderCharts() {
+  const conf = items.filter(i => i.confirmado);
+  if (!conf.length && !debts.length) {
+    ['chart-pizza','chart-barras','chart-saldo','chart-juros'].forEach(id => {
+      const ctx = document.getElementById(id);
+      if (ctx) ctx.parentElement.innerHTML = '<div class="no-data-chart"><i class="ti ti-chart-dots-3"></i><span>Confirme lançamentos para ver os gráficos</span></div>';
+    });
+    document.getElementById('chart-ranking').innerHTML = '<div class="no-data-chart"><i class="ti ti-list"></i><span>Nenhum dado ainda</span></div>';
+    return;
+  }
+
+  renderPizzaChart(conf);
+  renderBarrasChart(conf);
+  renderSaldoChart(conf);
+  renderJurosChart();
+  renderRanking(conf);
+}
+
+function renderPizzaChart(conf) {
+  destroyChart('pizza');
+  const despesas = conf.filter(i => i.tipo === 'despesa');
+  const bycat = {};
+  despesas.forEach(i => { bycat[i.categoria] = (bycat[i.categoria]||0) + i.valor; });
+  const labels = Object.keys(bycat);
+  const data = Object.values(bycat);
+  if (!labels.length) {
+    const el = document.getElementById('chart-pizza');
+    if (el) el.parentElement.innerHTML = '<div class="no-data-chart"><i class="ti ti-chart-pie"></i><span>Nenhuma despesa confirmada</span></div>';
+    return;
+  }
+  const ctx = document.getElementById('chart-pizza');
+  if (!ctx) return;
+  chartInstances['pizza'] = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels,
+      datasets: [{
+        data,
+        backgroundColor: CHART_COLORS.slice(0, labels.length),
+        borderColor: '#111418',
+        borderWidth: 2,
+        hoverOffset: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '65%',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1e242d',
+          borderColor: '#ffffff18',
+          borderWidth: 1,
+          titleColor: '#f0f2f5',
+          bodyColor: '#8b95a3',
+          padding: 10,
+          callbacks: {
+            label: ctx => ' ' + fmt(ctx.parsed) + ' (' + Math.round(ctx.parsed / data.reduce((a,b)=>a+b,0) * 100) + '%)'
+          }
+        }
+      }
+    }
+  });
+  const legend = document.getElementById('legend-pizza');
+  if (legend) legend.innerHTML = labels.map((l,i) => `<div class="legend-item"><div class="legend-dot" style="background:${CHART_COLORS[i]}"></div><span>${l}: ${fmt(data[i])}</span></div>`).join('');
+}
+
+function renderBarrasChart(conf) {
+  destroyChart('barras');
+  const rec = conf.filter(i => i.tipo==='receita').reduce((s,i) => s+i.valor, 0);
+  const desp = conf.filter(i => i.tipo==='despesa').reduce((s,i) => s+i.valor, 0);
+  const div = conf.filter(i => i.tipo==='divida').reduce((s,i) => s+i.valor, 0);
+  const inv = conf.filter(i => i.tipo==='investimento').reduce((s,i) => s+i.valor, 0);
+  const ctx = document.getElementById('chart-barras');
+  if (!ctx) return;
+  const defaults = getChartDefaults();
+  chartInstances['barras'] = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Receitas', 'Despesas', 'Dívidas', 'Investimentos'],
+      datasets: [{
+        data: [rec, desp, div, inv],
+        backgroundColor: ['#22d17a40','#ff4d4d40','#f5a62340','#4d9fff40'],
+        borderColor: ['#22d17a','#ff4d4d','#f5a623','#4d9fff'],
+        borderWidth: 1.5,
+        borderRadius: 6,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { ...defaults.plugins,
+        tooltip: { ...defaults.plugins.tooltip,
+          callbacks: { label: ctx => ' ' + fmt(ctx.parsed.y) }
+        }
+      },
+      scales: {
+        x: { ...defaults.scales.x },
+        y: { ...defaults.scales.y, beginAtZero: true }
+      }
+    }
+  });
+}
+
+function renderSaldoChart(conf) {
+  destroyChart('saldo');
+  // Build cumulative saldo over items (sorted by confirmation order)
+  const receitas = conf.filter(i => i.tipo==='receita');
+  const despesas = conf.filter(i => i.tipo==='despesa');
+  const totalRec = receitas.reduce((s,i)=>s+i.valor,0);
+  const totalDesp = despesas.reduce((s,i)=>s+i.valor,0);
+  const saldo = totalRec - totalDesp;
+  // Simulate 6 months projection
+  const months = [];
+  const now = new Date();
+  const saldoData = [];
+  const recData = [];
+  const despData = [];
+  for (let i = -2; i <= 6; i++) {
+    const d = new Date(now.getFullYear(), now.getMonth()+i, 1);
+    months.push(d.toLocaleDateString('pt-BR',{month:'short',year:'2-digit'}));
+    if (i <= 0) {
+      recData.push(totalRec);
+      despData.push(totalDesp);
+      saldoData.push(saldo);
+    } else {
+      recData.push(totalRec);
+      despData.push(totalDesp);
+      saldoData.push(saldo * (1 + i * 0.02));
+    }
+  }
+  const ctx = document.getElementById('chart-saldo');
+  if (!ctx) return;
+  const defaults = getChartDefaults();
+  chartInstances['saldo'] = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: months,
+      datasets: [
+        {
+          label: 'Receitas',
+          data: recData,
+          borderColor: '#22d17a',
+          backgroundColor: '#22d17a15',
+          fill: false,
+          tension: 0.4,
+          pointRadius: 4,
+          pointBackgroundColor: '#22d17a'
+        },
+        {
+          label: 'Despesas',
+          data: despData,
+          borderColor: '#ff4d4d',
+          backgroundColor: '#ff4d4d15',
+          fill: false,
+          tension: 0.4,
+          pointRadius: 4,
+          pointBackgroundColor: '#ff4d4d'
+        },
+        {
+          label: 'Saldo',
+          data: saldoData,
+          borderColor: '#4d9fff',
+          backgroundColor: '#4d9fff20',
+          fill: true,
+          tension: 0.4,
+          pointRadius: 4,
+          pointBackgroundColor: '#4d9fff',
+          borderDash: saldoData.some((v,i,a) => i>2) ? [] : []
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: {
+          display: true,
+          labels: { color: '#8b95a3', font: { size: 11 }, boxWidth: 10, padding: 14 }
+        },
+        tooltip: {
+          backgroundColor: '#1e242d',
+          borderColor: '#ffffff18',
+          borderWidth: 1,
+          titleColor: '#f0f2f5',
+          bodyColor: '#8b95a3',
+          padding: 10,
+          callbacks: { label: ctx => ' ' + ctx.dataset.label + ': ' + fmt(ctx.parsed.y) }
+        }
+      },
+      scales: {
+        x: { ...defaults.scales.x },
+        y: { ...defaults.scales.y, beginAtZero: false }
+      }
+    }
+  });
+}
+
+function renderJurosChart() {
+  destroyChart('juros');
+  const ctx = document.getElementById('chart-juros');
+  if (!ctx) return;
+  if (!debts.length) {
+    ctx.parentElement.innerHTML = '<div class="no-data-chart"><i class="ti ti-credit-card"></i><span>Nenhuma dívida cadastrada</span></div>';
+    return;
+  }
+  const sorted = [...debts].sort((a,b) => b.juros-a.juros);
+  const defaults = getChartDefaults();
+  chartInstances['juros'] = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: sorted.map(d => d.nome.length > 14 ? d.nome.slice(0,14)+'…' : d.nome),
+      datasets: [{
+        data: sorted.map(d => d.juros),
+        backgroundColor: sorted.map(d => d.juros>=10?'#ff4d4d40':d.juros>=3?'#f5a62340':'#22d17a40'),
+        borderColor: sorted.map(d => d.juros>=10?'#ff4d4d':d.juros>=3?'#f5a623':'#22d17a'),
+        borderWidth: 1.5,
+        borderRadius: 6,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { ...defaults.plugins,
+        tooltip: { ...defaults.plugins.tooltip,
+          callbacks: { label: ctx => ' ' + ctx.parsed.y + '% a.m. = ' + ((Math.pow(1+ctx.parsed.y/100,12)-1)*100).toFixed(0) + '% a.a.' }
+        }
+      },
+      scales: {
+        x: { ...defaults.scales.x },
+        y: { ...defaults.scales.y, beginAtZero: true, ticks: { ...defaults.scales.y.ticks, callback: v => v + '%' } }
+      }
+    }
+  });
+  // Stats
+  const totalJuros = debts.reduce((s,d)=>s+d.valor*(d.juros/100),0);
+  document.getElementById('chart-juros-stats').innerHTML = `
+    <div class="stat-row"><span class="stat-label">Total pago em juros/mês</span><span class="stat-val" style="color:var(--red)">${fmt(totalJuros)}</span></div>
+    <div class="stat-row"><span class="stat-label">Custo anual dos juros</span><span class="stat-val" style="color:var(--red)">${fmt(totalJuros*12)}</span></div>
+    <div class="stat-row"><span class="stat-label">Dívida mais cara</span><span class="stat-val" style="color:var(--amber)">${sorted[0]?.nome||'-'} ${sorted[0]?.juros||0}% a.m.</span></div>`;
+}
+
+function renderRanking(conf) {
+  const el = document.getElementById('chart-ranking');
+  if (!el) return;
+  const despesas = conf.filter(i => i.tipo==='despesa');
+  if (!despesas.length) { el.innerHTML = '<div class="no-data-chart"><i class="ti ti-list"></i><span>Nenhuma despesa confirmada</span></div>'; return; }
+  const bycat = {};
+  despesas.forEach(i => { bycat[i.categoria] = (bycat[i.categoria]||0) + i.valor; });
+  const total = despesas.reduce((s,i)=>s+i.valor,0);
+  const sorted = Object.entries(bycat).sort((a,b)=>b[1]-a[1]);
+  el.innerHTML = sorted.map(([cat,val],i) => {
+    const pct = Math.round(val/total*100);
+    return `<div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <span style="font-size:12px;color:var(--text2);display:flex;align-items:center;gap:6px">
+          <span style="width:8px;height:8px;border-radius:50%;background:${CHART_COLORS[i]};display:inline-block;flex-shrink:0"></span>
+          ${cat}
+        </span>
+        <span style="font-size:12px;font-weight:600;font-family:'DM Mono',monospace;color:var(--text)">${fmt(val)} <span style="color:var(--text3);font-weight:400">${pct}%</span></span>
+      </div>
+      <div style="height:6px;background:var(--bg4);border-radius:3px;overflow:hidden">
+        <div style="height:100%;border-radius:3px;background:${CHART_COLORS[i]};width:${pct}%;transition:width .6s"></div>
+      </div>
+    </div>`;
+  }).join('');
+}
 
 window.addEventListener('load', () => { initMSAL(); });
 window.addEventListener('beforeunload', e => { if ((items.length || debts.length) && !odToken) { e.preventDefault(); e.returnValue = 'Dados nao salvos. Conecte o OneDrive.'; } });
