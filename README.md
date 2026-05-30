@@ -1,0 +1,2 @@
+# financeai
+app finance
