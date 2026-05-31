@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>FinanceAI — Rosane Machado</title>
+<title>FinanceAI</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <script src="https://alcdn.msauth.net/browser/2.38.2/js/msal-browser.min.js"></script>
@@ -319,7 +319,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 <div class="sec chat-sec on" id="sec-chat">
 <input type="file" id="chat-file" style="display:none" accept="image/*" onchange="onChatFile(event)"/>
 <div class="chat-welcome" id="chat-welcome">
-<div style="text-align:center;padding:16px 0 10px"><div style="font-size:40px">💰</div><div style="font-size:18px;font-weight:700;margin-top:8px">FinanceAI</div><div style="font-size:13px;color:var(--text2);margin-top:4px">Consultora financeira pessoal — Rosane Machado</div></div>
+<div style="text-align:center;padding:16px 0 10px"><div style="font-size:40px">💰</div><div style="font-size:18px;font-weight:700;margin-top:8px">FinanceAI</div><div style="font-size:13px;color:var(--text2);margin-top:4px">Consultora financeira pessoal</div></div>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px">
 <div class="card" style="cursor:pointer;padding:12px" onclick="go('extrato')"><div style="font-size:20px;margin-bottom:5px">📊</div><div style="font-size:13px;font-weight:600">Extrato bancário</div><div style="font-size:11px;color:var(--text2)">Importe e classifique</div></div>
 <div class="card" style="cursor:pointer;padding:12px" onclick="go('diag')"><div style="font-size:20px;margin-bottom:5px">🩺</div><div style="font-size:13px;font-weight:600">Diagnóstico</div><div style="font-size:11px;color:var(--text2)">Situação atual</div></div>
@@ -655,7 +655,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 <div class="login-card">
 <div class="login-icon">💰</div>
 <div class="login-title">FinanceAI</div>
-<div class="login-sub">Consultora financeira pessoal<br>Rosane Machado Felipe Duarte</div>
+<div class="login-sub">Consultora financeira pessoal</div>
 <div class="login-feats">
 <div class="login-feat"><i class="ti ti-cloud" style="color:var(--blue)"></i> Dados salvos no seu OneDrive</div>
 <div class="login-feat"><i class="ti ti-lock" style="color:var(--green)"></i> Só você tem acesso</div>
@@ -685,32 +685,33 @@ let odToken  = null;
 let odUser   = null;
 
 function initMSAL() {
+  const ov = document.getElementById('login-overlay');
   if(CLIENT_ID === 'SEU_CLIENT_ID_AQUI') {
-    // Sem CLIENT_ID — mostra tela de login com opção de pular
-    const ov = document.getElementById('login-overlay');
     if(ov) ov.style.display = 'flex';
     return;
   }
   try {
+    // MSAL 2.x — sem .initialize()
     msalApp = new msal.PublicClientApplication({
-      auth:{ clientId:CLIENT_ID, authority:'https://login.microsoftonline.com/common', redirectUri:window.location.origin+window.location.pathname },
+      auth:{
+        clientId: CLIENT_ID,
+        authority: 'https://login.microsoftonline.com/common',
+        redirectUri: window.location.origin + window.location.pathname
+      },
       cache:{ cacheLocation:'localStorage', storeAuthStateInCookie:false },
     });
-    msalApp.initialize().then(()=>{
-      const accounts = msalApp.getAllAccounts();
-      if(accounts.length){
-        odUser = accounts[0];
-        msalApp.acquireTokenSilent({scopes:GRAPH_SCOPES,account:accounts[0]})
-          .then(r=>{ odToken=r.accessToken; onLogin(); })
-          .catch(()=>{ const ov=document.getElementById('login-overlay'); if(ov) ov.style.display='flex'; });
-      } else {
-        const ov = document.getElementById('login-overlay');
-        if(ov) ov.style.display = 'flex';
-      }
-    });
+    // Tenta renovar token silenciosamente se já logou antes
+    const accounts = msalApp.getAllAccounts();
+    if(accounts.length) {
+      odUser = accounts[0];
+      msalApp.acquireTokenSilent({scopes:GRAPH_SCOPES, account:accounts[0]})
+        .then(r=>{ odToken=r.accessToken; onLogin(); })
+        .catch(()=>{ if(ov) ov.style.display='flex'; });
+    } else {
+      if(ov) ov.style.display = 'flex';
+    }
   } catch(e) {
     console.warn('MSAL init failed:', e.message);
-    const ov = document.getElementById('login-overlay');
     if(ov) ov.style.display = 'flex';
   }
 }
@@ -4052,7 +4053,7 @@ window.addEventListener('load',()=>{
   })();
 
   // MSAL / OneDrive
-  initMSAL();
+  initMSAL(); // async — não bloqueia o resto da inicialização
 
   // Nomenclaturas e chat
   renderNomen('');
