@@ -2,20 +2,17 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>FinanceAI — Seu Consultor Financeiro</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>FinanceAI — Rosane Machado</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <script src="https://alcdn.msauth.net/browser/2.38.2/js/msal-browser.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <style>
-
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.5;height:100%;overflow:hidden}
 :root{
-  /* LIGHT THEME (default) */
   --bg:#f5f6f8;--bg2:#ffffff;--bg3:#fafbfc;--bg4:#f0f2f5;
   --border:#0000000f;--border2:#00000018;--border3:#00000028;
   --text:#1a1d21;--text2:#5c6570;--text3:#9aa3ad;
@@ -23,287 +20,135 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   --red:#d63333;--red-dim:#d6333312;
   --amber:#c47d0a;--amber-dim:#c47d0a12;
   --blue:#2563eb;--blue-dim:#2563eb12;
-  --ms:#0078d4;
-  --r:12px;--r2:8px;
+  --ms:#0078d4;--r:12px;--r2:8px;
+  --color-background-secondary:#f0f2f5;--color-border-tertiary:#0000000f;
+  --color-text-secondary:#5c6570;--border-radius-md:8px;
 }
 [data-theme="dark"]{
   --bg:#0a0c0f;--bg2:#111418;--bg3:#181c22;--bg4:#1e242d;
   --border:#ffffff0f;--border2:#ffffff18;--border3:#ffffff28;
   --text:#f0f2f5;--text2:#8b95a3;--text3:#505862;
-  --green:#22d17a;--green-dim:#22d17a15;
-  --red:#ff4d4d;--red-dim:#ff4d4d15;
-  --amber:#f5a623;--amber-dim:#f5a62315;
-  --blue:#4d9fff;--blue-dim:#4d9fff15;
+  --green:#22d17a;--green-dim:#22d17a15;--red:#ff4d4d;--red-dim:#ff4d4d15;
+  --amber:#f5a623;--amber-dim:#f5a62315;--blue:#4d9fff;--blue-dim:#4d9fff15;
+  --color-background-secondary:#1e242d;--color-border-tertiary:#ffffff0f;--color-text-secondary:#8b95a3;
 }
-.app{height:100vh;display:flex;flex-direction:column}
-
-/* TOP BAR */
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;border-bottom:1px solid var(--border);background:var(--bg);flex-shrink:0;gap:10px}
-.logo{display:flex;align-items:center;gap:8px}
-.logo-mark{width:30px;height:30px;background:var(--green);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
-.logo-name{font-size:16px;font-weight:600;letter-spacing:-.4px}
-.logo-name span{color:var(--green)}
-.nav-tabs{display:flex;gap:4px;overflow-x:auto}
-.tab{padding:5px 12px;border-radius:20px;font-size:12px;font-weight:500;border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;white-space:nowrap}
-.tab.active,.tab:hover{background:var(--green-dim);border-color:var(--green);color:var(--green)}
-.tab-chat{border-color:var(--blue);color:var(--blue)}
-.tab-chat.active,.tab-chat:hover{background:var(--blue-dim);border-color:var(--blue);color:var(--blue)}
-
-/* STATUS BAR */
-.statusbar{display:flex;align-items:center;justify-content:space-between;padding:5px 20px;background:var(--bg3);border-bottom:1px solid var(--border);font-size:11px;flex-shrink:0}
-.od-info{display:flex;align-items:center;gap:7px;color:var(--text3)}
-.od-dot{width:6px;height:6px;border-radius:50%;background:var(--text3)}
-.od-dot.on{background:var(--green);box-shadow:0 0 5px var(--green)}
-.od-dot.sync{background:var(--amber);animation:pulse 1s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.od-actions{display:flex;gap:6px}
-.ms-btn{padding:3px 9px;font-size:11px;cursor:pointer;border-radius:6px;border:1px solid var(--ms)50;color:var(--ms);background:transparent;font-family:'DM Sans',sans-serif;transition:all .15s}
-.ms-btn:hover{background:var(--ms);color:#fff}
-.out-btn{padding:3px 9px;font-size:11px;cursor:pointer;border-radius:6px;border:1px solid var(--border2);color:var(--text3);background:transparent;font-family:'DM Sans',sans-serif}
-.out-btn:hover{color:var(--red);border-color:var(--red)50}
-
-/* LAYOUT */
-.body{display:flex;flex:1;overflow:hidden}
-.sidebar{width:200px;flex-shrink:0;border-right:1px solid var(--border);padding:10px 8px;display:flex;flex-direction:column;gap:2px;overflow-y:auto;background:var(--bg)}
-.nav-sec{font-size:10px;font-weight:600;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;padding:10px 8px 4px}
-.nav-item{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:var(--r2);cursor:pointer;font-size:12px;color:var(--text2);transition:all .15s;border:1px solid transparent}
-.nav-item i{font-size:14px;flex-shrink:0;width:16px}
-.nav-item:hover{background:var(--bg3);color:var(--text)}
-.nav-item.active{background:var(--green-dim);color:var(--green);border-color:#22d17a20}
-.nav-item.chat-nav.active{background:var(--blue-dim);color:var(--blue);border-color:#4d9fff20}
-.sidebar-bot{margin-top:auto;padding:10px 8px;border-top:1px solid var(--border)}
-.reset-btn{width:100%;padding:5px;font-size:11px;cursor:pointer;border:1px solid var(--red)30;border-radius:var(--r2);background:transparent;color:var(--red);font-family:'DM Sans',sans-serif}
-.reset-btn:hover{background:var(--red-dim)}
-.content{flex:1;overflow:hidden;background:var(--bg2);display:flex;flex-direction:column}
-
-/* SECTIONS */
-.sec{display:none;flex:1;overflow-y:auto;padding:20px;animation:fi .2s}
-.sec.on{display:block}
-.sec.chat-sec{display:none;flex-direction:column;padding:0}
-.sec.chat-sec.on{display:flex}
-@keyframes fi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
-.sec-title{font-size:18px;font-weight:600;margin-bottom:4px}
-.sec-sub{font-size:12px;color:var(--text2);margin-bottom:18px}
-
-/* CHAT */
-.chat-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px}
-.bubble{max-width:80%;padding:10px 14px;border-radius:14px;font-size:13px;line-height:1.65;animation:fi .2s}
-.bubble.user{align-self:flex-end;background:var(--blue-dim);border:1px solid var(--blue)40;color:var(--text)}
-.bubble.ai{align-self:flex-start;background:var(--bg3);border:1px solid var(--border2);color:var(--text)}
-.bubble.ai strong{color:var(--green)}
-.typing-wrap{align-self:flex-start;background:var(--bg3);border:1px solid var(--border2);border-radius:14px;padding:12px 16px}
-.dots{display:flex;gap:4px}
-.dots span{width:6px;height:6px;border-radius:50%;background:var(--text2);animation:blink 1.2s infinite}
-.dots span:nth-child(2){animation-delay:.3s}.dots span:nth-child(3){animation-delay:.6s}
-@keyframes blink{0%,80%,100%{opacity:.2}40%{opacity:1}}
-.pills-row{display:flex;flex-wrap:wrap;gap:5px;padding:8px 16px;border-top:1px solid var(--border)}
-.pill{padding:5px 12px;border-radius:20px;font-size:12px;cursor:pointer;border:1px solid var(--border2);background:transparent;color:var(--text2);font-family:'DM Sans',sans-serif}
-.pill:hover{background:var(--bg4);color:var(--text);border-color:var(--border3)}
-.chat-input-wrap{display:flex;gap:8px;padding:10px 14px;border-top:1px solid var(--border);flex-shrink:0;background:var(--bg)}
-.chat-input{flex:1;padding:9px 14px;border-radius:20px;border:1px solid var(--border2);background:var(--bg3);color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;resize:none;min-height:38px;max-height:90px;line-height:1.5}
-.chat-input:focus{border-color:var(--blue)60}
-.send-btn{width:36px;height:36px;border-radius:50%;background:var(--blue);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;align-self:flex-end;transition:all .2s}
-.send-btn:hover{background:#3a8ae0}
-.send-btn:disabled{opacity:.3;cursor:not-allowed}
-.send-btn i{font-size:15px;color:#fff}
-.attach-btn{padding:7px 12px;border-radius:20px;border:1px solid var(--border2);background:transparent;color:var(--text2);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:4px;align-self:flex-end}
-.attach-btn:hover{background:var(--bg4);color:var(--text)}
-
-/* WELCOME SCREEN */
-.welcome{padding:20px;display:flex;flex-direction:column;height:100%}
-.welcome-head{text-align:center;padding:20px 0 16px}
-.welcome-icon{font-size:36px;margin-bottom:8px}
-.welcome-title{font-size:20px;font-weight:600;margin-bottom:4px}
-.welcome-sub{font-size:13px;color:var(--text2);line-height:1.6;max-width:380px;margin:0 auto}
-.upload-zone{border:1.5px dashed var(--border2);border-radius:var(--r);padding:20px;text-align:center;cursor:pointer;transition:all .2s;margin:12px 0}
-.upload-zone:hover{border-color:var(--blue)60;background:var(--blue-dim)}
-.upload-zone i{font-size:26px;color:var(--text3);margin-bottom:6px;display:block}
-.upload-zone:hover i{color:var(--blue)}
-.uz-label{font-size:13px;font-weight:500;margin-bottom:3px}
-.uz-sub{font-size:11px;color:var(--text3)}
-.quick-cards{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
-.quick-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:12px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:10px}
-.quick-card:hover{border-color:var(--border2);background:var(--bg4);transform:translateY(-1px)}
-.qc-icon{font-size:20px;flex-shrink:0}
-.qc-text .t{font-size:12px;font-weight:500;margin-bottom:2px}
-.qc-text .s{font-size:11px;color:var(--text2)}
-
-/* CARDS + METRICS */
-.card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:10px}
-.card-title{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px;display:flex;align-items:center;gap:5px}
-.card-title i{font-size:13px;color:var(--green)}
-.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-bottom:10px}
-.metric{background:var(--bg4);border:1px solid var(--border);border-radius:var(--r2);padding:10px 12px}
-.m-l{font-size:10px;color:var(--text3);margin-bottom:3px;text-transform:uppercase;letter-spacing:.04em}
-.m-v{font-size:17px;font-weight:600;font-family:'DM Mono',monospace}
-.gn{color:var(--green)}.rd{color:var(--red)}.am{color:var(--amber)}.bl{color:var(--blue)}
-
-/* ALERTS */
-.alert{border-radius:var(--r2);padding:9px 12px;margin-bottom:8px;font-size:12px;line-height:1.6;display:flex;gap:7px}
-.alert i{flex-shrink:0;font-size:13px;margin-top:1px}
-.a-red{background:var(--red-dim);border:1px solid var(--red)28;color:#ff9090}
-.a-amber{background:var(--amber-dim);border:1px solid var(--amber)28;color:#f5c96a}
-.a-green{background:var(--green-dim);border:1px solid var(--green)28;color:#6ee8a5}
-.a-blue{background:var(--blue-dim);border:1px solid var(--blue)28;color:#8dc8ff}
-
-/* EXTRATO */
-.bank-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:6px;margin-bottom:10px}
-.bank-card{background:var(--bg4);border:1px solid var(--border);border-radius:var(--r2);padding:8px 6px;text-align:center;cursor:pointer;font-size:11px;color:var(--text2);transition:all .15s}
-.bank-card:hover,.bank-card.active{border-color:var(--green);background:var(--green-dim);color:var(--green)}
-.drop-zone{border:1.5px dashed var(--border2);border-radius:var(--r);padding:20px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg4)}
-.drop-zone:hover,.drop-zone.drag{border-color:var(--green)60;background:var(--green-dim)}
-.drop-zone i{font-size:22px;color:var(--text3);margin-bottom:6px;display:block}
-.drop-zone:hover i,.drop-zone.drag i{color:var(--green)}
-.prog-card{background:var(--bg4);border:1px solid var(--green)30;border-radius:var(--r2);padding:12px;margin-bottom:10px;display:none}
-.prog-bar{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin:6px 0}
-.prog-fill{height:100%;background:var(--green);border-radius:2px;width:0;transition:width .4s}
-.step{font-size:11px;color:var(--text3);margin-bottom:3px;display:flex;align-items:center;gap:5px}
-.step.done{color:var(--green)}.step.active{color:var(--blue)}
-.filter-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
-.fc{padding:4px 11px;border-radius:20px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid var(--border2);background:transparent;color:var(--text2);font-family:'DM Sans',sans-serif}
-.fc.active{background:var(--green-dim);border-color:var(--green);color:var(--green)}
-.fc.rd-fc{border-color:var(--red)40;color:var(--red)}.fc.rd-fc.active{background:var(--red-dim);border-color:var(--red)}
-.fc.am-fc{border-color:var(--amber)40;color:var(--amber)}.fc.am-fc.active{background:var(--amber-dim);border-color:var(--amber)}
-.sum-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:6px;margin-bottom:10px}
-.ss{background:var(--bg4);border:1px solid var(--border);border-radius:var(--r2);padding:9px 11px}
-.ss-l{font-size:10px;color:var(--text3);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em}
-.ss-v{font-size:14px;font-weight:600;font-family:'DM Mono',monospace}
-.trans-item{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:11px 13px;margin-bottom:6px;animation:fi .2s}
-.trans-item.juros{border-color:var(--red)40;background:var(--red-dim)}
-.trans-item.suspeita{border-color:var(--amber)40;background:var(--amber-dim)}
-.tr-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:4px}
-.tr-desc{font-size:12px;font-weight:500}
-.tr-val{font-size:13px;font-weight:600;font-family:'DM Mono',monospace;white-space:nowrap}
-.tr-val.deb{color:var(--red)}.tr-val.cred{color:var(--green)}
-.tr-meta{font-size:10px;color:var(--text3);display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px}
-.tr-obs{font-size:11px;color:var(--text2);font-style:italic;margin-bottom:4px;padding:4px 8px;background:var(--bg4);border-radius:6px}
-.tr-q{font-size:11px;color:var(--amber);line-height:1.5;padding:5px 8px;background:var(--amber-dim);border-radius:6px;margin-bottom:5px}
-.tr-actions{display:flex;gap:5px;flex-wrap:wrap}
-.badge{font-size:9px;font-weight:600;padding:2px 6px;border-radius:8px}
-.b-gn{background:var(--green-dim);color:var(--green);border:1px solid var(--green)30}
-.b-rd{background:var(--red-dim);color:var(--red);border:1px solid var(--red)30}
-.b-am{background:var(--amber-dim);color:var(--amber);border:1px solid var(--amber)30}
-.b-bl{background:var(--blue-dim);color:var(--blue);border:1px solid var(--blue)30}
-.b-pu{background:#a78bfa15;color:#a78bfa;border:1px solid #a78bfa30}
-.search-bar{display:flex;gap:6px;margin-bottom:10px}
-.search-in{flex:1;background:var(--bg4);border:1px solid var(--border2);border-radius:var(--r2);color:var(--text);padding:7px 12px;font-size:12px;outline:none;font-family:'DM Sans',sans-serif}
-.search-in::placeholder{color:var(--text3)}
-.search-in:focus{border-color:var(--green)50}
-.month-tabs{display:flex;gap:4px;overflow-x:auto;padding-bottom:4px;margin-bottom:10px}
-.mtab{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid var(--border2);background:transparent;color:var(--text2);white-space:nowrap;font-family:'DM Sans',sans-serif}
-.mtab.active{background:var(--green-dim);border-color:var(--green);color:var(--green)}
-.hl{background:var(--amber-dim);border-radius:2px;padding:0 2px;color:var(--amber)}
-.action-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:9px;font-size:12px;cursor:pointer;border:1px solid var(--border2);border-radius:var(--r2);background:transparent;color:var(--text2);font-family:'DM Sans',sans-serif;margin-top:6px}
-.action-btn:hover{background:var(--bg4);color:var(--text);border-color:var(--border3)}
-
-/* NOMEN */
-.nr-item{display:flex;align-items:center;gap:8px;padding:7px 9px;background:var(--bg4);border:1px solid var(--border);border-radius:var(--r2);margin-bottom:5px;font-size:12px}
-.nr-from{flex:1;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.nr-arrow{color:var(--text3);flex-shrink:0}
-.nr-to{display:flex;align-items:center;gap:5px;flex-shrink:0}
-.nr-del{background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:0 2px}
-.nr-del:hover{color:var(--red)}
-.tag-gn{font-size:10px;font-weight:500;padding:2px 6px;border-radius:8px;background:var(--green-dim);color:var(--green);border:1px solid var(--green)30}
-.tag-rd{font-size:10px;font-weight:500;padding:2px 6px;border-radius:8px;background:var(--red-dim);color:var(--red);border:1px solid var(--red)30}
-
-/* FORMS */
-.form-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.form-label{font-size:12px;color:var(--text2);min-width:150px;flex-shrink:0}
-input[type=number],input[type=text],select,.fin-input{background:var(--bg4);border:1px solid var(--border2);border-radius:var(--r2);color:var(--text);padding:7px 10px;font-size:12px;width:100%;outline:none;font-family:'DM Sans',sans-serif}
-input:focus,select:focus{border-color:var(--green)50}
-select option{background:var(--bg3)}
-.btn-p{padding:8px 16px;background:var(--green);color:#0a0c0f;border:none;border-radius:var(--r2);font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'DM Sans',sans-serif}
-.btn-p:hover{background:#1aad63}
-.btn-g{padding:7px 14px;background:transparent;color:var(--text2);border:1px solid var(--border2);border-radius:var(--r2);font-size:12px;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'DM Sans',sans-serif}
-.btn-g:hover{border-color:var(--border3);color:var(--text);background:var(--bg4)}
-.btn-sm{padding:4px 10px;font-size:11px;font-weight:500;cursor:pointer;border-radius:6px;border:1px solid;font-family:'DM Sans',sans-serif}
-.bs-gn{background:transparent;border-color:var(--green)50;color:var(--green)}.bs-gn:hover{background:var(--green-dim)}
-.bs-rd{background:transparent;border-color:var(--red)40;color:var(--red)}.bs-rd:hover{background:var(--red-dim)}
-.bs-gy{background:transparent;border-color:var(--border2);color:var(--text2)}.bs-gy:hover{background:var(--bg4)}
-.chip{display:inline-flex;align-items:center;gap:3px;background:var(--green-dim);border:1px solid var(--green)30;border-radius:20px;padding:3px 8px;font-size:11px;color:var(--green);margin:2px}
-.empty{text-align:center;padding:30px 20px;color:var(--text3)}
-.empty i{font-size:28px;margin-bottom:8px;display:block;opacity:.35}
-.empty p{font-size:12px;line-height:1.6}
-.bar-row{margin-bottom:8px}
-.bar-lbl{display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin-bottom:3px}
-.bar-tr{height:5px;background:var(--bg4);border-radius:3px;overflow:hidden}
-.bar-fi{height:100%;border-radius:3px}
-
-/* MODAL */
-.modal-overlay{position:fixed;inset:0;background:#00000080;display:flex;align-items:center;justify-content:center;z-index:500;padding:20px}
-.modal{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:22px;max-width:440px;width:100%;max-height:90vh;overflow-y:auto;animation:fi .2s}
-.modal-title{font-size:15px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:7px}
-.modal-foot{display:flex;gap:8px;margin-top:14px;justify-content:flex-end}
-.chk-row{display:flex;align-items:center;gap:10px;padding:9px;background:var(--bg4);border-radius:var(--r2);border:1px solid var(--border);margin-bottom:6px;cursor:pointer;font-size:12px}
-.chk-row input[type=checkbox]{width:15px;height:15px;accent-color:var(--red)}
-
-/* LOGIN OVERLAY */
-.login-overlay{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:1000}
-.login-card{background:var(--bg3);border:1px solid var(--border);border-radius:16px;padding:32px 36px;text-align:center;max-width:360px;width:90%}
-.login-icon{font-size:44px;margin-bottom:14px}
-.login-title{font-size:18px;font-weight:600;margin-bottom:5px}
-.login-sub{font-size:12px;color:var(--text2);margin-bottom:20px;line-height:1.6}
-.login-feats{text-align:left;margin-bottom:20px;display:flex;flex-direction:column;gap:7px}
-.login-feat{font-size:12px;color:var(--text2);display:flex;align-items:center;gap:7px}
-.login-feat i{color:var(--green);font-size:13px;flex-shrink:0}
-.ms-login-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px;background:var(--ms);color:#fff;border:none;border-radius:var(--r2);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:10px}
-.ms-login-btn:hover{background:#006cbe}
-.skip-btn{font-size:12px;color:var(--text3);cursor:pointer;background:none;border:none;font-family:'DM Sans',sans-serif;text-decoration:underline}
-.skip-btn:hover{color:var(--text2)}
-
-/* TOAST */
-.toast-wrap{position:fixed;bottom:18px;right:18px;display:flex;flex-direction:column;gap:5px;z-index:9999;pointer-events:none}
-.toast{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r2);padding:9px 13px;font-size:12px;display:flex;align-items:center;gap:7px;min-width:190px;max-width:300px;box-shadow:0 4px 16px #00000050;animation:fi .3s}
-.toast.ok{border-color:var(--green)40;color:#6ee8a5}
-.toast.er{border-color:var(--red)40;color:#ff9090}
-.toast.in{border-color:var(--blue)40;color:#8dc8ff}
-.toast.wa{border-color:var(--amber)40;color:#f5c96a}
-
-::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
-
-.theme-toggle{background:var(--bg3);border:.5px solid var(--border2);border-radius:8px;color:var(--text2);width:34px;height:34px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;margin-left:8px}
-.theme-toggle:hover{background:var(--bg4);color:var(--text)}
-
-/* ── UX/UI: menu button, title, backdrop ── */
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px}
+.app{display:flex;flex-direction:column;height:100vh}
+.topbar{display:flex;align-items:center;padding:10px 16px;background:var(--bg2);border-bottom:.5px solid var(--border2);gap:8px;flex-shrink:0}
+.logo{display:flex;align-items:center;gap:8px;cursor:pointer}
+.logo-mark{font-size:22px}
+.logo-name{font-size:16px;font-weight:700;color:var(--text)}
+.logo-name span{color:var(--blue)}
+.theme-toggle{background:var(--bg3);border:.5px solid var(--border2);border-radius:8px;color:var(--text2);width:34px;height:34px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+.theme-toggle:hover{background:var(--bg4)}
 .menu-btn{display:none;background:var(--bg3);border:.5px solid var(--border2);border-radius:8px;color:var(--text);width:36px;height:36px;cursor:pointer;font-size:18px;align-items:center;justify-content:center;margin-right:6px}
-.menu-btn:hover{background:var(--bg4)}
 .topbar-title{font-size:14px;font-weight:600;color:var(--text);white-space:nowrap}
+.statusbar{font-size:11px;color:var(--text2);padding:4px 16px;background:var(--bg3);border-bottom:.5px solid var(--border);display:flex;align-items:center;gap:6px;flex-shrink:0}
+.st-dot{width:7px;height:7px;border-radius:50%;background:var(--text3);flex-shrink:0}
+.st-dot.ok{background:var(--green)}
+.body{display:flex;flex:1;overflow:hidden}
+.sidebar{width:220px;background:var(--bg2);border-right:.5px solid var(--border2);overflow-y:auto;padding:10px 8px;flex-shrink:0}
 .sidebar-backdrop{display:none;position:fixed;inset:0;background:#00000055;z-index:40}
 .sidebar-backdrop.show{display:block}
 .nav-sec{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);padding:10px 9px 4px;display:flex;align-items:center;gap:5px}
-.nav-item{transition:background .12s,color .12s}
+.nav-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:13px;color:var(--text);margin-bottom:2px;transition:background .12s}
 .nav-item:hover{background:var(--bg4)}
 .nav-item.active{background:var(--blue-dim);color:var(--blue);font-weight:600}
-
-/* ── Quick filter bar (reusable) ── */
+.nav-item i{font-size:16px;width:18px;text-align:center}
+.sidebar-bot{margin-top:16px;padding-top:12px;border-top:.5px solid var(--border)}
+.content{flex:1;overflow-y:auto;padding:14px;background:var(--bg)}
+.sec{display:none}
+.sec.on{display:block}
+.sec-title{font-size:20px;font-weight:700;color:var(--text);margin-bottom:4px}
+.sec-sub{font-size:13px;color:var(--text2);margin-bottom:14px}
+.card{background:var(--bg2);border:.5px solid var(--border2);border-radius:var(--r);padding:14px 16px;margin-bottom:12px}
+.card-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.form-row{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+.form-label{font-size:12px;color:var(--text2)}
+.form-row input,.form-row select,.form-row textarea{padding:8px 10px;border:.5px solid var(--border2);border-radius:var(--r2);background:var(--bg3);color:var(--text);font-size:13px;font-family:inherit}
+.form-row input:focus,.form-row select:focus{outline:none;border-color:var(--blue)}
+.btn-p{display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 16px;background:var(--blue);color:#fff;border:none;border-radius:var(--r2);cursor:pointer;font-size:13px;font-weight:500}
+.btn-p:hover{opacity:.9}
+.btn-p:disabled{opacity:.5;cursor:not-allowed}
+.btn-g{padding:8px 14px;background:transparent;border:.5px solid var(--border2);border-radius:var(--r2);color:var(--text2);cursor:pointer;font-size:13px}
+.btn-g:hover{background:var(--bg4)}
+.btn-sm{padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;border:.5px solid var(--border2);background:transparent;color:var(--text2)}
+.bs-rd{border-color:var(--red);color:var(--red)}
+.bs-gn{border-color:var(--green);color:var(--green)}
+.bs-gy{border-color:var(--border2);color:var(--text2)}
+.action-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:10px;background:var(--blue-dim);color:var(--blue);border:.5px solid var(--blue);border-radius:var(--r2);cursor:pointer;font-size:13px;font-weight:500;margin-top:8px}
+.action-btn:hover{background:var(--blue);color:#fff}
+.bank-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px;margin-bottom:12px}
+.bank-card{padding:8px 10px;border:.5px solid var(--border2);border-radius:var(--r2);cursor:pointer;text-align:center;font-size:12px;color:var(--text2);background:var(--bg3)}
+.bank-card:hover{border-color:var(--green);color:var(--green)}
+.bank-card.active{border-color:var(--green);color:var(--green);background:var(--green-dim);font-weight:600}
+.drop-zone{border:1.5px dashed var(--border2);border-radius:var(--r);padding:28px 16px;text-align:center;cursor:pointer;color:var(--text2);font-size:13px}
+.drop-zone:hover{border-color:var(--blue);color:var(--blue)}
+.drop-zone i{font-size:26px;margin-bottom:6px;display:block}
+.uz-label{font-size:14px;font-weight:500;color:var(--text);margin-bottom:4px}
+.uz-sub{font-size:11px;color:var(--text3)}
+.chip{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;background:var(--bg4);border:.5px solid var(--border2);font-size:11px;margin:2px}
+.prog-card{display:none;background:var(--bg3);border:.5px solid var(--border2);border-radius:var(--r);padding:12px 14px;margin:8px 0}
+.prog-bar{height:5px;background:var(--bg4);border-radius:3px;margin:8px 0}
+.prog-fill{height:100%;background:var(--blue);border-radius:3px;transition:width .3s}
+.step{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text3);padding:3px 0}
+.step.active{color:var(--blue)}
+.step.done{color:var(--green)}
+.step i{font-size:13px}
+.sum-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin:10px 0}
+.sum-it{background:var(--bg3);border:.5px solid var(--border);border-radius:var(--r2);padding:8px 10px}
+.sum-l{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px}
+.sum-v{font-size:16px;font-weight:600;font-family:monospace}
+.sum-v.gn{color:var(--green)}
+.sum-v.rd{color:var(--red)}
+.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.fc{padding:5px 12px;border-radius:16px;font-size:12px;font-weight:500;border:.5px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer}
+.fc.active{background:var(--blue-dim);border-color:var(--blue);color:var(--blue);font-weight:600}
+.rd-fc.active{background:var(--red-dim);border-color:var(--red);color:var(--red)}
+.am-fc.active{background:var(--amber-dim);border-color:var(--amber);color:var(--amber)}
+.search-bar{display:flex;gap:6px;margin-bottom:8px}
+.search-in{flex:1;padding:7px 10px;border:.5px solid var(--border2);border-radius:var(--r2);background:var(--bg3);color:var(--text);font-size:13px}
+.month-tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px}
+.mt{padding:4px 10px;border-radius:14px;font-size:11px;border:.5px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer}
+.mt.active{background:var(--blue-dim);border-color:var(--blue);color:var(--blue)}
+.trans-item{border-bottom:.5px solid var(--border);padding:9px 0}
+.ti-main{display:flex;align-items:center;gap:8px}
+.ti-ico{font-size:18px;flex-shrink:0}
+.ti-info{flex:1;min-width:0}
+.ti-desc{font-size:13px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ti-meta{font-size:11px;color:var(--text2)}
+.ti-val{font-size:13px;font-weight:600;font-family:monospace;white-space:nowrap}
+.ti-val.gn{color:var(--green)}
+.ti-val.rd{color:var(--red)}
+.ti-actions{display:flex;gap:4px;padding-top:5px;justify-content:flex-end}
+.trans-item.conf{opacity:.7}
+.empty{text-align:center;padding:40px 20px;color:var(--text2)}
+.empty i{font-size:36px;margin-bottom:8px;display:block}
+.alert{border-radius:var(--r2);padding:9px 12px;margin-bottom:8px;font-size:13px;line-height:1.6;display:flex;gap:7px}
+.alert i{font-size:15px;flex-shrink:0;margin-top:1px}
+.a-red{background:var(--red-dim);border:.5px solid #d6333330;color:var(--red)}
+.a-amber{background:var(--amber-dim);border:.5px solid #c47d0a30;color:var(--amber)}
+.a-green{background:var(--green-dim);border:.5px solid #1a9d5e30;color:var(--green)}
+.a-blue{background:var(--blue-dim);border:.5px solid #2563eb30;color:var(--blue)}
+.badge{display:inline-block;font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px}
+.b-rd{background:var(--red-dim);color:var(--red)}
+.b-am{background:var(--amber-dim);color:var(--amber)}
+.b-gn{background:var(--green-dim);color:var(--green)}
+.b-bl{background:var(--blue-dim);color:var(--blue)}
+.reset-btn{width:100%;padding:7px;font-size:12px;color:var(--text2);border:.5px solid var(--border2);border-radius:var(--r2);background:transparent;cursor:pointer}
+.reset-btn:hover{color:var(--red);border-color:var(--red)}
+.modal-overlay{position:fixed;inset:0;background:#00000080;display:flex;align-items:center;justify-content:center;z-index:100}
+.modal{background:var(--bg2);border-radius:var(--r);padding:20px 22px;width:90%;max-width:400px;border:.5px solid var(--border2);max-height:90vh;overflow-y:auto}
+.modal-title{font-size:16px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:7px}
+.modal-foot{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+.chk-row{display:flex;align-items:center;gap:8px;font-size:13px;padding:6px 0;cursor:pointer}
 .qfilter{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:12px;padding:10px 12px;background:var(--bg3);border:.5px solid var(--border);border-radius:var(--r2)}
-.qfilter-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-right:2px}
-.qf-chip{padding:4px 11px;border-radius:16px;font-size:12px;font-weight:500;border:.5px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;white-space:nowrap}
-.qf-chip:hover{background:var(--bg4);color:var(--text)}
+.qfilter-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em}
+.qf-chip{padding:4px 11px;border-radius:16px;font-size:12px;font-weight:500;border:.5px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer}
+.qf-chip:hover{background:var(--bg4)}
 .qf-chip.active{background:var(--blue-dim);border-color:var(--blue);color:var(--blue)}
 .qf-input{padding:5px 10px;border-radius:16px;font-size:12px;border:.5px solid var(--border2);background:var(--bg2);color:var(--text);width:90px}
 .qf-sep{width:.5px;height:18px;background:var(--border2);margin:0 2px}
-
-/* ── RESPONSIVE ── */
-@media (max-width: 860px){
-  .menu-btn{display:flex}
-  .sidebar{position:fixed;top:0;left:0;bottom:0;z-index:50;width:240px;background:var(--bg2);transform:translateX(-100%);transition:transform .25s ease;box-shadow:2px 0 20px #00000020}
-  .sidebar.open{transform:translateX(0)}
-  .content{width:100%}
-  .topbar-title{font-size:13px;max-width:140px;overflow:hidden;text-overflow:ellipsis}
-  .logo-name{display:none}
-  .sec{padding:14px}
-  .card{padding:12px 13px}
-}
-@media (max-width: 480px){
-  .topbar{padding:8px 12px}
-  .bank-cards{grid-template-columns:repeat(auto-fill,minmax(70px,1fr))}
-  .qfilter{padding:8px 10px}
-  .sum-strip{grid-template-columns:1fr 1fr !important}
-}
-
-
-/* ── Data status banner ── */
 .data-status{display:flex;align-items:center;gap:10px;padding:9px 13px;border-radius:var(--r2);margin-bottom:12px;font-size:12px;line-height:1.4}
 .data-status.ok{background:var(--green-dim);border:.5px solid var(--green)}
 .data-status.partial{background:var(--amber-dim);border:.5px solid var(--amber)}
@@ -313,36 +158,22 @@ select option{background:var(--bg3)}
 .data-status.partial i{color:var(--amber)}
 .data-status.empty i{color:var(--blue)}
 .ds-text{flex:1}
-.ds-text b{font-weight:600}
-.ds-cta{font-size:11px;font-weight:600;padding:4px 10px;border-radius:14px;border:none;cursor:pointer;white-space:nowrap;background:var(--bg2);color:var(--text)}
-.ds-cta:hover{opacity:.85}
-
-/* ── Sticky dashboard summary ── */
+.ds-cta{font-size:11px;font-weight:500;padding:4px 10px;border-radius:14px;border:none;cursor:pointer;white-space:nowrap;background:var(--bg2);color:var(--text)}
 .dash-sticky{position:sticky;top:0;z-index:20;background:var(--bg2);border-bottom:.5px solid var(--border);padding:10px 0;margin:-14px 0 14px;display:flex;gap:8px;flex-wrap:wrap}
-.dash-sticky.hidden{display:none}
 .dss-pill{display:flex;flex-direction:column;background:var(--bg3);border:.5px solid var(--border);border-radius:10px;padding:7px 12px;min-width:90px}
 .dss-l{font-size:9px;color:var(--text2);text-transform:uppercase;letter-spacing:.04em}
 .dss-v{font-size:15px;font-weight:700;font-family:monospace}
-
-
-#diag-chat-area{max-height:340px;overflow-y:auto;margin-bottom:10px}
-.dots{animation:diagdots 1.2s infinite}
-@keyframes diagdots{0%,20%{opacity:.3}50%{opacity:1}100%{opacity:.3}}
-
-
-/* ── Diagnóstico UX ── */
-.diag-hero{background:linear-gradient(135deg,var(--blue-dim),transparent);border:.5px solid var(--blue);border-radius:var(--r);padding:16px;margin-bottom:14px}
+.diag-hero{background:var(--blue-dim);border:.5px solid var(--blue);border-radius:var(--r);padding:16px;margin-bottom:14px}
 .diag-hero-top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:12px}
 .diag-verdict{flex:1;min-width:160px}
 .diag-verdict-label{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--text2)}
 .diag-verdict-text{font-size:16px;font-weight:700;line-height:1.3;margin-top:3px}
 .diag-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
 .diag-kpi{background:var(--bg2);border:.5px solid var(--border);border-radius:10px;padding:9px 11px}
-.diag-kpi-l{font-size:9px;text-transform:uppercase;letter-spacing:.04em;color:var(--text2)}
+.diag-kpi-l{font-size:9px;text-transform:uppercase;letter-spacing:.04em;color:var(--text2);margin-bottom:3px}
 .diag-kpi-v{font-size:17px;font-weight:700;font-family:monospace;margin-top:2px}
 .diag-jump{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
 .diag-jump-btn{display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:18px;font-size:12px;font-weight:600;border:.5px solid var(--border2);background:var(--bg3);color:var(--text);cursor:pointer}
-.diag-jump-btn:hover{background:var(--bg4)}
 .diag-jump-btn.pay{border-color:var(--green);color:var(--green)}
 .diag-jump-btn.skip{border-color:var(--red);color:var(--red)}
 .diag-jump-btn.grow{border-color:var(--amber);color:var(--amber)}
@@ -356,20 +187,12 @@ select option{background:var(--bg3)}
 .diag-acc.open .diag-acc-chev{transform:rotate(90deg)}
 .diag-acc-body{padding:0 15px;max-height:0;overflow:hidden;transition:max-height .25s ease,padding .25s ease}
 .diag-acc.open .diag-acc-body{max-height:2000px;padding:13px 15px}
-.diag-chat-bubble{padding:9px 13px;border-radius:14px;margin-bottom:8px;font-size:13px;line-height:1.55;max-width:90%;word-wrap:break-word}
-.diag-chat-bubble.user{background:var(--blue);color:#fff;margin-left:auto;border-bottom-right-radius:4px}
-.diag-chat-bubble.ai{background:var(--bg4);color:var(--text);border-bottom-left-radius:4px}
-.diag-chat-bubble.typing{color:var(--text2);font-style:italic}
 #diag-chat-area{max-height:340px;overflow-y:auto;margin-bottom:10px;display:flex;flex-direction:column}
-
-
-/* ── FLUXO DE CAIXA ── */
 .fc-toolbar{display:flex;flex-direction:column;gap:8px;padding:10px 12px;background:var(--bg3);border:.5px solid var(--border);border-radius:var(--r);margin-bottom:12px}
 .fc-filter-group{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .fc-label{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--text3);white-space:nowrap;min-width:58px}
 .fc-chips{display:flex;gap:4px;flex-wrap:wrap}
 .fc-chip{padding:4px 10px;border-radius:14px;font-size:11px;font-weight:500;border:.5px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;transition:all .12s}
-.fc-chip:hover{background:var(--bg4);color:var(--text)}
 .fc-chip.active{background:var(--blue-dim);border-color:var(--blue);color:var(--blue);font-weight:600}
 .fc-custom{display:flex;align-items:center;gap:6px;padding:4px 0}
 .fc-custom input{border:.5px solid var(--border2);border-radius:6px;background:var(--bg2);color:var(--text);font-size:11px;padding:4px 8px}
@@ -380,11 +203,9 @@ select option{background:var(--bg3)}
 .fc-kpi-sub{font-size:9px;color:var(--text3);margin-top:2px}
 .fc-table-head{display:grid;padding:7px 12px;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--text2);background:var(--bg3);border-bottom:.5px solid var(--border)}
 .fc-row{display:grid;padding:10px 12px;border-bottom:.5px solid var(--border);cursor:pointer;transition:background .1s}
-.fc-row:hover{background:var(--bg3)}
-.fc-row.open{background:var(--bg4)}
+.fc-row:hover,.fc-row.open{background:var(--bg3)}
 .fc-drill{padding:8px 12px 12px 28px;background:var(--bg3);border-bottom:.5px solid var(--border);font-size:11px}
 .fc-drill-row{display:flex;justify-content:space-between;align-items:center;padding:3px 0;color:var(--text2)}
-.fc-drill-row .val{font-family:monospace;font-size:11px}
 .fc-bar{height:4px;border-radius:2px;margin-top:3px;opacity:.8}
 .fc-badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600}
 .fc-badge.pos{background:var(--green-dim);color:var(--green)}
@@ -392,62 +213,100 @@ select option{background:var(--bg3)}
 .fc-badge.neu{background:var(--bg4);color:var(--text2)}
 .fc-insight{display:flex;gap:9px;padding:10px 12px;background:var(--bg2);border:.5px solid var(--border);border-radius:var(--r2);margin-bottom:8px;font-size:12px;line-height:1.6}
 .fc-insight i{font-size:16px;flex-shrink:0;margin-top:1px}
-@media(max-width:480px){
-  .fc-kpi-v{font-size:15px}
-  .fc-toolbar{padding:8px}
+.diag-chat-bubble{padding:9px 13px;border-radius:14px;margin-bottom:8px;font-size:13px;line-height:1.55;max-width:90%;word-wrap:break-word}
+.diag-chat-bubble.user{background:var(--blue);color:#fff;margin-left:auto;border-bottom-right-radius:4px}
+.diag-chat-bubble.ai{background:var(--bg4);color:var(--text);border-bottom-left-radius:4px}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:12px}
+.bar-lbl{width:120px;flex-shrink:0;color:var(--text2);font-size:11px}
+.bar-tr{flex:1;height:6px;background:var(--bg4);border-radius:3px;overflow:hidden}
+.bar-fi{height:100%;border-radius:3px}
+.bar-val{width:60px;text-align:right;font-family:monospace;font-size:11px;flex-shrink:0}
+.chat-sec{display:flex;flex-direction:column;height:calc(100vh - 120px)}
+#chat-msgs{flex:1;overflow-y:auto;padding:10px 0}
+.msg-row{display:flex;margin-bottom:12px}
+.msg-row.user{justify-content:flex-end}
+.bubble{max-width:80%;padding:10px 13px;border-radius:14px;font-size:13px;line-height:1.5}
+.bubble.ai{background:var(--bg3);border:.5px solid var(--border2);border-bottom-left-radius:4px}
+.bubble.user{background:var(--blue);color:#fff;border-bottom-right-radius:4px}
+.chat-input-row{display:flex;gap:8px;padding-top:10px;flex-shrink:0}
+#chat-inp{flex:1;padding:10px 12px;border:.5px solid var(--border2);border-radius:var(--r2);background:var(--bg3);color:var(--text);font-size:13px;font-family:inherit;resize:none}
+.pills{display:flex;gap:6px;flex-wrap:wrap;padding-bottom:6px}
+.pill{padding:6px 12px;border:.5px solid var(--border2);border-radius:20px;font-size:12px;color:var(--text2);cursor:pointer;background:var(--bg3)}
+.pill:hover{border-color:var(--blue);color:var(--blue)}
+.chat-welcome{padding:20px 0}
+.login-overlay{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:1000}
+.login-card{background:var(--bg3);border:1px solid var(--border2);border-radius:16px;padding:32px 36px;text-align:center;max-width:360px;width:90%}
+.login-icon{font-size:44px;margin-bottom:14px}
+.login-title{font-size:18px;font-weight:600;margin-bottom:5px}
+.login-sub{font-size:12px;color:var(--text2);margin-bottom:20px;line-height:1.6}
+.login-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;background:var(--ms);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;margin-bottom:10px}
+.login-btn:hover{opacity:.9}
+.login-skip{font-size:12px;color:var(--text2);cursor:pointer;text-decoration:underline}
+.login-feats{text-align:left;margin-bottom:20px;display:flex;flex-direction:column;gap:7px}
+.login-feat{font-size:12px;color:var(--text);display:flex;align-items:center;gap:7px}
+/* Diag section extras */
+#diag-chat-card{margin-top:12px}
+.diag-suggestions{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.diag-sug{padding:6px 12px;border:.5px solid var(--border2);border-radius:20px;font-size:11px;cursor:pointer;background:var(--bg3);color:var(--text2)}
+.diag-sug:hover{border-color:var(--blue);color:var(--blue)}
+.diag-input-row{display:flex;gap:6px}
+#diag-inp{flex:1;padding:8px 10px;border:.5px solid var(--border2);border-radius:var(--r2);background:var(--bg3);color:var(--text);font-size:13px;font-family:inherit}
+/* ROI */
+.roi-tabs{display:flex;gap:4px;margin-bottom:12px}
+.roi-tab{padding:7px 16px;border-radius:var(--r2);font-size:13px;cursor:pointer;border:.5px solid var(--border2);background:transparent;color:var(--text2)}
+.roi-tab.active{background:var(--blue-dim);border-color:var(--blue);color:var(--blue);font-weight:600}
+/* Nav items color overrides */
+.chat-nav{color:var(--blue)!important}
+/* Responsive */
+@media(max-width:860px){
+  .menu-btn{display:flex}
+  .sidebar{position:fixed;top:0;left:0;bottom:0;z-index:50;width:240px;background:var(--bg2);transform:translateX(-100%);transition:transform .25s ease}
+  .sidebar.open{transform:translateX(0)}
+  .content{width:100%}
+  .logo-name{display:none}
 }
-
+@media(max-width:480px){
+  .topbar{padding:8px 12px}
+  .bank-cards{grid-template-columns:repeat(auto-fill,minmax(70px,1fr))}
+}
 </style>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 </head>
 <body>
-<div class="app" id="main-app" style="display:none">
+<div class="app">
 <div class="topbar">
-  <button class="menu-btn" id="menu-btn" onclick="toggleSidebar()" title="Menu"><i class="ti ti-menu-2"></i></button>
-  <div class="logo"><div class="logo-mark">💰</div><div class="logo-name">Finance<span>AI</span></div></div>
+  <button class="menu-btn" id="menu-btn" onclick="toggleSidebar()"><i class="ti ti-menu-2"></i></button>
+  <div class="logo" onclick="go('chat')"><div class="logo-mark">💰</div><div class="logo-name">Finance<span>AI</span></div></div>
   <div style="flex:1"></div>
   <div class="topbar-title" id="topbar-title"></div>
   <div style="flex:1"></div>
-  <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Alternar tema"><i class="ti ti-moon"></i></button>
+  <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()"><i class="ti ti-moon"></i></button>
 </div>
-<div class="statusbar">
-  <div class="od-info"><div class="od-dot" id="od-dot"></div><span id="od-status">Não conectado</span><span id="od-user" style="color:var(--text3);font-size:10px;font-family:monospace"></span><span id="od-last" style="color:var(--text3)"></span></div>
-  <div class="od-actions">
-    <button class="ms-btn" id="od-login-btn" onclick="odLogin()"><i class="ti ti-brand-windows" style="font-size:10px"></i> OneDrive</button>
-    <button class="out-btn" id="od-logout-btn" style="display:none" onclick="odLogout()">Sair</button>
-  </div>
-</div>
+<div class="statusbar"><div class="st-dot" id="od-dot"></div><span id="od-status">Não conectado</span></div>
 <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeSidebar()"></div>
 <div class="body">
 <div class="sidebar" id="sidebar">
   <div class="nav-item chat-nav active" id="nav-chat" onclick="go('chat')"><i class="ti ti-message-chatbot"></i> Consultor IA</div>
   <div class="nav-item" id="nav-dashboard" onclick="go('dashboard')" style="color:var(--blue)"><i class="ti ti-layout-dashboard"></i> Dashboard</div>
   <div class="nav-item" id="nav-diag" onclick="go('diag')" style="color:var(--blue)"><i class="ti ti-stethoscope"></i> Diagnóstico</div>
-
   <div class="nav-sec"><i class="ti ti-wallet" style="font-size:11px"></i> Dinheiro</div>
   <div class="nav-item" id="nav-extrato" onclick="go('extrato')"><i class="ti ti-file-invoice"></i> Extrato bancário</div>
-  <div class="nav-item" id="nav-faturas" onclick="go('faturas')"><i class="ti ti-credit-card"></i> Faturas de cartão</div>
+  <div class="nav-item" id="nav-faturas" onclick="go('faturas')" style="color:#a35200"><i class="ti ti-credit-card"></i> Faturas de cartão</div>
   <div class="nav-item" id="nav-importacoes" onclick="go('importacoes')"><i class="ti ti-file-import"></i> Importações</div>
   <div class="nav-item" id="nav-relatorio" onclick="go('relatorio')"><i class="ti ti-report-money"></i> Relatório cartões</div>
   <div class="nav-item" id="nav-mensal" onclick="go('mensal')"><i class="ti ti-calendar-stats"></i> Mês a mês</div>
   <div class="nav-item" id="nav-dividas" onclick="go('dividas')"><i class="ti ti-coins"></i> Dívidas</div>
   <div class="nav-item" id="nav-equilibrio" onclick="go('equilibrio')"><i class="ti ti-target"></i> Ponto de equilíbrio</div>
   <div class="nav-item" id="nav-fluxo" onclick="go('fluxo')" style="color:var(--blue)"><i class="ti ti-cash"></i> Fluxo de caixa</div>
-
-  <div class="nav-sec"><i class="ti ti-trending-up" style="font-size:11px"></i> Renda & negócios</div>
+  <div class="nav-sec"><i class="ti ti-trending-up" style="font-size:11px"></i> Renda &amp; negócios</div>
   <div class="nav-item" id="nav-lancha" onclick="go('lancha')" style="color:#0F6E56"><i class="ti ti-ship"></i> DRE Lancha</div>
   <div class="nav-item" id="nav-roi" onclick="go('roi')" style="color:#534AB7"><i class="ti ti-chart-pie"></i> ROI Investimentos</div>
-
   <div class="nav-sec"><i class="ti ti-file-description" style="font-size:11px"></i> Relatórios</div>
   <div class="nav-item" id="nav-pdf" onclick="go('pdf')"><i class="ti ti-file-type-pdf"></i> Gerar relatório PDF</div>
-
   <div class="nav-sec"><i class="ti ti-alert-triangle" style="font-size:11px"></i> Alertas</div>
   <div class="nav-item" id="nav-golpes" onclick="go('golpes')" style="color:var(--red)"><i class="ti ti-shield-x"></i> Dossiê de golpes</div>
   <div class="nav-item" id="nav-maquininha" onclick="go('maquininha')" style="color:var(--red)"><i class="ti ti-device-mobile"></i> Maquininha</div>
-
   <div class="nav-sec"><i class="ti ti-settings" style="font-size:11px"></i> Configurar</div>
   <div class="nav-item" id="nav-nomen" onclick="go('nomen')"><i class="ti ti-tags"></i> Regras de nomes</div>
-
   <div class="sidebar-bot">
     <div style="font-size:10px;color:var(--text3);margin-bottom:8px">Selic: <span style="color:var(--amber);font-family:monospace">15% a.a.</span></div>
     <button class="reset-btn" onclick="openReset()"><i class="ti ti-refresh" style="font-size:11px"></i> Zerar sistema</button>
@@ -455,52 +314,35 @@ select option{background:var(--bg3)}
 </div>
 <div class="content">
 <!-- DASHBOARD -->
-<div class="sec" id="sec-dashboard">
-<div class="sec-title">Dashboard inteligente</div>
-<div class="sec-sub">Visão preditiva da sua situação financeira — atualiza conforme você adiciona dados</div>
-<div id="dash-content"></div>
-</div>
+<div class="sec" id="sec-dashboard"><div class="sec-title">Dashboard inteligente</div><div class="sec-sub">Visão preditiva — atualiza conforme você adiciona dados</div><div id="dash-content"></div></div>
+<!-- CHAT -->
 <div class="sec chat-sec on" id="sec-chat">
-<input type="file" id="chat-file" style="display:none" accept=".pdf,image/*" multiple onchange="onChatFile(event)"/>
-<div id="chat-welcome" style="overflow-y:auto;flex:1">
-<div class="welcome">
-<div class="welcome-head">
-<div class="welcome-icon">💰</div>
-<div class="welcome-title">Olá! Sou seu consultor financeiro</div>
-<div class="welcome-sub">Envie seu extrato bancário ou me conte sua situação financeira — vou analisar e ajudar a montar um plano de saída.</div>
+<input type="file" id="chat-file" style="display:none" accept="image/*" onchange="onChatFile(event)"/>
+<div class="chat-welcome" id="chat-welcome">
+<div style="text-align:center;padding:16px 0 10px"><div style="font-size:40px">💰</div><div style="font-size:18px;font-weight:700;margin-top:8px">FinanceAI</div><div style="font-size:13px;color:var(--text2);margin-top:4px">Consultora financeira pessoal — Rosane Machado</div></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px">
+<div class="card" style="cursor:pointer;padding:12px" onclick="go('extrato')"><div style="font-size:20px;margin-bottom:5px">📊</div><div style="font-size:13px;font-weight:600">Extrato bancário</div><div style="font-size:11px;color:var(--text2)">Importe e classifique</div></div>
+<div class="card" style="cursor:pointer;padding:12px" onclick="go('diag')"><div style="font-size:20px;margin-bottom:5px">🩺</div><div style="font-size:13px;font-weight:600">Diagnóstico</div><div style="font-size:11px;color:var(--text2)">Situação atual</div></div>
+<div class="card" style="cursor:pointer;padding:12px" onclick="go('dividas')"><div style="font-size:20px;margin-bottom:5px">💳</div><div style="font-size:13px;font-weight:600">Dívidas</div><div style="font-size:11px;color:var(--text2)">Plano de quitação</div></div>
+<div class="card" style="cursor:pointer;padding:12px" onclick="go('fluxo')"><div style="font-size:20px;margin-bottom:5px">📈</div><div style="font-size:13px;font-weight:600">Fluxo de caixa</div><div style="font-size:11px;color:var(--text2)">Real vs previsto</div></div>
 </div>
-<div class="upload-zone" onclick="document.getElementById('chat-file').click()">
-<i class="ti ti-file-invoice"></i>
-<div class="uz-label">Enviar extrato bancário (PDF)</div>
-<div class="uz-sub">Itaú · Nubank · Inter · Bradesco · qualquer banco</div>
+<div class="pills" style="margin-top:12px" id="chat-pills"></div>
 </div>
-<div style="font-size:12px;color:var(--text3);text-align:center;margin-bottom:12px">ou escolha um ponto de partida:</div>
-<div class="quick-cards">
-<div class="quick-card" onclick="chatSend('Quero entender minha situação financeira atual e o que preciso melhorar')"><div class="qc-icon">📊</div><div class="qc-text"><div class="t">Como estou financeiramente?</div><div class="s">Diagnóstico da situação atual</div></div></div>
-<div class="quick-card" onclick="chatSend('Tenho dívidas e quero sair do vermelho. Me ajuda a criar um plano?')"><div class="qc-icon">🚀</div><div class="qc-text"><div class="t">Quero sair do vermelho</div><div class="s">Plano personalizado de quitação</div></div></div>
-<div class="quick-card" onclick="chatSend('Quanto estou pagando de juros todo mês? Como reduzir isso?')"><div class="qc-icon">🔴</div><div class="qc-text"><div class="t">Estou pagando juros altos?</div><div class="s">Mapeamento de encargos</div></div></div>
-<div class="quick-card" onclick="chatSend('Como posso economizar mais dinheiro todo mês mesmo com dívidas?')"><div class="qc-icon">💰</div><div class="qc-text"><div class="t">Quero economizar mais</div><div class="s">Estratégias práticas</div></div></div>
+<div id="chat-area" style="display:none"><div id="chat-msgs"></div></div>
+<div class="chat-input-row">
+<textarea id="chat-inp" placeholder="Pergunte sobre sua situação financeira..." rows="1" onkeydown="chatKey(event)" oninput="autoGrow(this)"></textarea>
+<button class="btn-p" onclick="chatSend()"><i class="ti ti-send" style="font-size:15px"></i></button>
+<button class="btn-g" onclick="document.getElementById('chat-file').click()" title="Enviar print"><i class="ti ti-camera"></i></button>
 </div>
 </div>
-</div>
-<div id="chat-area" style="display:none;flex-direction:column;flex:1;overflow:hidden">
-<div class="chat-msgs" id="chat-msgs"></div>
-<div class="pills-row" id="pills-row" style="display:none"></div>
-<div class="chat-input-wrap">
-<button class="attach-btn" onclick="document.getElementById('chat-file').click()" title="Enviar PDF"><i class="ti ti-paperclip" aria-hidden="true"></i></button>
-      <button class="attach-btn" onclick="openPrint()" title="Enviar print/screenshot"><i class="ti ti-camera" aria-hidden="true"></i></button>
-<textarea class="chat-input" id="chat-input" placeholder="Pergunte sobre suas finanças..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendInput()}" oninput="autoH(this)"></textarea>
-<button class="send-btn" id="send-btn" onclick="sendInput()"><i class="ti ti-send"></i></button>
-</div>
-</div>
-</div>
+<!-- EXTRATO -->
 <div class="sec" id="sec-extrato">
 <div class="sec-title">Extrato bancário</div>
 <div class="sec-sub">Importe o PDF — o sistema lê, classifica e faz o diagnóstico completo</div>
 <div class="card">
 <div class="card-title"><i class="ti ti-building-bank"></i> Banco</div>
 <div class="bank-cards">
-<div class="bank-card" id="bk-itau" onclick="selBank('itau')">Itaú</div>
+<div class="bank-card active" id="bk-itau" onclick="selBank('itau')">Itaú</div>
 <div class="bank-card" id="bk-nubank" onclick="selBank('nubank')">Nubank</div>
 <div class="bank-card" id="bk-inter" onclick="selBank('inter')">Inter</div>
 <div class="bank-card" id="bk-bradesco" onclick="selBank('bradesco')">Bradesco</div>
@@ -511,8 +353,8 @@ select option{background:var(--bg3)}
 </div>
 </div>
 <div class="card">
-<div class="card-title"><i class="ti ti-file-type-pdf"></i> Importar PDF</div>
-<div class="drop-zone" id="ext-drop" onclick="document.getElementById('ext-file').click()" ondragover="doDrag(event,true)" ondragleave="doDrag(event,false)" ondrop="doDrop(event)">
+<div class="card-title"><i class="ti ti-file-type-pdf"></i> Importar extrato (PDF ou print)</div>
+<div class="drop-zone" id="ext-drop" onclick="document.getElementById('ext-file').click()">
 <i class="ti ti-cloud-upload"></i>
 <div class="uz-label">Arraste o PDF ou clique</div>
 <div class="uz-sub">Extrato de qualquer período · até 1 ano</div>
@@ -523,10 +365,10 @@ select option{background:var(--bg3)}
 <div class="prog-card" id="prog-card">
 <div style="font-size:12px;color:var(--text2);margin-bottom:4px" id="prog-label">Analisando...</div>
 <div class="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
-<div class="step" id="st-1"><i class="ti ti-file-type-pdf"></i> Lendo páginas do PDF</div>
-<div class="step" id="st-2"><i class="ti ti-brain"></i> IA analisando transações</div>
-<div class="step" id="st-3"><i class="ti ti-tag"></i> Classificando por categoria</div>
-<div class="step" id="st-4"><i class="ti ti-alert-triangle"></i> Identificando juros e alertas</div>
+<div class="step" id="st-1"><i class="ti ti-file-type-pdf"></i> Lendo o PDF</div>
+<div class="step" id="st-2"><i class="ti ti-brain"></i> Extraindo lançamentos</div>
+<div class="step" id="st-3"><i class="ti ti-tag"></i> Classificando categorias</div>
+<div class="step" id="st-4"><i class="ti ti-alert-triangle"></i> Identificando alertas</div>
 <div class="step" id="st-5"><i class="ti ti-check"></i> Montando relatório</div>
 </div>
 <div id="ext-results" style="display:none">
@@ -534,13 +376,13 @@ select option{background:var(--bg3)}
 <div class="sum-strip" id="ext-summary"></div>
 <div id="ext-alerts"></div>
 <div id="ext-month-tabs" class="month-tabs" style="display:none"></div>
-<div class="search-bar"><input class="search-in" id="ext-search" placeholder="🔍 Buscar transação..." oninput="onSearch(this.value)"/><button class="bs-gy btn-sm" onclick="clearSearch()" style="white-space:nowrap">Limpar</button></div>
+<div class="search-bar"><input class="search-in" id="ext-search" placeholder="🔍 Buscar lançamento..." oninput="onSearch(this.value)"/><button class="bs-gy btn-sm" onclick="clearSearch()">Limpar</button></div>
 <div class="filter-row">
 <button class="fc active" onclick="setFilter('todas',event)">Todas</button>
 <button class="fc" onclick="setFilter('debito',event)">Débitos</button>
 <button class="fc" onclick="setFilter('credito',event)">Créditos</button>
 <button class="fc rd-fc" onclick="setFilter('juros',event)">🔴 Juros</button>
-<button class="fc am-fc" onclick="setFilter('suspeita',event)">⚠️ Questionar</button>
+<button class="fc am-fc" onclick="setFilter('suspeita',event)">⚠️ Suspeitos</button>
 <button class="fc" onclick="setFilter('cartao',event)">💳 Fatura</button>
 </div>
 <div class="qfilter">
@@ -558,21 +400,19 @@ select option{background:var(--bg3)}
 </div>
 </div>
 </div>
-<div class="sec" id="sec-mensal">
-<div class="sec-title">Visão mês a mês</div>
-<div class="sec-sub">Evolução das finanças ao longo dos meses importados</div>
-<div id="mensal-content"><div class="empty"><i class="ti ti-calendar-stats"></i><p>Importe seu extrato para ver<br>a visão mês a mês.</p></div></div>
-</div>
+<!-- MES A MES -->
+<div class="sec" id="sec-mensal"><div class="sec-title">Mês a mês</div><div class="sec-sub">Evolução mensal das entradas e saídas</div><div id="mensal-content"></div></div>
+<!-- DIVIDAS -->
 <div class="sec" id="sec-dividas">
 <div class="sec-title">Dívidas</div>
-<div class="sec-sub">Cadastre suas dívidas para ver estratégias de quitação</div>
+<div class="sec-sub">Cadastre suas dívidas — o sistema monta o plano de quitação pelo método avalanche</div>
 <div class="card">
 <div class="card-title"><i class="ti ti-plus"></i> Adicionar dívida</div>
-<div class="form-row"><label class="form-label">Nome</label><input type="text" id="dn" placeholder="Ex: Cartão Nubank"/></div>
-<div class="form-row"><label class="form-label">Valor total (R$)</label><input type="number" id="dv" placeholder="0,00" min="0"/></div>
-<div class="form-row"><label class="form-label">Juros ao mês (%)</label><input type="number" id="dj" placeholder="Ex: 12.75" step="0.1" min="0"/></div>
-<div class="form-row"><label class="form-label">Parcela mínima (R$)</label><input type="number" id="dp" placeholder="Opcional" min="0"/></div>
-<button class="btn-p" style="margin-top:4px" onclick="addDebt()"><i class="ti ti-plus"></i> Adicionar</button>
+<div class="form-row"><label class="form-label">Nome do credor</label><input type="text" id="d-nome" placeholder="Ex: Itaú Passaí"/></div>
+<div class="form-row"><label class="form-label">Saldo devedor (R$)</label><input type="number" id="d-valor" placeholder="Ex: 10135.84" min="0" step="0.01"/></div>
+<div class="form-row"><label class="form-label">Taxa de juros (%/mês)</label><input type="number" id="d-juros" placeholder="Ex: 15.87" min="0" step="0.01"/></div>
+<div class="form-row"><label class="form-label">Parcela mensal (R$)</label><input type="number" id="d-parcela" placeholder="opcional" min="0" step="0.01"/></div>
+<button class="btn-p" style="width:100%" onclick="addDebt()"><i class="ti ti-plus" style="font-size:12px"></i> Adicionar</button>
 </div>
 <div class="qfilter" id="debt-filter" style="display:none">
 <span class="qfilter-label">Ordenar por</span>
@@ -583,379 +423,155 @@ select option{background:var(--bg3)}
 <div id="debt-list"></div>
 <div id="debt-strats"></div>
 </div>
+<!-- NOMEN -->
 <div class="sec" id="sec-nomen">
 <div class="sec-title">Regras de classificação</div>
 <div class="sec-sub">Ensine ao sistema como reconhecer termos do seu banco — valem para todos os extratos futuros</div>
 <div class="card">
 <div class="card-title"><i class="ti ti-plus"></i> Nova regra</div>
-<div class="form-row"><label class="form-label">Quando a descrição contiver</label><input type="text" id="nr-from" placeholder="Ex: PAGADORIA MARINHA, NUBANK, CREDSYSTEM..."/></div>
+<div class="form-row"><label class="form-label">Quando a descrição contiver</label><input type="text" id="nr-from" placeholder="Ex: PAGADORIA MARINHA"/></div>
 <div class="form-row"><label class="form-label">Classificar como</label>
 <select id="nr-tipo">
-<option value="receita">↑ Receita (entrada de dinheiro)</option>
-<option value="despesa">↓ Despesa (saída de dinheiro)</option>
-<option value="ignore">🚫 Ignorar (não lançar)</option>
+<option value="receita">↑ Receita (entrada)</option>
+<option value="despesa">↓ Despesa (saída)</option>
+<option value="ignore">✗ Ignorar lançamento</option>
 </select></div>
-<div class="form-row"><label class="form-label">Categoria</label>
-<select id="nr-cat">
-<option value="salario">💰 Salário / renda</option>
-<option value="emprestimo">📋 Empréstimo/consignado</option>
-<option value="cartao">💳 Pagamento de fatura</option>
-<option value="juros">🔴 Juros e encargos</option>
-<option value="contas">💡 Contas (luz, água, etc)</option>
-<option value="alimentacao">🍽️ Alimentação</option>
-<option value="transporte">🚗 Transporte</option>
-<option value="saude">❤️ Saúde</option>
-<option value="educacao">📚 Educação</option>
-<option value="lazer">🎭 Lazer</option>
-<option value="compras">🛍️ Compras</option>
-<option value="outros">📦 Outros</option>
-</select></div>
-<div class="form-row"><label class="form-label">Observação (opcional)</label><input type="text" id="nr-obs" placeholder="Ex: Soldo da Marinha — renda mensal fixa"/></div>
-<button class="btn-p" onclick="addNomen()"><i class="ti ti-plus"></i> Salvar regra</button>
+<div class="form-row"><label class="form-label">Categoria</label><input type="text" id="nr-cat" placeholder="Ex: salario, juros, alimentacao"/></div>
+<div class="form-row"><label class="form-label">Observação</label><input type="text" id="nr-obs" placeholder="opcional"/></div>
+<button class="btn-p" style="width:100%;margin-top:4px" onclick="addNomen()"><i class="ti ti-plus" style="font-size:12px"></i> Salvar regra</button>
 </div>
-<div style="margin-bottom:10px">
-<div style="font-size:12px;color:var(--text2);margin-bottom:8px">💡 Exemplos rápidos:</div>
-<div style="display:flex;flex-wrap:wrap;gap:5px">
-<button class="pill" onclick="fillNomen('PAGADORIA MARINHA','receita','salario','Soldo da Marinha')">PAGADORIA...</button>
-<button class="pill" onclick="fillNomen('CREDITO CONSIGNADO','receita','emprestimo','Consignado captado — é dívida')">CREDITO...</button>
-<button class="pill" onclick="fillNomen('INT PASSAI ITAU','despesa','cartao','Fatura cartão Passai Itaú')">INT...</button>
-<button class="pill" onclick="fillNomen('INT ITAU BLACK','despesa','cartao','Fatura cartão Itaú Black')">INT...</button>
-<button class="pill" onclick="fillNomen('CINOCRED','despesa','juros','Parcela consignado Cinocred')">CINOCRED</button>
-<button class="pill" onclick="fillNomen('CREDSYSTEM','despesa','juros','Parcela Credsystem')">CREDSYSTEM</button>
-<button class="pill" onclick="fillNomen('REND PAGO APLIC AUT','ignore','outros','Rendimento aplicação — ignorar')">REND...</button>
+<div class="card"><input class="search-in" style="width:100%" placeholder="Buscar regra..." oninput="renderNomen(this.value)"/><div id="nomen-list"></div></div>
 </div>
-</div>
-<div class="card">
-<div class="card-title"><i class="ti ti-list"></i> Regras cadastradas (<span id="nomen-count">0</span>)</div>
-<div class="search-bar"><input class="search-in" id="nomen-search" placeholder="Buscar regra..." oninput="renderNomen(this.value)"/></div>
-<div id="nomen-list"></div>
-</div>
-</div>
-<!-- ROI INVESTIMENTOS -->
-<div class="sec" id="sec-roi">
-  <div class="sec-title">Avaliação de investimento</div>
-  <div class="sec-sub">Calcule o retorno real de qualquer negócio — a IA faz as perguntas e analisa a viabilidade</div>
-  <div class="card" style="border:.5px solid #AFA9EC">
-    <div class="card-title" style="color:#534AB7"><i class="ti ti-ship" aria-hidden="true"></i> Projeto: Lancha para aluguel — Cabo Frio</div>
-    <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:12px">Preencha os dados abaixo. O sistema calcula ROI, payback e margem real com base nos custos do mercado náutico de Cabo Frio.</div>
-    <div class="form-row"><label class="form-label">Valor de compra da lancha (R$)</label><input type="number" id="roi-compra" placeholder="Ex: 150000" min="0" oninput="calcROI()"/></div>
-    <div class="form-row"><label class="form-label">Parcela do financiamento (R$/mês)</label><input type="number" id="roi-parcela" placeholder="0 se pagou à vista" min="0" oninput="calcROI()"/></div>
-    <div class="form-row"><label class="form-label">Diária cobrada no aluguel (R$)</label><input type="number" id="roi-diaria" placeholder="Ex: 1800" min="0" oninput="calcROI()"/></div>
-    <div class="form-row"><label class="form-label">Dias alugados por mês (média)</label><input type="number" id="roi-dias" placeholder="Realista: 8 a 12" min="0" max="30" oninput="calcROI()"/></div>
-    <div class="form-row"><label class="form-label">Combustível por dia de uso (R$)</label><input type="number" id="roi-combustivel" placeholder="Ex: 300" min="0" oninput="calcROI()"/></div>
-    <div class="form-row"><label class="form-label">Marinheiro/tripulante (R$/mês)</label><input type="number" id="roi-marinheiro" placeholder="Ex: 2500" min="0" oninput="calcROI()"/></div>
-    <div class="form-row"><label class="form-label">Vaga de marina (R$/mês)</label><input type="number" id="roi-marina" placeholder="Ex: 800" min="0" oninput="calcROI()"/></div>
-    <div class="form-row"><label class="form-label">Seguro marítimo (R$/ano)</label><input type="number" id="roi-seguro" placeholder="0.5% a 2% do valor" min="0" oninput="calcROI()"/></div>
-    <div class="form-row"><label class="form-label">Manutenção/revisão (R$/ano)</label><input type="number" id="roi-manutencao" placeholder="~10% do valor/ano" min="0" oninput="calcROI()"/></div>
-    <div class="form-row"><label class="form-label">Comissão plataformas/agência (%)</label><input type="number" id="roi-comissao" placeholder="Ex: 15" min="0" max="50" oninput="calcROI()"/></div>
-    <div class="form-row"><label class="form-label">Outros custos fixos/mês (R$)</label><input type="number" id="roi-outros" placeholder="Ex: 200" min="0" oninput="calcROI()"/></div>
-    <div id="roi-result" style="display:none;margin-top:14px">
-      <div style="height:.5px;background:var(--color-border-tertiary);margin-bottom:12px"></div>
-      <div style="font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px">Resultado da análise</div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:10px" id="roi-metrics"></div>
-      <div id="roi-alerts"></div>
-      <button class="action-btn" onclick="askROIConsultor()"><i class="ti ti-sparkles" aria-hidden="true"></i> Análise completa com o consultor ↗</button>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-title"><i class="ti ti-chart-bar" aria-hidden="true"></i> Benchmark de mercado — Cabo Frio 2025</div>
-    <div style="font-size:12px;line-height:1.9;color:var(--color-text-secondary)">
-      <span style="color:var(--color-text-primary);font-weight:500">Diária de mercado:</span> R$1.700 – R$2.200/dia (com marinheiro, sem combustível)<br>
-      <span style="color:var(--color-text-primary);font-weight:500">Alta temporada:</span> Dezembro – Fevereiro · preços +20–30%<br>
-      <span style="color:var(--color-text-primary);font-weight:500">Melhor período:</span> Março – Junho (águas mais claras, menos lotado)<br>
-      <span style="color:var(--color-text-primary);font-weight:500">Ocupação realista:</span> 8–12 dias/mês na média anual<br>
-      <span style="color:var(--color-text-primary);font-weight:500">Manutenção:</span> ~10% do valor da lancha/ano<br>
-      <span style="color:var(--color-text-primary);font-weight:500">Seguro marítimo:</span> 0,5% – 2% do valor/ano (sem IPVA)<br>
-      <span style="color:var(--color-text-primary);font-weight:500">Marina Cabo Frio:</span> R$600 – R$1.200/mês<br>
-      <span style="color:var(--color-text-primary);font-weight:500">Marinheiro:</span> R$2.000 – R$5.000/mês<br>
-      <span style="color:var(--color-text-primary);font-weight:500">Combustível:</span> R$250 – R$500/dia navegado<br>
-      <span style="color:var(--color-text-primary);font-weight:500">Comissão plataformas:</span> 10–20% (GetMyBoat, Nautal, Airbnb Náutico)<br>
-      <span style="color:var(--color-text-primary);font-weight:500">Depreciação:</span> ~8–12%/ano sobre o valor de mercado
-    </div>
-  </div>
-
-  <div class="card" style="border:.5px solid #5DCAA5;margin-top:.25rem">
-    <div class="card-title" style="color:#0F6E56"><i class="ti ti-home" aria-hidden="true"></i> Projeto: Casa no Airbnb — Cabo Frio</div>
-    <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:12px">Preencha com os dados da sua casa. O sistema calcula o que entra de verdade no bolso após todos os custos.</div>
-    <div class="form-row"><label class="form-label">Diária cobrada (R$)</label><input type="number" id="bnb-diaria" placeholder="Média Cabo Frio: R$327–R$846" min="0" oninput="calcAirbnb()"/></div>
-    <div class="form-row"><label class="form-label">Noites ocupadas por mês</label><input type="number" id="bnb-noites" placeholder="Realista: 12–15 noites" min="0" max="31" oninput="calcAirbnb()"/></div>
-    <div class="form-row"><label class="form-label">Reservas por mês</label><input type="number" id="bnb-reservas" placeholder="Ex: 5 reservas" min="0" oninput="calcAirbnb()"/></div>
-    <div class="form-row"><label class="form-label">Taxa limpeza cobrada/reserva (R$)</label><input type="number" id="bnb-limpeza-cobrada" placeholder="Ex: 150" min="0" oninput="calcAirbnb()"/></div>
-    <div class="form-row"><label class="form-label">Custo real limpeza/reserva (R$)</label><input type="number" id="bnb-limpeza-custo" placeholder="R$120–R$250 por saída" min="0" oninput="calcAirbnb()"/></div>
-    <div class="form-row"><label class="form-label">Taxa Airbnb anfitrião (%)</label><input type="number" id="bnb-taxa-airbnb" placeholder="3% ou 16%" min="0" max="20" value="3" oninput="calcAirbnb()"/></div>
-    <div class="form-row"><label class="form-label">IPTU (R$/ano)</label><input type="number" id="bnb-iptu" placeholder="Ex: 2400" min="0" oninput="calcAirbnb()"/></div>
-    <div class="form-row"><label class="form-label">Condomínio (R$/mês)</label><input type="number" id="bnb-cond" placeholder="0 se casa" min="0" oninput="calcAirbnb()"/></div>
-    <div class="form-row"><label class="form-label">Internet + streaming (R$/mês)</label><input type="number" id="bnb-internet" placeholder="Ex: 120" min="0" oninput="calcAirbnb()"/></div>
-    <div class="form-row"><label class="form-label">Energia/água estimada (R$/mês)</label><input type="number" id="bnb-energia" placeholder="Ex: 300" min="0" oninput="calcAirbnb()"/></div>
-    <div class="form-row"><label class="form-label">Amenities por reserva (R$)</label><input type="number" id="bnb-amenities" placeholder="Café, sabonete, papel... R$15–R$40" min="0" oninput="calcAirbnb()"/></div>
-    <div class="form-row"><label class="form-label">Manutenção/reposição (R$/mês)</label><input type="number" id="bnb-manut" placeholder="~5% da receita bruta" min="0" oninput="calcAirbnb()"/></div>
-    <div class="form-row"><label class="form-label">Aluguel tradicional que receberia (R$/mês)</label><input type="number" id="bnb-alug-trad" placeholder="Para comparação" min="0" oninput="calcAirbnb()"/></div>
-    <div id="bnb-result" style="display:none;margin-top:14px">
-      <div style="height:.5px;background:var(--color-border-tertiary);margin-bottom:12px"></div>
-      <div style="font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px">Resultado Airbnb</div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:10px" id="bnb-metrics"></div>
-      <div id="bnb-alerts"></div>
-      <button class="action-btn" onclick="askAirbnbConsultor()"><i class="ti ti-sparkles" aria-hidden="true"></i> Análise com o consultor ↗</button>
-    </div>
-  </div>
-
-  <div class="card" style="border-color:#9FE1CB">
-    <div class="card-title" style="color:#0F6E56"><i class="ti ti-chart-bar" aria-hidden="true"></i> Benchmark Airbnb — Cabo Frio 2025</div>
-    <div style="font-size:12px;line-height:1.9;color:var(--color-text-secondary)">
-      <span style="color:var(--color-text-primary);font-weight:500">Diária mediana:</span> R$327/noite · alta temporada até R$846 (jan/fev)<br>
-      <span style="color:var(--color-text-primary);font-weight:500">Receita anual típica:</span> ~R$50.000/ano em Cabo Frio<br>
-      <span style="color:var(--color-text-primary);font-weight:500">Ocupação mediana:</span> 42% = ~13 noites/mês<br>
-      <span style="color:var(--color-text-primary);font-weight:500">Pico:</span> Janeiro e Dezembro · Baixa: Junho–Agosto (R$353/noite)<br>
-      <span style="color:var(--color-text-primary);font-weight:500">Taxa Airbnb anfitrião:</span> 3% (dividido) ou até 16% (simplificado)<br>
-      <span style="color:var(--color-text-primary);font-weight:500">Limpeza profissional:</span> R$120–R$250 por saída de hóspede<br>
-      <span style="color:var(--color-text-primary);font-weight:500">Custo operacional total:</span> 45–55% da receita bruta<br>
-      <span style="color:var(--color-text-primary);font-weight:500">Airbnb vs aluguel fixo:</span> 50–100% a mais, mas muito mais trabalho<br>
-      <span style="color:var(--color-text-primary);font-weight:500">Imposto de renda:</span> até 27,5% (declarar via Carnê-Leão mensalmente)<br>
-      <span style="color:var(--color-text-primary);font-weight:500">ISS:</span> 5% em municípios que cobram (verificar Cabo Frio)
-    </div>
-  </div>
-
-</div>
-
-
-<!-- DOSSIE GOLPES -->
-<div class="sec" id="sec-golpes">
-  <div class="sec-title">Dossiê de Golpes PIX</div>
-  <div class="sec-sub">Golpe do falso gerente — 18/01/2026 — 3 bancos invadidos simultaneamente</div>
-
-  <div class="card" style="border:1.5px solid #E24B4A">
-    <div class="card-title" style="color:#A32D2D"><i class="ti ti-file-certificate" aria-hidden="true"></i> BO Registrado — 126-00904/2026</div>
-    <div style="display:flex;flex-direction:column;gap:4px;font-size:13px">
-      <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:.5px solid var(--color-border-tertiary)"><span style="color:var(--color-text-secondary)">Delegacia</span><span style="font-size:12px">126ª DP — Cabo Frio-RJ · (22) 2648-2134</span></div>
-      <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:.5px solid var(--color-border-tertiary)"><span style="color:var(--color-text-secondary)">Data do fato</span><span style="font-size:12px">18/01/2026 · 18h–22h</span></div>
-      <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:.5px solid var(--color-border-tertiary)"><span style="color:var(--color-text-secondary)">Investigador</span><span style="font-size:12px">Igor de Macedo Lira</span></div>
-      <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:.5px solid var(--color-border-tertiary)"><span style="color:var(--color-text-secondary)">Termo de Declaração</span><span style="font-size:12px">014720-1126/2026 · 04/02/2026</span></div>
-      <div style="display:flex;justify-content:space-between;padding:5px 0"><span style="color:var(--color-text-secondary)">Como aconteceu</span><span style="font-size:12px;text-align:right;max-width:60%">Ligaram para a tia (idosa) se passando por gerente do banco</span></div>
-    </div>
-  </div>
-
-  <div class="card" style="border:1.5px solid #E24B4A">
-    <div class="card-title" style="color:#A32D2D"><i class="ti ti-users" aria-hidden="true"></i> 4 Golpistas Identificados</div>
-    <div style="font-size:13px">
-
-      <div style="background:#FCEBEB;border-radius:var(--border-radius-md);padding:10px 12px;margin-bottom:8px">
-        <div style="font-weight:500;color:#791F1F;margin-bottom:6px">1. Luana Bandeira da S. <span style="font-size:10px;background:#F7C1C1;color:#791F1F;padding:1px 6px;border-radius:10px;font-weight:500">CPF *.386.240-*</span></div>
-        <div style="display:flex;justify-content:space-between;font-size:12px;padding:3px 0;border-bottom:.5px solid #F0959530"><span style="color:#A32D2D">Itaú — 5 PIX</span><span style="font-family:monospace;font-weight:500">R$ 2.449,82</span></div>
-        <div style="display:flex;justify-content:space-between;font-size:12px;padding:3px 0;border-bottom:.5px solid #F0959530"><span style="color:#A32D2D">Nubank (CNPJ 55.338.624/0001-05) — 4 PIX</span><span style="font-family:monospace;font-weight:500">R$ 10.118,00</span></div>
-        <div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;font-weight:500"><span style="color:#791F1F">Total Luana</span><span style="font-family:monospace;color:#A32D2D">R$ 12.567,82</span></div>
-      </div>
-
-      <div style="background:#FAEEDA;border-radius:var(--border-radius-md);padding:10px 12px;margin-bottom:8px">
-        <div style="font-weight:500;color:#633806;margin-bottom:6px">2. Narciso de Lima S. <span style="font-size:10px;background:#FAC775;color:#633806;padding:1px 6px;border-radius:10px;font-weight:500">CPF *.573.790-*</span></div>
-        <div style="display:flex;justify-content:space-between;font-size:12px;padding:3px 0;border-bottom:.5px solid #EF9F2730"><span style="color:#854F0B">Itaú — 6 PIX</span><span style="font-family:monospace">R$499,98+R$499,91+R$473,82+R$362,91+R$412,83+R$399,12</span></div>
-        <div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;font-weight:500"><span style="color:#633806">Total Narciso</span><span style="font-family:monospace;color:#854F0B">R$ 2.648,57</span></div>
-      </div>
-
-      <div style="background:#E6F1FB;border-radius:var(--border-radius-md);padding:10px 12px;margin-bottom:8px">
-        <div style="font-weight:500;color:#0C447C;margin-bottom:6px">3. José Antonio Alves da Silva <span style="font-size:10px;background:#B5D4F4;color:#0C447C;padding:1px 6px;border-radius:10px;font-weight:500">Cp23862762</span></div>
-        <div style="display:flex;justify-content:space-between;font-size:12px;padding:3px 0;border-bottom:.5px solid #85B7EB30"><span style="color:#185FA5">Inter · Ag.0001-9 · Conta 50071446-0</span><span style="font-family:monospace;font-weight:500">R$ 9.300,00</span></div>
-        <div style="font-size:11px;color:#185FA5;margin-top:4px">Documentado no Termo de Declaração ✓</div>
-      </div>
-
-      <div style="background:#EEEDFE;border-radius:var(--border-radius-md);padding:10px 12px;margin-bottom:8px">
-        <div style="font-weight:500;color:#26215C;margin-bottom:6px">4. Luel Ferreira Alves da Silva <span style="font-size:10px;background:#CECBF6;color:#26215C;padding:1px 6px;border-radius:10px;font-weight:500">⚠️ Adicionar ao BO</span></div>
-        <div style="font-size:12px;color:#3C3489">Ligar para 126ª DP: (22) 2648-2134 e solicitar aditamento ao BO 126-00904/2026 com o comprovante do PIX para Luel.</div>
-      </div>
-
-      <div style="background:#FCEBEB;border-radius:var(--border-radius-md);padding:10px 12px;border:1px solid #E24B4A">
-        <div style="display:flex;justify-content:space-between;font-size:12px;padding:3px 0;border-bottom:.5px solid #F0959530"><span>PIX fraudulentos (Itaú + Nubank + Inter)</span><span style="font-family:monospace;font-weight:500">R$ 24.516,39</span></div>
-        <div style="display:flex;justify-content:space-between;font-size:12px;padding:3px 0;border-bottom:.5px solid #F0959530"><span>Empréstimo Nubank contratado pelos golpistas</span><span style="font-family:monospace;font-weight:500">R$ 17.385,88</span></div>
-        <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;font-weight:500"><span style="color:#A32D2D">TOTAL DO GOLPE</span><span style="font-family:monospace;color:#A32D2D;font-size:16px">R$ 41.902,27</span></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="card" style="border-color:#EF9F27">
-    <div class="card-title"><i class="ti ti-list-check" aria-hidden="true"></i> Plano de Ação</div>
-    <div style="font-size:13px;display:flex;flex-direction:column;gap:0">
-      <div style="display:flex;gap:10px;padding:8px 0;border-bottom:.5px solid var(--color-border-tertiary)"><div style="width:22px;height:22px;border-radius:50%;background:#E24B4A;color:#fff;font-size:11px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0">1</div><div><strong>Urgente — empréstimo Nubank R$17.385,88</strong> — NÃO PAGAR. Ligar 0800 591 2340, contestar como fraude, apresentar BO. Não pagar nenhuma parcela.</div></div>
-      <div style="display:flex;gap:10px;padding:8px 0;border-bottom:.5px solid var(--color-border-tertiary)"><div style="width:22px;height:22px;border-radius:50%;background:#EF9F27;color:#fff;font-size:11px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0">2</div><div><strong>Adicionar Luel ao BO</strong> — ligar (22) 2648-2134 com comprovante do PIX.</div></div>
-      <div style="display:flex;gap:10px;padding:8px 0;border-bottom:.5px solid var(--color-border-tertiary)"><div style="width:22px;height:22px;border-radius:50%;background:#639922;color:#fff;font-size:11px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0">3</div><div><strong>consumidor.gov.br</strong> — abrir reclamação para Itaú, Nubank e Inter separadamente. Citar BO 126-00904/2026, Súmula 479 STJ, Estatuto do Idoso.</div></div>
-      <div style="display:flex;gap:10px;padding:8px 0;border-bottom:.5px solid var(--color-border-tertiary)"><div style="width:22px;height:22px;border-radius:50%;background:#378ADD;color:#fff;font-size:11px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0">4</div><div><strong>Registrato BCB</strong> — registrato.bcb.gov.br — ver todos empréstimos no CPF. BC: 145.</div></div>
-      <div style="display:flex;gap:10px;padding:8px 0"><div style="width:22px;height:22px;border-radius:50%;background:#7F77DD;color:#fff;font-size:11px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0">5</div><div><strong>JEC Fórum Cabo Frio</strong> — entrar sem advogado (até R$56k). Leve o BO + Termo de Declaração + comprovantes. Pedir ressarcimento + danos morais + cancelamento do empréstimo.</div></div>
-    </div>
-  </div>
-
-  <div class="card" style="border-color:#7F77DD">
-    <div class="card-title" style="color:#3C3489"><i class="ti ti-gavel" aria-hidden="true"></i> Base Legal</div>
-    <div style="font-size:12px;line-height:1.9;color:var(--color-text-secondary)">
-      <span style="color:var(--color-text-primary);font-weight:500">Súmula 479 STJ:</span> Banco responde objetivamente por fraudes no âmbito de operações bancárias — independente de culpa.<br>
-      <span style="color:var(--color-text-primary);font-weight:500">Estatuto do Idoso (Lei 10.741/2003, Art. 71):</span> Prioridade de tramitação em qualquer instância. A tia é idosa — processo anda mais rápido.<br>
-      <span style="color:var(--color-text-primary);font-weight:500">CDC Art. 14:</span> Responsabilidade objetiva por defeito na prestação do serviço bancário.<br>
-      <span style="color:var(--color-text-primary);font-weight:500">Golpe do falso gerente:</span> Jurisprudência 2025–2026 condena bancos consistentemente — devolução integral + R$5k–R$15k danos morais.<br>
-      <span style="color:var(--color-text-primary);font-weight:500">MED 2.0:</span> Prazo de 80 dias expirado (golpe 18/01/2026). Caminho agora: consumidor.gov.br + JEC + advogado.
-    </div>
-  </div>
-</div>
-
-<!-- DRE LANCHA -->
-<div class="sec" id="sec-lancha">
-  <div class="sec-title">DRE Lancha — Os Milionários</div>
-  <div class="sec-sub">Controle financeiro correto com 3 contas separadas</div>
-
-  <div class="card" style="border-color:#5DCAA5">
-    <div class="card-title" style="color:#0F6E56"><i class="ti ti-plus" aria-hidden="true"></i> Lançar passeio</div>
-    <div style="font-size:12px;color:var(--text2);margin-bottom:10px">Preencha os dados do passeio ou importe um print do controle (WhatsApp). O sistema monta o DRE automaticamente.</div>
-    <div class="form-row"><label class="form-label">Data</label><input type="text" id="lan-data" placeholder="DD/MM"/></div>
-    <div class="form-row"><label class="form-label">Cliente</label><input type="text" id="lan-cliente" placeholder="Nome do cliente"/></div>
-    <div class="form-row"><label class="form-label">Valor do passeio (R$)</label><input type="number" id="lan-receita" placeholder="Ex: 1700" min="0"/></div>
-    <div class="form-row"><label class="form-label">Combustível (R$)</label><input type="number" id="lan-comb" placeholder="Ex: 400" min="0"/></div>
-    <div class="form-row"><label class="form-label">Marinheiro (R$)</label><input type="number" id="lan-marim" placeholder="Ex: 300" min="0"/></div>
-    <div class="form-row"><label class="form-label">Gelo + carvão + extras (R$)</label><input type="number" id="lan-extras" placeholder="Ex: 40" min="0"/></div>
-    <div class="form-row"><label class="form-label">Manutenção neste passeio (R$)</label><input type="number" id="lan-manut" placeholder="0 — vai p/ fundo separado" min="0"/></div>
-    <div style="display:flex;gap:6px;margin-top:6px">
-      <button class="btn-p" style="flex:1" onclick="addPasseio()"><i class="ti ti-plus" style="font-size:12px"></i> Adicionar passeio</button>
-      <button class="bs-gy btn-sm" onclick="document.getElementById('lan-file').click()" style="white-space:nowrap"><i class="ti ti-camera"></i> Importar print</button>
-    </div>
-    <input type="file" id="lan-file" style="display:none" accept="image/*,.pdf" onchange="onLanchaFile(event)"/>
-  </div>
-
-  <div class="card" style="border-color:#EF9F27">
-    <div class="card-title"><i class="ti ti-settings" aria-hidden="true"></i> Custos fixos mensais</div>
-    <div class="form-row"><label class="form-label">Marina mensal (R$)</label><input type="number" id="lan-marina" placeholder="Ex: 1450" value="1450" min="0" oninput="renderLanchaDRE()"/></div>
-    <div class="form-row"><label class="form-label">Seguro + outros fixos/mês (R$)</label><input type="number" id="lan-fixos" placeholder="Ex: 950" min="0" oninput="renderLanchaDRE()"/></div>
-  </div>
-
-  <div id="lan-dre-gerado"></div>
-
-
-  <div class="card" style="border-color:#EF9F27">
-    <div class="card-title"><i class="ti ti-alert-triangle" aria-hidden="true"></i> Regras do DRE Correto</div>
-    <div style="font-size:13px;color:var(--color-text-secondary);line-height:1.8">
-      <strong style="color:var(--color-text-primary)">Conta 1 — Por passeio:</strong> receita – combustível – marinheiro – extras (gelo, carvão) = margem bruta<br>
-      <strong style="color:var(--color-text-primary)">Conta 2 — Fixo mensal:</strong> marina R$1.450 + seguro + outros = custo fixo ÷ passeios do mês<br>
-      <strong style="color:var(--color-text-primary)">Conta 3 — Manutenção:</strong> mecânico, peças, reparos — NUNCA misturar com custo de passeio específico
-    </div>
-  </div>
-
-  <div class="card" style="border-color:#E24B4A">
-    <div class="card-title" style="color:#A32D2D"><i class="ti ti-tools" aria-hidden="true"></i> Dívida de Manutenção Acumulada</div>
-    <div style="font-size:13px;display:flex;flex-direction:column;gap:0">
-      <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:.5px solid var(--color-border-tertiary);font-size:12px"><span style="color:var(--color-text-secondary)">Mecânico (pago R$960 · resta R$1.659)</span><span style="font-family:monospace;color:#A32D2D">R$ 2.619</span></div>
-      <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:.5px solid var(--color-border-tertiary);font-size:12px"><span style="color:var(--color-text-secondary)">Churrasqueira (pago R$660 · falta R$140)</span><span style="font-family:monospace;color:#A32D2D">R$ 800</span></div>
-      <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:.5px solid var(--color-border-tertiary);font-size:12px"><span style="color:var(--color-text-secondary)">Sensor do trim</span><span style="font-family:monospace;color:#A32D2D">R$ 1.391</span></div>
-      <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:.5px solid var(--color-border-tertiary);font-size:12px"><span style="color:var(--color-text-secondary)">Sensor pressão água</span><span style="font-family:monospace;color:#A32D2D">R$ 628</span></div>
-      <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:.5px solid var(--color-border-tertiary);font-size:12px"><span style="color:var(--color-text-secondary)">Conserto pneu + arruela</span><span style="font-family:monospace;color:#A32D2D">R$ 210</span></div>
-      <div style="display:flex;justify-content:space-between;padding:6px 0;font-weight:500"><span style="color:#A32D2D">Total dívida manutenção</span><span style="font-family:monospace;color:#A32D2D;font-size:15px">R$ 5.648</span></div>
-    </div>
-    <div style="font-size:12px;color:#854F0B;background:#FAEEDA;border-radius:var(--border-radius-md);padding:8px 12px;margin-top:8px">Pagar aos poucos conforme passeios entram. Com 8 passeios/mês a R$1.700: sobram ~R$2.000/mês para abater essa dívida. Quitada em ~3 meses.</div>
-  </div>
-
-  <div class="card">
-    <div class="card-title"><i class="ti ti-table" aria-hidden="true"></i> Passeios Registrados — Histórico Real</div>
-    <div style="font-size:12px;color:var(--text2);margin-bottom:8px">Margem = receita – custo variável. Toque numa linha para ver os custos um a um. Use o lápis para editar.</div>
-    <div id="hist-passeios"></div>
-  </div>
-    <div style="font-size:13px;color:var(--color-text-secondary);line-height:1.9">
-      <span style="color:var(--color-text-primary);font-weight:500">Custo variável por saída:</span> ~R$740 (combustível + marinheiro + extras)<br>
-      <span style="color:var(--color-text-primary);font-weight:500">Marina rateada (8 saídas):</span> R$181/passeio<br>
-      <span style="color:var(--color-text-primary);font-weight:500">Custo total por passeio:</span> ~R$921<br>
-      <span style="color:var(--color-text-primary);font-weight:500">Diária mínima (break-even):</span> R$921<br>
-      <span style="color:#A32D2D;font-weight:500">Diária atual: R$1.200 → margem de 23%</span><br>
-      <span style="color:#3B6D11;font-weight:500">Mercado Cabo Frio: R$1.700–2.200 → margem de 46–58%</span><br>
-      <span style="color:var(--color-text-primary);font-weight:500">Recomendado:</span> Cobrar mínimo R$1.700. Com 8 passeios/mês: lucro ~R$6.200/mês.
-    </div>
-  </div>
-
-<!-- PONTO DE EQUILIBRIO -->
-<div class="sec" id="sec-equilibrio">
-  <div class="sec-title">Ponto de Equilíbrio Mensal</div>
-  <div class="sec-sub">Quanto você precisa receber todo mês para cobrir o básico — antes de pagar qualquer dívida</div>
-
-  <div class="card">
-    <div class="card-title"><i class="ti ti-home" aria-hidden="true"></i> Moradia</div>
-    <div class="form-row"><label class="form-label">Aluguel / financiamento</label><input type="number" id="eq-aluguel" placeholder="R$" min="0" oninput="calcEquilibrio()"/></div>
-    <div class="form-row"><label class="form-label">Energia elétrica</label><input type="number" id="eq-energia" placeholder="R$" min="0" oninput="calcEquilibrio()"/></div>
-    <div class="form-row"><label class="form-label">Água / Prolagos</label><input type="number" id="eq-agua" placeholder="R$" min="0" oninput="calcEquilibrio()"/></div>
-    <div class="form-row"><label class="form-label">Internet / telefone</label><input type="number" id="eq-internet" placeholder="R$" min="0" oninput="calcEquilibrio()"/></div>
-  </div>
-
-  <div class="card">
-    <div class="card-title"><i class="ti ti-apple" aria-hidden="true"></i> Alimentação e transporte</div>
-    <div class="form-row"><label class="form-label">Alimentação (mercado + refeições)</label><input type="number" id="eq-alimentacao" placeholder="R$" min="0" oninput="calcEquilibrio()"/></div>
-    <div class="form-row"><label class="form-label">Combustível / transporte</label><input type="number" id="eq-transporte" placeholder="R$" min="0" oninput="calcEquilibrio()"/></div>
-  </div>
-
-  <div class="card">
-    <div class="card-title"><i class="ti ti-heart" aria-hidden="true"></i> Saúde e educação</div>
-    <div class="form-row"><label class="form-label">Plano de saúde</label><input type="number" id="eq-saude" placeholder="R$" min="0" oninput="calcEquilibrio()"/></div>
-    <div class="form-row"><label class="form-label">Farmácia / medicamentos</label><input type="number" id="eq-farmacia" placeholder="R$" min="0" oninput="calcEquilibrio()"/></div>
-    <div class="form-row"><label class="form-label">Escola / educação</label><input type="number" id="eq-escola" placeholder="R$" min="0" oninput="calcEquilibrio()"/></div>
-  </div>
-
-  <div class="card" style="border-color:#E24B4A">
-    <div class="card-title" style="color:#A32D2D"><i class="ti ti-credit-card" aria-hidden="true"></i> Dívidas — parcelas mensais</div>
-    <div class="form-row"><label class="form-label">Consignados (desconto em folha)</label><input type="number" id="eq-consig" placeholder="R$" min="0" oninput="calcEquilibrio()"/></div>
-    <div class="form-row"><label class="form-label">Mínimo Itaú Passaí (5695)</label><input type="number" id="eq-passai" placeholder="R$" min="0" oninput="calcEquilibrio()"/></div>
-    <div class="form-row"><label class="form-label">Mínimo BB Ourocard (0827)</label><input type="number" id="eq-bb" placeholder="R$" min="0" oninput="calcEquilibrio()"/></div>
-    <div class="form-row"><label class="form-label">Mínimo Porto Bank</label><input type="number" id="eq-porto" placeholder="R$" min="0" oninput="calcEquilibrio()"/></div>
-    <div class="form-row"><label class="form-label">Outros empréstimos</label><input type="number" id="eq-outros-div" placeholder="R$" min="0" oninput="calcEquilibrio()"/></div>
-  </div>
-
-  <div class="card">
-    <div class="card-title"><i class="ti ti-dots" aria-hidden="true"></i> Outros fixos</div>
-    <div class="form-row"><label class="form-label">Seguros (auto, vida, cartão)</label><input type="number" id="eq-seguros" placeholder="R$" min="0" oninput="calcEquilibrio()"/></div>
-    <div class="form-row"><label class="form-label">Outros custos fixos</label><input type="number" id="eq-outros" placeholder="R$" min="0" oninput="calcEquilibrio()"/></div>
-  </div>
-
-  <div id="eq-resultado" style="display:none">
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:.875rem" id="eq-mets"></div>
-    <div id="eq-breakdown"></div>
-    <button class="action-btn" onclick="askEqConsultor2()"><i class="ti ti-sparkles" aria-hidden="true"></i> Analisar com o consultor ↗</button>
-  </div>
-</div>
-
-<!-- FATURAS DE CARTAO -->
-<div class="sec" id="sec-faturas">
-<div class="sec-title">Faturas de cartão</div>
-<div class="sec-sub">Mesmo fluxo do extrato — importe o PDF da fatura, o sistema lê, classifica e mostra a visão mensal/anual</div>
-<div class="card">
-<div class="card-title"><i class="ti ti-credit-card"></i> Cartão</div>
+<!-- ROI -->
+<div class="sec" id="sec-roi"><div class="sec-title">ROI Investimentos</div><div class="sec-sub">Análise de retorno e rentabilidade — Lancha, Airbnb e outros</div>
+<div class="roi-tabs"><button class="roi-tab active" onclick="showRoiTab('lancha',this)">Lancha</button><button class="roi-tab" onclick="showRoiTab('airbnb',this)">Airbnb</button></div>
+<div id="roi-lancha"></div><div id="roi-airbnb" style="display:none"></div>
+<div id="roi-result"></div><button class="action-btn" onclick="askROIConsultor()"><i class="ti ti-sparkles"></i> Analisar com o consultor ↗</button></div>
+<!-- GOLPES -->
+<div class="sec" id="sec-golpes"><div class="sec-title">Dossiê de Golpes PIX</div><div class="sec-sub">Golpe do falso gerente — 18/01/2026 — 3 bancos invadidos simultaneamente</div>
+<div class="card" style="border:1.5px solid var(--red)"><div class="card-title" style="color:var(--red)"><i class="ti ti-file-certificate"></i> BO 126-00904/2026</div>
+<div style="font-size:13px"><div style="padding:5px 0;border-bottom:.5px solid var(--border)"><span style="color:var(--text2)">Delegacia</span>&nbsp;·&nbsp;126ª DP · Cabo Frio-RJ · (22) 2648-2134</div>
+<div style="padding:5px 0;border-bottom:.5px solid var(--border)"><span style="color:var(--text2)">Data do fato</span>&nbsp;·&nbsp;18/01/2026 · 18h–22h</div>
+<div style="padding:5px 0"><span style="color:var(--text2)">Total do golpe</span>&nbsp;·&nbsp;<strong style="color:var(--red)">R$ 41.902,27</strong></div></div></div>
+<div class="card" style="border-color:var(--amber)"><div class="card-title"><i class="ti ti-list-check"></i> Plano de ação</div>
+<div style="font-size:13px;line-height:1.9">
+1. NÃO pagar empréstimo Nubank R$17.385 (fraude)<br>2. Ligar (22) 2648-2134 — aditamento BO<br>
+3. consumidor.gov.br — reclamações Itaú, Nubank, Inter<br>4. registrato.bcb.gov.br — BC: 145<br>5. JEC Fórum Cabo Frio (sem advogado)</div></div></div>
+<!-- LANCHA -->
+<div class="sec" id="sec-lancha"><div class="sec-title">DRE Lancha — Os Milionários</div><div class="sec-sub">Controle financeiro com 3 contas separadas</div>
+<div class="card" style="border-color:#5DCAA5">
+<div class="card-title" style="color:#0F6E56"><i class="ti ti-plus"></i> Lançar passeio</div>
+<div class="form-row"><label class="form-label">Data</label><input type="text" id="lan-data" placeholder="DD/MM"/></div>
+<div class="form-row"><label class="form-label">Cliente</label><input type="text" id="lan-cliente" placeholder="Nome do cliente"/></div>
+<div class="form-row"><label class="form-label">Valor do passeio (R$)</label><input type="number" id="lan-receita" min="0"/></div>
+<div class="form-row"><label class="form-label">Combustível (R$)</label><input type="number" id="lan-comb" min="0"/></div>
+<div class="form-row"><label class="form-label">Marinheiro (R$)</label><input type="number" id="lan-marim" min="0"/></div>
+<div class="form-row"><label class="form-label">Gelo + carvão + extras (R$)</label><input type="number" id="lan-extras" min="0"/></div>
+<div class="form-row"><label class="form-label">Manutenção (R$)</label><input type="number" id="lan-manut" min="0"/></div>
+<div style="display:flex;gap:6px;margin-top:6px">
+<button class="btn-p" style="flex:1" onclick="addPasseio()"><i class="ti ti-plus" style="font-size:12px"></i> Adicionar</button>
+<button class="bs-gy btn-sm" onclick="document.getElementById('lan-file').click()"><i class="ti ti-camera"></i> Print</button></div>
+<input type="file" id="lan-file" style="display:none" accept="image/*,.pdf" onchange="onLanchaFile(event)"/></div>
+<div class="card" style="border-color:var(--amber)">
+<div class="card-title"><i class="ti ti-settings"></i> Custos fixos</div>
+<div class="form-row"><label class="form-label">Marina mensal (R$)</label><input type="number" id="lan-marina" value="1450" min="0" oninput="renderLanchaDRE()"/></div>
+<div class="form-row"><label class="form-label">Outros fixos/mês (R$)</label><input type="number" id="lan-fixos" min="0" oninput="renderLanchaDRE()"/></div></div>
+<div id="lan-dre-gerado"></div>
+<div class="card"><div class="card-title"><i class="ti ti-table"></i> Passeios Registrados — Histórico Real</div>
+<div style="font-size:12px;color:var(--text2);margin-bottom:8px">Toque numa linha para ver os custos. Use o lápis para editar.</div>
+<div id="hist-passeios"></div></div>
+<div class="card" style="border-color:var(--red)"><div class="card-title" style="color:var(--red)"><i class="ti ti-tools"></i> Dívida de Manutenção</div>
+<div style="font-size:13px">R$5.648 acumulados — mecânico, churrasqueira, sensores, pneu. Pagar aos poucos com o lucro dos passeios.</div></div>
+<div class="card" style="border-color:#639922"><div class="card-title" style="color:#3B6D11"><i class="ti ti-trending-up"></i> Diária Mínima Recomendada</div>
+<div style="font-size:13px;line-height:1.8;color:var(--text2)">Custo variável médio: ~R$740/saída<br>Marina rateada: R$181/passeio (8 saídas)<br>Diária mínima: R$921 · Atual: R$1.200 · <strong style="color:#3B6D11">Mercado Cabo Frio: R$1.700–2.200</strong></div></div></div>
+<!-- EQUILÍBRIO -->
+<div class="sec" id="sec-equilibrio"><div class="sec-title">Ponto de equilíbrio</div><div class="sec-sub">Quanto precisa entrar todo mês para cobrir o básico — antes das dívidas</div>
+<div class="card"><div class="card-title"><i class="ti ti-home"></i> Moradia</div>
+<div class="form-row"><label class="form-label">Aluguel / financiamento</label><input type="number" id="eq-aluguel" placeholder="R$" min="0" oninput="calcEquilibrio()"/></div>
+<div class="form-row"><label class="form-label">Energia elétrica</label><input type="number" id="eq-energia" placeholder="R$" min="0" oninput="calcEquilibrio()"/></div>
+<div class="form-row"><label class="form-label">Água</label><input type="number" id="eq-agua" placeholder="R$" min="0" oninput="calcEquilibrio()"/></div>
+<div class="form-row"><label class="form-label">Internet / telefone</label><input type="number" id="eq-internet" placeholder="R$" min="0" oninput="calcEquilibrio()"/></div></div>
+<div class="card"><div class="card-title"><i class="ti ti-apple"></i> Alimentação e transporte</div>
+<div class="form-row"><label class="form-label">Alimentação</label><input type="number" id="eq-alimentacao" placeholder="R$" min="0" oninput="calcEquilibrio()"/></div>
+<div class="form-row"><label class="form-label">Transporte</label><input type="number" id="eq-transporte" placeholder="R$" min="0" oninput="calcEquilibrio()"/></div></div>
+<div class="card"><div class="card-title"><i class="ti ti-heart"></i> Saúde e educação</div>
+<div class="form-row"><label class="form-label">Plano de saúde</label><input type="number" id="eq-saude" placeholder="R$" min="0" oninput="calcEquilibrio()"/></div>
+<div class="form-row"><label class="form-label">Farmácia</label><input type="number" id="eq-farmacia" placeholder="R$" min="0" oninput="calcEquilibrio()"/></div>
+<div class="form-row"><label class="form-label">Escola</label><input type="number" id="eq-escola" placeholder="R$" min="0" oninput="calcEquilibrio()"/></div></div>
+<div class="card" style="border-color:var(--red)"><div class="card-title" style="color:var(--red)"><i class="ti ti-credit-card"></i> Dívidas</div>
+<div class="form-row"><label class="form-label">Consignados (desconto em folha)</label><input type="number" id="eq-consig" placeholder="R$" min="0" oninput="calcEquilibrio()"/></div>
+<div class="form-row"><label class="form-label">Mínimo Itaú Passaí</label><input type="number" id="eq-passai" placeholder="R$" min="0" oninput="calcEquilibrio()"/></div>
+<div class="form-row"><label class="form-label">Mínimo BB Ourocard</label><input type="number" id="eq-bb" placeholder="R$" min="0" oninput="calcEquilibrio()"/></div>
+<div class="form-row"><label class="form-label">Porto Bank</label><input type="number" id="eq-porto" placeholder="R$" min="0" oninput="calcEquilibrio()"/></div>
+<div class="form-row"><label class="form-label">Outros</label><input type="number" id="eq-outros-div" placeholder="R$" min="0" oninput="calcEquilibrio()"/></div></div>
+<div class="card"><div class="card-title"><i class="ti ti-dots"></i> Outros fixos</div>
+<div class="form-row"><label class="form-label">Seguros</label><input type="number" id="eq-seguros" placeholder="R$" min="0" oninput="calcEquilibrio()"/></div>
+<div class="form-row"><label class="form-label">Outros</label><input type="number" id="eq-outros" placeholder="R$" min="0" oninput="calcEquilibrio()"/></div></div>
+<div id="eq-resultado" style="display:none"><div id="eq-mets"></div><div id="eq-breakdown"></div>
+<button class="action-btn" onclick="askEqConsultor2()"><i class="ti ti-sparkles"></i> Analisar com o consultor ↗</button></div></div>
+<!-- FLUXO DE CAIXA -->
+<div class="sec" id="sec-fluxo"><div class="sec-title">Fluxo de caixa</div><div class="sec-sub">Real · Previsto · Diagnóstico — compare os três cenários</div>
+<div class="fc-toolbar">
+<div class="fc-filter-group"><label class="fc-label">Período</label><div class="fc-chips">
+<button class="fc-chip active" onclick="setFcPeriodo(3,this)">3m</button>
+<button class="fc-chip" onclick="setFcPeriodo(6,this)">6m</button>
+<button class="fc-chip" onclick="setFcPeriodo(12,this)">12m</button>
+<button class="fc-chip" onclick="setFcPeriodo('custom',this)">Personalizado</button></div></div>
+<div class="fc-custom" id="fc-custom-range" style="display:none">
+<input type="month" id="fc-de" oninput="renderFluxo()"/>
+<span style="color:var(--text2);font-size:12px">a</span>
+<input type="month" id="fc-ate" oninput="renderFluxo()"/></div>
+<div class="fc-filter-group"><label class="fc-label">Visão</label><div class="fc-chips">
+<button class="fc-chip active" onclick="setFcVisao('comparativo',this)">Comparativo</button>
+<button class="fc-chip" onclick="setFcVisao('real',this)">Real</button>
+<button class="fc-chip" onclick="setFcVisao('previsto',this)">Previsto</button>
+<button class="fc-chip" onclick="setFcVisao('diagnostico',this)">Diagnóstico</button></div></div>
+<div class="fc-filter-group"><label class="fc-label">Cenário</label><div class="fc-chips">
+<button class="fc-chip active" onclick="setFcCenario('conservador',this)">Conservador</button>
+<button class="fc-chip" onclick="setFcCenario('otimista',this)">Otimista</button></div></div></div>
+<div class="fc-kpis" id="fc-kpis"></div>
+<div class="card" style="padding:12px">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+<div style="font-size:12px;font-weight:600;color:var(--text)">Entradas x Saídas x Saldo</div>
+<div style="display:flex;gap:10px;font-size:10px;color:var(--text2)" id="fc-legend"></div></div>
+<canvas id="fc-canvas" height="180" style="width:100%;display:block"></canvas></div>
+<div class="card" style="padding:0;overflow:hidden"><div id="fc-table"></div></div>
+<div id="fc-insights"></div>
+<button class="btn-p" style="width:100%;margin-top:8px" onclick="gerarPdfFluxo()"><i class="ti ti-file-type-pdf" style="font-size:13px"></i> Exportar período em PDF</button></div>
+<!-- FATURAS -->
+<div class="sec" id="sec-faturas"><div class="sec-title">Faturas de cartão</div><div class="sec-sub">Mesmo fluxo do extrato — importe o PDF da fatura</div>
+<div class="card"><div class="card-title"><i class="ti ti-credit-card"></i> Cartão</div>
 <div class="bank-cards">
 <div class="bank-card" id="fbk-bb" onclick="selFatCard('bb')">BB Ourocard</div>
 <div class="bank-card" id="fbk-itau" onclick="selFatCard('itau')">Itaú Passaí</div>
 <div class="bank-card" id="fbk-porto" onclick="selFatCard('porto')">Porto Bank</div>
 <div class="bank-card" id="fbk-iticvc" onclick="selFatCard('itaucvc')">Itaú CVC</div>
 <div class="bank-card" id="fbk-itblack" onclick="selFatCard('itpublic')">Itaú Black</div>
-<div class="bank-card" id="fbk-outro" onclick="selFatCard('outro')">Outro</div>
-</div>
-</div>
-<div class="card">
-<div class="card-title"><i class="ti ti-file-type-pdf"></i> Importar fatura (PDF ou print)</div>
+<div class="bank-card" id="fbk-outro" onclick="selFatCard('outro')">Outro</div></div></div>
+<div class="card"><div class="card-title"><i class="ti ti-file-type-pdf"></i> Importar fatura</div>
 <div class="drop-zone" id="fat-drop" onclick="document.getElementById('fat-file').click()">
-<i class="ti ti-cloud-upload"></i>
-<div class="uz-label">Arraste a fatura ou clique</div>
-<div class="uz-sub">PDF da fatura ou print do app · qualquer mês</div>
-</div>
+<i class="ti ti-cloud-upload"></i><div class="uz-label">Arraste a fatura ou clique</div><div class="uz-sub">PDF da fatura · qualquer mês</div></div>
 <input type="file" id="fat-file" style="display:none" accept=".pdf,image/*" multiple onchange="onFatFile(event)"/>
-<div id="fat-chips" style="margin-top:6px"></div>
-</div>
+<div id="fat-chips" style="margin-top:6px"></div></div>
 <div class="prog-card" id="fat-prog-card">
 <div style="font-size:12px;color:var(--text2);margin-bottom:4px" id="fat-prog-label">Analisando...</div>
 <div class="prog-bar"><div class="prog-fill" id="fat-prog-fill"></div></div>
 <div class="step" id="fst-1"><i class="ti ti-file-type-pdf"></i> Lendo a fatura</div>
-<div class="step" id="fst-2"><i class="ti ti-brain"></i> IA analisando lançamentos</div>
-<div class="step" id="fst-3"><i class="ti ti-tag"></i> Classificando por categoria</div>
-<div class="step" id="fst-4"><i class="ti ti-alert-triangle"></i> Identificando juros e maquininha</div>
-<div class="step" id="fst-5"><i class="ti ti-check"></i> Montando visão mensal</div>
-</div>
+<div class="step" id="fst-2"><i class="ti ti-brain"></i> IA analisando</div>
+<div class="step" id="fst-3"><i class="ti ti-tag"></i> Classificando</div>
+<div class="step" id="fst-4"><i class="ti ti-alert-triangle"></i> Identificando juros</div>
+<div class="step" id="fst-5"><i class="ti ti-check"></i> Concluindo</div></div>
 <div id="fat-results" style="display:none">
 <div id="fat-diagnostico"></div>
 <div class="sum-strip" id="fat-summary"></div>
 <div id="fat-alerts"></div>
 <div id="fat-month-tabs" class="month-tabs" style="display:none"></div>
-<div class="search-bar"><input class="search-in" id="fat-search" placeholder="🔍 Buscar lançamento..." oninput="onFatSearch(this.value)"/><button class="bs-gy btn-sm" onclick="clearFatSearch()" style="white-space:nowrap">Limpar</button></div>
+<div class="search-bar"><input class="search-in" id="fat-search" placeholder="🔍 Buscar..." oninput="onFatSearch(this.value)"/><button class="bs-gy btn-sm" onclick="clearFatSearch()">Limpar</button></div>
 <div class="filter-row">
 <button class="fc active" onclick="setFatFilter('todas',event)">Todas</button>
 <button class="fc" onclick="setFatFilter('debito',event)">Compras</button>
 <button class="fc rd-fc" onclick="setFatFilter('juros',event)">🔴 Juros</button>
-<button class="fc am-fc" onclick="setFatFilter('maquininha',event)">⚠️ Maquininha</button>
-</div>
+<button class="fc am-fc" onclick="setFatFilter('maquininha',event)">⚠️ Maquininha</button></div>
 <div class="qfilter">
 <span class="qfilter-label">Valor</span>
 <input class="qf-input" type="number" id="fat-min" placeholder="mín" oninput="renderFatTrans()"/>
@@ -963,768 +579,243 @@ select option{background:var(--bg3)}
 <div class="qf-sep"></div>
 <span class="qfilter-label">Ordem</span>
 <button class="qf-chip active" id="fatsort-data" onclick="setFatSort('data',event)">Data</button>
-<button class="qf-chip" id="fatsort-valor" onclick="setFatSort('valor',event)">Maior valor</button>
-</div>
+<button class="qf-chip" id="fatsort-valor" onclick="setFatSort('valor',event)">Maior valor</button></div>
 <div id="fat-trans-list"></div>
-<div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
-<button class="btn-p" style="flex:1" onclick="confirmAllFat()"><i class="ti ti-check"></i> Confirmar todas</button>
-</div>
-</div>
-</div>
-
-<!-- OPERACAO MAQUININHA -->
-<div class="sec" id="sec-maquininha">
-  <div class="sec-title">Operação Maquininha</div>
-  <div class="sec-sub">Entenda quanto o operador ganha e quanto você perde — JIM.COM Gabriel</div>
-
-  <div class="card" style="border:1.5px solid #E24B4A">
-    <div class="card-title" style="color:#A32D2D"><i class="ti ti-info-circle" aria-hidden="true"></i> Como funciona</div>
-    <div style="font-size:13px;color:var(--text2);line-height:1.8;margin-bottom:10px">Você passa o cartão na maquininha do operador como se fosse uma compra. Ele recebe da administradora (taxa ~3%) e te entrega dinheiro em espécie descontando a comissão dele (~10–15%). <strong style="color:var(--text)">Ele ganha dos dois lados, sem risco. Todo o custo fica com você.</strong></div>
-  </div>
-
-  <div class="card" id="maq-ocorrencias-card" style="border:1.5px solid #E24B4A">
-    <div class="card-title" style="color:#A32D2D"><i class="ti ti-receipt" aria-hidden="true"></i> Ocorrências detectadas nas faturas</div>
-    <div id="maq-ocorrencias"></div>
-  </div>
-
-  <div class="card" style="border-color:#EF9F27">
-    <div class="card-title"><i class="ti ti-calculator" aria-hidden="true"></i> Simulador — custo de cada operação</div>
-    <div class="form-row"><label class="form-label">Valor passado no cartão (R$)</label><input type="number" id="maq-valor" value="5000" min="0" oninput="calcMaquininha()"/></div>
-    <div class="form-row"><label class="form-label">Taxa do operador (%)</label><input type="number" id="maq-taxa" value="10" min="0" max="30" oninput="calcMaquininha()"/></div>
-    <div class="form-row"><label class="form-label">Juros do cartão (%/mês)</label><input type="number" id="maq-juros" value="13.76" min="0" max="30" step="0.01" oninput="calcMaquininha()"/></div>
-    <div class="form-row"><label class="form-label">Meses sem pagar total</label><input type="number" id="maq-meses" value="3" min="1" max="24" oninput="calcMaquininha()"/></div>
-    <div id="maq-result" style="margin-top:12px"></div>
-  </div>
-
-  <div class="card" style="border-color:#639922">
-    <div class="card-title" style="color:#3B6D11"><i class="ti ti-bulb" aria-hidden="true"></i> Alternativas mais baratas</div>
-    <div style="font-size:13px;line-height:1.9;color:var(--color-text-secondary)">
-      <span style="color:var(--color-text-primary);font-weight:500">Consignado INSS/militar:</span> 1,85%/mês — 14x mais barato que a maquininha<br>
-      <span style="color:var(--color-text-primary);font-weight:500">Negociar parcelamento direto com o banco:</span> juros altos mas menores que 25%/mês<br>
-      <span style="color:var(--color-text-primary);font-weight:500">Antecipação de recebíveis da lancha/Airbnb:</span> se houver renda futura previsível<br>
-      <span style="color:#A32D2D;font-weight:500">Evitar:</span> cada nova passagem na maquininha aumenta a dívida, não resolve
-    </div>
-  </div>
-</div>
-
-<!-- DIAGNOSTICO CONSOLIDADO -->
-<div class="sec" id="sec-diag">
-  <div class="sec-title">Diagnóstico Consolidado</div>
-  <div class="sec-sub">Visão geral da sua situação — o que pagar, o que evitar e o que priorizar</div>
-  <div id="diag-content"></div>
-
-  <!-- CHAT CONTEXTUAL DO DIAGNÓSTICO -->
-  <div class="card" id="diag-chat-card" style="border-color:var(--blue);margin-top:14px">
-    <div class="card-title" style="color:var(--blue)"><i class="ti ti-message-circle-question"></i> Tire dúvidas sobre seu diagnóstico</div>
-    <div style="font-size:12px;color:var(--text2);margin-bottom:10px">Pergunte qualquer coisa sobre as dívidas, prioridades ou o que fazer. A IA já conhece toda a sua situação.</div>
-    <div id="diag-chat-area"></div>
-    <div id="diag-suggestions" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"></div>
-    <div style="display:flex;gap:6px;align-items:flex-end">
-      <textarea id="diag-chat-input" rows="1" placeholder="Ex: por que devo pagar o Itaú primeiro?" style="flex:1;resize:none;border:.5px solid var(--border2);border-radius:var(--r2);background:var(--bg2);color:var(--text);padding:9px 11px;font-size:13px;font-family:inherit;max-height:100px" oninput="autoGrowDiag(this)" onkeydown="diagChatKey(event)"></textarea>
-      <button class="btn-p" id="diag-send-btn" onclick="diagChatSend()" style="flex-shrink:0;height:38px;padding:0 14px"><i class="ti ti-send"></i></button>
-    </div>
-  </div>
-</div>
-
-
-
-<!-- IMPORTAÇÕES (item 4 e 5) -->
-<div class="sec" id="sec-importacoes">
-  <div class="sec-title">Importações</div>
-  <div class="sec-sub">Histórico de tudo que foi importado — com origem, data e opção de excluir em lote</div>
-  <div class="qfilter">
-    <span class="qfilter-label">Tipo</span>
-    <button class="qf-chip active" id="impf-todos" onclick="setImpFilter('todos',event)">Todos</button>
-    <button class="qf-chip" id="impf-extrato" onclick="setImpFilter('extrato',event)">Extratos</button>
-    <button class="qf-chip" id="impf-fatura" onclick="setImpFilter('fatura',event)">Faturas</button>
-  </div>
-  <div id="imp-list"></div>
-</div>
-
-<!-- RELATÓRIO DE CARTÕES (item 8) -->
-<div class="sec" id="sec-relatorio">
-  <div class="sec-title">Relatório de cartões</div>
-  <div class="sec-sub">Juros, parcelamentos, rotativo e indicadores por cartão</div>
-  <div id="rel-content"></div>
-</div>
-
-<!-- RELATÓRIOS PDF -->
-<div class="sec" id="sec-pdf">
-  <div class="sec-title">Gerar relatório PDF</div>
-  <div class="sec-sub">Relatórios profissionais com dados reais, insights e plano de ação. Escolha o módulo e os filtros.</div>
-
-  <div id="pdf-report-cards"></div>
-</div>
-
-<!-- FLUXO DE CAIXA -->
-<div class="sec" id="sec-fluxo">
-  <div class="sec-title">Fluxo de caixa</div>
-  <div class="sec-sub">Real · Previsto · Diagnóstico — compare os três cenários e veja o impacto das decisões</div>
-
-  <!-- FILTROS COMPACTOS -->
-  <div class="fc-toolbar">
-    <div class="fc-filter-group">
-      <label class="fc-label">Período</label>
-      <div class="fc-chips">
-        <button class="fc-chip active" onclick="setFcPeriodo(3,this)">3m</button>
-        <button class="fc-chip" onclick="setFcPeriodo(6,this)">6m</button>
-        <button class="fc-chip" onclick="setFcPeriodo(12,this)">12m</button>
-        <button class="fc-chip" onclick="setFcPeriodo('custom',this)">Personalizado</button>
-      </div>
-    </div>
-    <div class="fc-custom" id="fc-custom-range" style="display:none">
-      <input type="month" id="fc-de" oninput="renderFluxo()"/>
-      <span style="color:var(--text2);font-size:12px">a</span>
-      <input type="month" id="fc-ate" oninput="renderFluxo()"/>
-    </div>
-    <div class="fc-filter-group">
-      <label class="fc-label">Visão</label>
-      <div class="fc-chips">
-        <button class="fc-chip active" onclick="setFcVisao('comparativo',this)">Comparativo</button>
-        <button class="fc-chip" onclick="setFcVisao('real',this)">Real</button>
-        <button class="fc-chip" onclick="setFcVisao('previsto',this)">Previsto</button>
-        <button class="fc-chip" onclick="setFcVisao('diagnostico',this)">Diagnóstico</button>
-      </div>
-    </div>
-    <div class="fc-filter-group">
-      <label class="fc-label">Cenário</label>
-      <div class="fc-chips">
-        <button class="fc-chip active" onclick="setFcCenario('conservador',this)">Conservador</button>
-        <button class="fc-chip" onclick="setFcCenario('otimista',this)">Otimista</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- KPIS -->
-  <div class="fc-kpis" id="fc-kpis"></div>
-
-  <!-- GRÁFICO CANVAS -->
-  <div class="card" style="padding:12px">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-      <div style="font-size:12px;font-weight:600;color:var(--text)" id="fc-chart-label">Entradas x Saídas x Saldo</div>
-      <div style="display:flex;gap:10px;font-size:10px;color:var(--text2)" id="fc-legend"></div>
-    </div>
-    <canvas id="fc-canvas" height="180" style="width:100%;display:block"></canvas>
-  </div>
-
-  <!-- TABELA MENSAL DRILLDOWN -->
-  <div class="card" style="padding:0;overflow:hidden">
-    <div id="fc-table"></div>
-  </div>
-
-  <!-- INSIGHTS DO DIAGNÓSTICO -->
-  <div id="fc-insights"></div>
-
-  <!-- BOTÃO PDF -->
-  <button class="btn-p" style="width:100%;margin-top:8px" onclick="gerarPdfFluxo()">
-    <i class="ti ti-file-type-pdf" style="font-size:13px"></i> Exportar período em PDF
-  </button>
-</div>
-</div>
-</div>
-</div>
-
+<button class="btn-p" onclick="confirmAllFat()" style="width:100%;margin-top:6px"><i class="ti ti-check"></i> Confirmar todas</button></div></div>
+<!-- MAQUININHA -->
+<div class="sec" id="sec-maquininha"><div class="sec-title">Operação Maquininha</div><div class="sec-sub">Custo real e ocorrências detectadas nas faturas — JIM.COM Gabriel</div>
+<div class="card" style="border:1.5px solid var(--red)"><div class="card-title" style="color:var(--red)"><i class="ti ti-info-circle"></i> Como funciona</div>
+<div style="font-size:13px;color:var(--text2);line-height:1.8;margin-bottom:10px">Você passa o cartão como compra. O operador recebe da administradora (~3% taxa) e te entrega em espécie descontando comissão (~10–15%). <strong style="color:var(--text)">Ele ganha sem risco. Todo custo fica com você.</strong></div></div>
+<div class="card" id="maq-ocorrencias-card" style="border:1.5px solid var(--red)"><div class="card-title" style="color:var(--red)"><i class="ti ti-receipt"></i> Ocorrências detectadas</div><div id="maq-ocorrencias"></div></div>
+<div class="card" style="border-color:var(--amber)"><div class="card-title"><i class="ti ti-calculator"></i> Simulador</div>
+<div class="form-row"><label class="form-label">Valor passado (R$)</label><input type="number" id="maq-valor" value="5000" oninput="calcMaquininha()"/></div>
+<div class="form-row"><label class="form-label">Taxa do operador (%)</label><input type="number" id="maq-taxa" value="10" oninput="calcMaquininha()"/></div>
+<div class="form-row"><label class="form-label">Juros do cartão (%/mês)</label><input type="number" id="maq-juros" value="13.76" step="0.01" oninput="calcMaquininha()"/></div>
+<div class="form-row"><label class="form-label">Meses sem pagar total</label><input type="number" id="maq-meses" value="3" min="1" oninput="calcMaquininha()"/></div>
+<div id="maq-result"></div></div>
+<div class="card" style="border-color:var(--green)"><div class="card-title" style="color:#3B6D11"><i class="ti ti-bulb"></i> Alternativas mais baratas</div>
+<div style="font-size:13px;line-height:1.9;color:var(--text2)">Consignado INSS/militar: 1,85%/mês — 14x mais barato<br>Negociar parcelamento com o banco diretamente<br>Antecipação de recebíveis da lancha/Airbnb</div></div></div>
+<!-- DIAGNÓSTICO -->
+<div class="sec" id="sec-diag"><div class="sec-title">Diagnóstico Consolidado</div><div class="sec-sub">Visão geral — o que pagar, o que evitar e o que priorizar</div>
+<div id="diag-content"></div>
+<div class="card" id="diag-chat-card" style="border-color:var(--blue);margin-top:14px">
+<div class="card-title" style="color:var(--blue)"><i class="ti ti-message-chatbot"></i> Consultor do diagnóstico</div>
+<div id="diag-chat-area" style="display:none"></div>
+<div class="diag-suggestions" id="diag-suggestions"></div>
+<div class="diag-input-row">
+<input id="diag-inp" placeholder="Pergunte sobre o diagnóstico..." onkeydown="diagChatKey(event)" oninput="autoGrowDiag(this)"/>
+<button class="btn-p" id="diag-send-btn" onclick="diagChatSend()"><i class="ti ti-send" style="font-size:14px"></i></button>
+</div></div></div>
+<!-- IMPORTAÇÕES -->
+<div class="sec" id="sec-importacoes"><div class="sec-title">Importações</div><div class="sec-sub">Histórico — com origem, data e opção de excluir em lote</div>
+<div class="qfilter"><span class="qfilter-label">Tipo</span>
+<button class="qf-chip active" id="impf-todos" onclick="setImpFilter('todos',event)">Todos</button>
+<button class="qf-chip" id="impf-extrato" onclick="setImpFilter('extrato',event)">Extratos</button>
+<button class="qf-chip" id="impf-fatura" onclick="setImpFilter('fatura',event)">Faturas</button></div>
+<div id="imp-list"></div></div>
+<!-- RELATÓRIO CARTÕES -->
+<div class="sec" id="sec-relatorio"><div class="sec-title">Relatório de cartões</div><div class="sec-sub">Juros, parcelamentos, rotativo e indicadores por cartão</div><div id="rel-content"></div></div>
+<!-- GERAR PDF -->
+<div class="sec" id="sec-pdf"><div class="sec-title">Gerar relatório PDF</div><div class="sec-sub">Relatórios profissionais com dados reais, insights e plano de ação</div><div id="pdf-report-cards"></div></div>
+<!-- MODAIS -->
+<div class="modal-overlay" id="modal-reset" style="display:none" onclick="if(event.target===this)closeReset()">
+<div class="modal"><div class="modal-title"><i class="ti ti-refresh"></i> Zerar sistema</div>
+<p style="font-size:13px;color:var(--text2);margin-bottom:12px">Selecione o que deseja limpar:</p>
+<label class="chk-row"><input type="checkbox" id="rst-ext" checked/> Extrato bancário e faturas importadas</label>
+<label class="chk-row"><input type="checkbox" id="rst-dividas" checked/> Dívidas cadastradas</label>
+<label class="chk-row"><input type="checkbox" id="rst-lancha" checked/> Passeios da lancha (DRE)</label>
+<label class="chk-row"><input type="checkbox" id="rst-chat" checked/> Histórico do chat</label>
+<label class="chk-row"><input type="checkbox" id="rst-nomen"/> Regras de classificação</label>
+<div class="modal-foot"><button class="btn-g" onclick="closeReset()">Cancelar</button><button class="btn-p" style="background:var(--red)" onclick="doReset()">Zerar</button></div></div></div>
+<div class="modal-overlay" id="modal-edit" style="display:none" onclick="if(event.target===this)closeEdit()">
+<div class="modal"><div class="modal-title"><i class="ti ti-edit"></i> Editar lançamento</div>
+<input type="hidden" id="edit-id"/>
+<div class="form-row"><label class="form-label">Descrição</label><input type="text" id="edit-desc"/></div>
+<div class="form-row"><label class="form-label">Valor (R$)</label><input type="number" id="edit-valor" step="0.01" min="0"/></div>
+<div class="form-row"><label class="form-label">Data</label><input type="text" id="edit-data" placeholder="DD/MM/AAAA"/></div>
+<div class="form-row"><label class="form-label">Tipo</label><select id="edit-tipo"><option value="debito">Débito</option><option value="credito">Crédito</option></select></div>
+<div class="form-row"><label class="form-label">Categoria</label><input type="text" id="edit-cat" placeholder="alimentacao, juros, salario..."/></div>
+<div class="form-row"><label class="form-label">Observação</label><input type="text" id="edit-obs"/></div>
+<div class="modal-foot"><button class="btn-g" onclick="closeEdit()">Cancelar</button><button class="btn-p" onclick="saveEdit()"><i class="ti ti-check" style="font-size:12px"></i> Salvar</button></div></div></div>
+<div class="modal-overlay" id="modal-edit-passeio" style="display:none" onclick="if(event.target===this)closeEditPasseio()">
+<div class="modal"><div class="modal-title"><i class="ti ti-ship"></i> Editar passeio</div>
+<input type="hidden" id="ep-id"/>
+<div class="form-row"><label class="form-label">Data</label><input type="text" id="ep-data" placeholder="DD/MM"/></div>
+<div class="form-row"><label class="form-label">Cliente</label><input type="text" id="ep-cliente"/></div>
+<div class="form-row"><label class="form-label">Valor (R$)</label><input type="number" id="ep-receita" min="0" step="0.01"/></div>
+<div class="form-row"><label class="form-label">Combustível (R$)</label><input type="number" id="ep-comb" min="0" step="0.01"/></div>
+<div class="form-row"><label class="form-label">Marinheiro (R$)</label><input type="number" id="ep-marim" min="0" step="0.01"/></div>
+<div class="form-row"><label class="form-label">Gelo (R$)</label><input type="number" id="ep-gelo" min="0" step="0.01"/></div>
+<div class="form-row"><label class="form-label">Carvão (R$)</label><input type="number" id="ep-carvao" min="0" step="0.01"/></div>
+<div class="form-row"><label class="form-label">Outros extras (R$)</label><input type="number" id="ep-extras" min="0" step="0.01"/></div>
+<div class="form-row"><label class="form-label">Manutenção (R$)</label><input type="number" id="ep-manut" min="0" step="0.01"/></div>
+<div class="modal-foot"><button class="btn-g" onclick="closeEditPasseio()">Cancelar</button><button class="btn-p" onclick="saveEditPasseio()"><i class="ti ti-check" style="font-size:12px"></i> Salvar</button></div></div></div>
+<!-- LOGIN -->
 <div class="login-overlay" id="login-overlay">
 <div class="login-card">
 <div class="login-icon">💰</div>
 <div class="login-title">FinanceAI</div>
-<div class="login-sub">Seu consultor financeiro pessoal com dados salvos no OneDrive</div>
+<div class="login-sub">Consultora financeira pessoal<br>Rosane Machado Felipe Duarte</div>
 <div class="login-feats">
-<div class="login-feat"><i class="ti ti-cloud-check"></i> Dados salvos automaticamente no seu OneDrive</div>
-<div class="login-feat"><i class="ti ti-devices"></i> Acesse de qualquer dispositivo</div>
-<div class="login-feat"><i class="ti ti-lock"></i> Só você tem acesso — nunca compartilhado</div>
+<div class="login-feat"><i class="ti ti-cloud" style="color:var(--blue)"></i> Dados salvos no seu OneDrive</div>
+<div class="login-feat"><i class="ti ti-lock" style="color:var(--green)"></i> Só você tem acesso</div>
+<div class="login-feat"><i class="ti ti-brain" style="color:var(--amber)"></i> IA com contexto completo</div>
 </div>
-<button class="ms-login-btn" onclick="odLogin()"><i class="ti ti-brand-windows" style="font-size:17px"></i> Entrar com conta Microsoft</button>
-<button class="skip-btn" onclick="skipLogin()">Usar sem OneDrive (dados temporários)</button>
-</div>
-</div>
-<div class="modal-overlay" id="modal-reset" style="display:none" onclick="if(event.target===this)closeReset()">
-<div class="modal">
-<div class="modal-title" style="color:var(--red)"><i class="ti ti-alert-triangle"></i> Zerar sistema</div>
-<div style="font-size:12px;color:var(--text2);margin-bottom:12px">Escolha o que deseja apagar:</div>
-<label class="chk-row"><input type="checkbox" id="rst-ext" checked/> Extrato bancário (transações importadas)</label>
-<label class="chk-row"><input type="checkbox" id="rst-dividas" checked/> Dívidas cadastradas</label>
-<label class="chk-row"><input type="checkbox" id="rst-lancha" checked/> Passeios da lancha (DRE)</label>
-<label class="chk-row"><input type="checkbox" id="rst-chat" /> Histórico do chat</label>
-<label class="chk-row"><input type="checkbox" id="rst-nomen" /> Regras de nomenclatura</label>
-<div class="alert a-red" style="margin:10px 0"><i class="ti ti-info-circle"></i> Esta ação também atualiza o OneDrive. Não pode ser desfeita.</div>
-<div class="modal-foot"><button class="btn-g" onclick="closeReset()">Cancelar</button><button style="padding:7px 14px;background:var(--red);color:#fff;border:none;border-radius:var(--r2);font-size:12px;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif" onclick="doReset()"><i class="ti ti-trash" style="font-size:12px"></i> Confirmar</button></div>
-</div>
-</div>
-
-<!-- MODAL EDITAR PASSEIO -->
-<div class="modal-overlay" id="modal-edit-passeio" style="display:none" onclick="if(event.target===this)closeEditPasseio()">
-  <div class="modal">
-    <div class="modal-title"><i class="ti ti-ship" style="font-size:16px"></i> Editar passeio</div>
-    <input type="hidden" id="ep-id"/>
-    <div class="form-row"><label class="form-label">Data</label><input type="text" id="ep-data" placeholder="DD/MM"/></div>
-    <div class="form-row"><label class="form-label">Cliente</label><input type="text" id="ep-cliente" placeholder="Nome do cliente"/></div>
-    <div class="form-row"><label class="form-label">Valor do passeio (R$)</label><input type="number" id="ep-receita" min="0" step="0.01"/></div>
-    <div class="form-row"><label class="form-label">Combustível (R$)</label><input type="number" id="ep-comb" min="0" step="0.01"/></div>
-    <div class="form-row"><label class="form-label">Marinheiro (R$)</label><input type="number" id="ep-marim" min="0" step="0.01"/></div>
-    <div class="form-row"><label class="form-label">Gelo (R$)</label><input type="number" id="ep-gelo" min="0" step="0.01"/></div>
-    <div class="form-row"><label class="form-label">Carvão (R$)</label><input type="number" id="ep-carvao" min="0" step="0.01"/></div>
-    <div class="form-row"><label class="form-label">Outros extras (R$)</label><input type="number" id="ep-extras" min="0" step="0.01"/></div>
-    <div class="form-row"><label class="form-label">Manutenção (R$)</label><input type="number" id="ep-manut" min="0" step="0.01"/></div>
-    <div class="modal-foot">
-      <button class="btn-g" onclick="closeEditPasseio()">Cancelar</button>
-      <button class="btn-p" onclick="saveEditPasseio()"><i class="ti ti-check" style="font-size:12px"></i> Salvar</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL ENVIAR PRINT -->
-<div class="modal-overlay" id="modal-print" style="display:none" onclick="if(event.target===this)closePrint()">
-  <div class="modal">
-    <div class="modal-title"><i class="ti ti-camera" style="font-size:16px" aria-hidden="true"></i> Enviar print / extrato</div>
-    <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:12px">Tire um print do aplicativo do banco, extrato ou fatura e envie aqui. A IA vai ler e classificar os lançamentos.</div>
-    <div id="print-drop" style="border:1.5px dashed var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:20px;text-align:center;cursor:pointer;transition:all .2s" onclick="document.getElementById('print-file').click()">
-      <i class="ti ti-photo" style="font-size:24px;color:var(--color-text-secondary);margin-bottom:6px;display:block" aria-hidden="true"></i>
-      <div style="font-size:13px;font-weight:500;margin-bottom:3px">Clique para escolher a imagem</div>
-      <div style="font-size:11px;color:var(--color-text-secondary)">JPG, PNG ou PDF · screenshot do app do banco</div>
-    </div>
-    <input type="file" id="print-file" style="display:none" accept="image/*,.pdf" multiple onchange="onPrintFile(event)"/>
-    <div id="print-preview" style="display:none;margin-top:10px"></div>
-    <div class="modal-foot">
-      <button class="btn-g" onclick="closePrint()">Cancelar</button>
-      <button class="btn-p" id="print-send-btn" onclick="sendPrint()" style="display:none"><i class="ti ti-sparkles" style="font-size:12px" aria-hidden="true"></i> Analisar com IA</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL EDITAR LANÇAMENTO -->
-<div class="modal-overlay" id="modal-edit" style="display:none" onclick="if(event.target===this)closeEdit()">
-  <div class="modal">
-    <div class="modal-title"><i class="ti ti-edit" style="font-size:16px" aria-hidden="true"></i> Editar lançamento</div>
-    <input type="hidden" id="edit-id"/>
-    <div class="form-row"><label class="form-label">Descrição</label><input type="text" id="edit-desc"/></div>
-    <div class="form-row"><label class="form-label">Valor (R$)</label><input type="number" id="edit-valor" min="0" step="0.01"/></div>
-    <div class="form-row"><label class="form-label">Data</label><input type="text" id="edit-data" placeholder="DD/MM/AAAA"/></div>
-    <div class="form-row"><label class="form-label">Tipo</label>
-      <select id="edit-tipo">
-        <option value="debito">Débito (saída)</option>
-        <option value="credito">Crédito (entrada)</option>
-      </select>
-    </div>
-    <div class="form-row"><label class="form-label">Categoria</label>
-      <select id="edit-cat">
-        <option value="alimentacao">Alimentação</option><option value="transporte">Transporte</option>
-        <option value="moradia">Moradia</option><option value="saude">Saúde</option>
-        <option value="educacao">Educação</option><option value="lazer">Lazer</option>
-        <option value="contas">Contas</option><option value="cartao">Cartão</option>
-        <option value="salario">Salário</option><option value="transferencia">Transferência</option>
-        <option value="juros">Juros/Encargos</option><option value="tarifa">Tarifa</option>
-        <option value="compras">Compras</option><option value="maquininha">Maquininha</option>
-        <option value="seguro">Seguro</option><option value="emprestimo">Empréstimo</option>
-        <option value="investimento">Investimento</option><option value="outros">Outros</option>
-      </select>
-    </div>
-    <div class="form-row"><label class="form-label">Observação</label><input type="text" id="edit-obs" placeholder="Opcional"/></div>
-    <div class="modal-foot">
-      <button class="btn-g" onclick="closeEdit()">Cancelar</button>
-      <button class="btn-p" onclick="saveEdit()"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i> Salvar</button>
-    </div>
-  </div>
-</div>
-
-<div class="toast-wrap" id="toast-wrap"></div>
+<button class="login-btn" onclick="odLogin()"><i class="ti ti-brand-windows"></i> Entrar com Microsoft</button>
+<div class="login-skip" onclick="skipLogin()">Usar sem salvar (dados locais)</div>
+</div></div>
+</div><!-- .content -->
+</div><!-- .body -->
+</div><!-- .app -->
 <script>
-
-// ── CONFIG ──
+// ════════════════════════════════════════════════════════
+// CONFIGURAÇÃO — substitua pelo seu Client ID do Azure
+// ════════════════════════════════════════════════════════
 const CLIENT_ID = 'b03b6304-3dd6-4d69-84e3-f5c4306b6639';
-const GRAPH_SCOPES = ['Files.ReadWrite', 'User.Read'];
-const OD_PATH = '/me/drive/root:/FinanceAI/dados.json:/content';
-const API = 'https://api.anthropic.com/v1/messages';
+// ════════════════════════════════════════════════════════
+
+const API   = 'https://api.anthropic.com/v1/messages';
 const MODEL = 'claude-sonnet-4-20250514';
 
-// ── STATE ──
-let msalApp=null,odToken=null,odUser=null,autoSaveTimer=null;
-let transacoes=[],debts=[],chatHistory=[],nomenclaturas=getDefaultNomen();
-let ntid=1,ndid=1,nnid=64;
-let selBankId='itau',transFilter='todas',searchTerm='',selMonth='todas';
-let chatTyping=false;
+// ── ONEDRIVE / MSAL ──
+const GRAPH_SCOPES   = ['Files.ReadWrite','User.Read'];
+const OD_PATH        = '/me/drive/root:/FinanceAI/dados.json:/content';
+let msalApp = null;
+let odToken  = null;
+let odUser   = null;
 
-const fmt = v => 'R$ ' + Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
-const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-const mL = m => m>=360?'+30 anos':m>12?`${Math.floor(m/12)}a ${m%12}m`:`${m} meses`;
-
-const CAT_ICON = {alimentacao:'🍽️',transporte:'🚗',moradia:'🏠',saude:'❤️',educacao:'📚',lazer:'🎭',contas:'💡',cartao:'💳',salario:'💰',transferencia:'↔️',juros:'🔴',tarifa:'🏦',compras:'🛍️',emprestimo:'📋',maquininha:'⚠️',seguro:'🛡️',pagamento:'✅',outros:'📦'};
-const BANKS = {itau:'Itaú',nubank:'Nubank',inter:'Inter',bradesco:'Bradesco',bb:'Banco do Brasil',santander:'Santander',caixa:'Caixa',outro:'Outro'};
-
-// ── NOMENCLATURAS PADRÃO ──
-function getDefaultNomen() {
-  return [
-    {id:1,from:'PAGADORIA DE PESSOAL DA MARINH',tipo:'receita',cat:'salario',obs:'Soldo da Marinha'},
-    {id:2,from:'COMANDO DA MARINHA',tipo:'receita',cat:'salario',obs:'Gratificação Marinha'},
-    {id:3,from:'INT PASSAI ITAU',tipo:'despesa',cat:'cartao',obs:'Fatura Passai Itaú'},
-    {id:4,from:'INT ITAU BLACK',tipo:'despesa',cat:'cartao',obs:'Fatura Itaú Black'},
-    {id:5,from:'INT CVC ITAU',tipo:'despesa',cat:'cartao',obs:'Fatura CVC Itaú'},
-    {id:6,from:'FATURA PAGA',tipo:'despesa',cat:'cartao',obs:'Pagamento de fatura'},
-    {id:7,from:'UNICLASS MUL',tipo:'despesa',cat:'cartao',obs:'Fatura Uniclass'},
-    {id:8,from:'CREDITO CONSIGNADO',tipo:'receita',cat:'emprestimo',obs:'Consignado captado — é dívida'},
-    {id:9,from:'CREDIARIO ITAU',tipo:'receita',cat:'emprestimo',obs:'Crediário Itaú'},
-    {id:10,from:'CINOCRED',tipo:'despesa',cat:'juros',obs:'Parcela Cinocred'},
-    {id:11,from:'CREDSYSTEM',tipo:'despesa',cat:'juros',obs:'Parcela Credsystem'},
-    {id:12,from:'CREDSEA',tipo:'despesa',cat:'juros',obs:'Parcela Credsea'},
-    {id:13,from:'MIDWAY',tipo:'despesa',cat:'juros',obs:'Parcela Midway'},
-    {id:14,from:'GEASC',tipo:'despesa',cat:'juros',obs:'Parcela Geasc'},
-    {id:15,from:'SISDEB',tipo:'despesa',cat:'juros',obs:'Desconto consignado'},
-    {id:16,from:'REND PAGO APLIC AUT',tipo:'ignore',cat:'outros',obs:'Rendimento aplicação'},
-    {id:17,from:'SALDO TOTAL DISPONIVEL',tipo:'ignore',cat:'outros',obs:'Saldo diário'},
-    {id:18,from:'AMPLA',tipo:'despesa',cat:'contas',obs:'Energia Ampla'},
-    {id:19,from:'VIVO',tipo:'despesa',cat:'contas',obs:'Telefone Vivo'},
-    {id:20,from:'PROLAGOS',tipo:'despesa',cat:'contas',obs:'Água Prolagos'},
-    {id:21,from:'ENEL DISTRIBUICAO',tipo:'despesa',cat:'contas',obs:'Energia Enel'},
-    {id:22,from:'CLARO',tipo:'despesa',cat:'contas',obs:'Claro'},
-    {id:23,from:'UNIMED',tipo:'despesa',cat:'saude',obs:'Plano Unimed'},
-    {id:24,from:'PREF MUN CABO FRIO',tipo:'despesa',cat:'moradia',obs:'IPTU Cabo Frio'},
-    {id:25,from:'BRADESCO SEGUROS',tipo:'despesa',cat:'outros',obs:'Seguro auto'},
-    {id:26,from:'SEGURO CARTAO',tipo:'despesa',cat:'outros',obs:'Seguro cartão'},
-    {id:27,from:'CONSORCIO',tipo:'despesa',cat:'outros',obs:'Parcela consórcio'},
-    {id:28,from:'RECEITA FED',tipo:'despesa',cat:'outros',obs:'DARF'},
-    {id:29,from:'DETRAN',tipo:'despesa',cat:'transporte',obs:'Taxa DETRAN'},
-    {id:30,from:'UBER',tipo:'despesa',cat:'transporte',obs:'Uber'},
-    {id:31,from:'IFOOD',tipo:'despesa',cat:'alimentacao',obs:'iFood'},
-    {id:32,from:'RIACHUELO',tipo:'despesa',cat:'compras',obs:'Riachuelo'},
-    {id:33,from:'BANCO24H',tipo:'despesa',cat:'outros',obs:'Saque'},
-    {id:34,from:'SALARIO',tipo:'receita',cat:'salario',obs:'Salário'},
-    {id:35,from:'BANCO INTER',tipo:'receita',cat:'transferencia',obs:'Recebimento Inter'},
-    {id:36,from:'JIM.COM',tipo:'despesa',cat:'maquininha',obs:'Operacao maquininha informal — credito via terceiro. ALERTA: custo real ~25%/mes'},
-    {id:37,from:'JIM.COM GABRI',tipo:'despesa',cat:'maquininha',obs:'Maquininha Gabriel Goncalves — operacao de credito informal'},
-    {id:38,from:'JIM.COM GABRIEL',tipo:'despesa',cat:'maquininha',obs:'Maquininha Gabriel Goncalves — operacao de credito informal'},
-    {id:39,from:'PORTOSEG',tipo:'despesa',cat:'cartao',obs:'Pagamento fatura Porto Bank'},
-    {id:40,from:'PORTO BANK',tipo:'despesa',cat:'cartao',obs:'Pagamento fatura Porto Bank'},
-    {id:41,from:'CARTAO PROTEGIDO',tipo:'despesa',cat:'seguro',obs:'Seguro do cartao Porto Bank — questionar se usa'},
-    {id:42,from:'ITAU SEGURO AUTO',tipo:'despesa',cat:'seguro',obs:'Seguro auto Itau parcelado'},
-    {id:43,from:'PARC FAT PG',tipo:'despesa',cat:'juros',obs:'Parcelamento de fatura anterior — gera juros'},
-    {id:44,from:'PARCELAMEN FATURA',tipo:'despesa',cat:'juros',obs:'Parcelamento de fatura anterior — gera juros'},
-    {id:45,from:'CREDITO PARCELAMENTO DA',tipo:'despesa',cat:'juros',obs:'Credito de parcelamento de fatura anterior'},
-    {id:46,from:'ANUIDADE DIFERENCI',tipo:'despesa',cat:'tarifa',obs:'Anuidade do cartao — verificar isencao'},
-    {id:47,from:'MULTA POR ATRASO',tipo:'despesa',cat:'juros',obs:'Multa por atraso no pagamento da fatura'},
-    {id:48,from:'JUROS DE MORA',tipo:'despesa',cat:'juros',obs:'Juros de mora por atraso'},
-    {id:49,from:'ENCARGOS FINANC ROTATIVO',tipo:'despesa',cat:'juros',obs:'Encargos do credito rotativo — juros altissimos'},
-    {id:50,from:'IOF DIAR ROT',tipo:'despesa',cat:'juros',obs:'IOF diario do credito rotativo'},
-    {id:51,from:'IOF ADIC ROT',tipo:'despesa',cat:'juros',obs:'IOF adicional do credito rotativo'},
-    {id:52,from:'ASSAI ATACADISTA',tipo:'despesa',cat:'alimentacao',obs:'Compras Assai Atacadista'},
-    {id:53,from:'NALAPA BARZIN',tipo:'despesa',cat:'alimentacao',obs:'Restaurante Nalapa Barzin — Cabo Frio'},
-    {id:54,from:'CHEF GRILL',tipo:'despesa',cat:'alimentacao',obs:'Restaurante Chef Grill — Cabo Frio'},
-    {id:55,from:'POSTO BRAGA',tipo:'despesa',cat:'transporte',obs:'Posto de gasolina — Cabo Frio'},
-    {id:56,from:'POSTO DAS DUNAS',tipo:'despesa',cat:'transporte',obs:'Posto de gasolina — Cabo Frio'},
-    {id:57,from:'VIA LAGOS',tipo:'despesa',cat:'transporte',obs:'Pedagio Via Lagos'},
-    {id:58,from:'ECOPONTE',tipo:'despesa',cat:'transporte',obs:'Pedagio Ecoponte Niteroi'},
-    {id:59,from:'MP*THAISSADUARTE',tipo:'despesa',cat:'transferencia',obs:'Transferencia para Thaissa Duarte'},
-    {id:60,from:'MP*DUARTEDECORACAO',tipo:'despesa',cat:'outros',obs:'Duarte Decoracao — servicos'},
-    {id:61,from:'PGTO. CASH AG.',tipo:'receita',cat:'pagamento',obs:'Pagamento da fatura do cartao BB'},
-    {id:62,from:'PGTO. QR CODE PIX',tipo:'receita',cat:'pagamento',obs:'Pagamento via PIX da fatura BB'},
-    {id:63,from:'SALDO FATURA ANTERIOR',tipo:'ignore',cat:'outros',obs:'Linha de saldo anterior — ignorar'},
-  ];
-}
-
-// ── MSAL ──
 function initMSAL() {
-  if (CLIENT_ID === 'SEU_CLIENT_ID_AQUI') return;
+  if(CLIENT_ID === 'SEU_CLIENT_ID_AQUI') {
+    // Sem CLIENT_ID — mostra tela de login com opção de pular
+    const ov = document.getElementById('login-overlay');
+    if(ov) ov.style.display = 'flex';
+    return;
+  }
   try {
     msalApp = new msal.PublicClientApplication({
-      auth: {clientId:CLIENT_ID, authority:'https://login.microsoftonline.com/common', redirectUri:window.location.origin+window.location.pathname, navigateToLoginRequestUrl:false},
-      cache: {cacheLocation:'localStorage', storeAuthStateInCookie:true}
+      auth:{ clientId:CLIENT_ID, authority:'https://login.microsoftonline.com/common', redirectUri:window.location.origin+window.location.pathname },
+      cache:{ cacheLocation:'localStorage', storeAuthStateInCookie:false },
     });
-    msalApp.handleRedirectPromise().then(r => {
-      if (r&&r.accessToken) { odToken=r.accessToken; odUser=r.account; onLogin(); }
-      else { const a=msalApp.getAllAccounts(); if(a.length>0) { msalApp.acquireTokenSilent({scopes:GRAPH_SCOPES,account:a[0]}).then(r=>{odToken=r.accessToken;odUser=a[0];onLogin();}).catch(()=>showApp()); } else showApp(); }
-    }).catch(()=>showApp());
-  } catch(e) { showApp(); }
+    msalApp.initialize().then(()=>{
+      const accounts = msalApp.getAllAccounts();
+      if(accounts.length){
+        odUser = accounts[0];
+        msalApp.acquireTokenSilent({scopes:GRAPH_SCOPES,account:accounts[0]})
+          .then(r=>{ odToken=r.accessToken; onLogin(); })
+          .catch(()=>{ const ov=document.getElementById('login-overlay'); if(ov) ov.style.display='flex'; });
+      } else {
+        const ov = document.getElementById('login-overlay');
+        if(ov) ov.style.display = 'flex';
+      }
+    });
+  } catch(e) {
+    console.warn('MSAL init failed:', e.message);
+    const ov = document.getElementById('login-overlay');
+    if(ov) ov.style.display = 'flex';
+  }
 }
 
 async function odLogin() {
-  if (CLIENT_ID==='SEU_CLIENT_ID_AQUI') { alert('Configure o CLIENT_ID primeiro.'); return; }
-  if (!msalApp) { toast('MSAL nao iniciado.','er'); return; }
-  try { const r=await msalApp.loginPopup({scopes:GRAPH_SCOPES}); odToken=r.accessToken; odUser=r.account; onLogin(); }
-  catch(e) { if(!e.toString().includes('user_cancelled')) toast('Erro: '+e.message,'er'); }
+  if(CLIENT_ID === 'SEU_CLIENT_ID_AQUI') {
+    alert('Configure o CLIENT_ID no arquivo FinanceAI.html antes de conectar o OneDrive.');
+    return;
+  }
+  if(!msalApp) { toast('MSAL não iniciado.','err'); return; }
+  try {
+    const r = await msalApp.loginPopup({scopes:GRAPH_SCOPES});
+    odToken = r.accessToken; odUser = r.account;
+    onLogin();
+  } catch(e) {
+    if(!e.toString().includes('user_cancelled')) toast('Erro: '+e.message,'err');
+  }
 }
 
 function onLogin() {
-  document.getElementById('login-overlay').style.display='none';
-  document.getElementById('main-app').style.display='flex';
-  document.getElementById('od-login-btn').style.display='none';
-  document.getElementById('od-logout-btn').style.display='inline-block';
-  setDot('on','OneDrive conectado',odUser&&odUser.username?odUser.username:'');
-  toast('Conectado!','ok');
+  const ov = document.getElementById('login-overlay');
+  if(ov) ov.style.display = 'none';
+  const dot = document.getElementById('od-dot');
+  if(dot) dot.classList.add('ok');
+  const st = document.getElementById('od-status');
+  if(st) st.textContent = 'Dados carregados · '+(odUser?.username||odUser?.name||'');
   odLoad();
 }
-function showApp() {
-  document.getElementById('login-overlay').style.display='none';
-  document.getElementById('main-app').style.display='flex';
-}
-function skipLogin() {
-  showApp();
-  setDot('','Modo local','');
-  toast('Usando sem OneDrive.','wa');
-}
-function odLogout() {
-  odToken=null; odUser=null;
-  if(msalApp) msalApp.logoutPopup().catch(()=>{});
-  document.getElementById('od-login-btn').style.display='inline-block';
-  document.getElementById('od-logout-btn').style.display='none';
-  setDot('','Desconectado','');
-  toast('Desconectado.','in');
-}
+
 async function odSave() {
   if(!odToken) return;
-  setDot('sync','Salvando...','');
-  const data = JSON.stringify({v:7,at:new Date().toISOString(),transacoes,debts,nomenclaturas,chatHistory,ntid,ndid,nnid},null,2);
   try {
-    const r = await fetch('https://graph.microsoft.com/v1.0'+OD_PATH, {method:'PUT',headers:{'Authorization':'Bearer '+odToken,'Content-Type':'application/json'},body:data});
-    if (r.ok) { const t=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}); setDot('on','Salvo',odUser&&odUser.username?odUser.username:''); document.getElementById('od-last').textContent=' · '+t; }
-    else if (r.status===401) { await refreshTok(); await odSave(); }
-    else throw new Error('HTTP '+r.status);
-  } catch(e) { setDot('er','Erro ao salvar',''); toast('Erro: '+e.message,'er'); }
+    const data = JSON.stringify({transacoes,debts,passeios,nomenclaturas,importedFiles,chatHistory:[]});
+    await fetch('https://graph.microsoft.com/v1.0'+OD_PATH,{
+      method:'PUT', headers:{'Authorization':'Bearer '+odToken,'Content-Type':'application/json'},
+      body:data
+    });
+  } catch(e){ console.warn('odSave:', e.message); }
 }
+
 async function odLoad() {
   if(!odToken) return;
-  setDot('sync','Carregando...','');
   try {
-    const r = await fetch('https://graph.microsoft.com/v1.0'+OD_PATH, {headers:{'Authorization':'Bearer '+odToken}});
-    if (r.ok) {
-      const d = await r.json();
-      if(d.transacoes){transacoes=d.transacoes;ntid=d.ntid||transacoes.length+1;}
-      if(d.debts){debts=d.debts;ndid=d.ndid||debts.length+1;}
-      if(d.nomenclaturas&&d.nomenclaturas.length>0){nomenclaturas=d.nomenclaturas;nnid=d.nnid||nomenclaturas.length+1;}
-      if(d.chatHistory) chatHistory=d.chatHistory;
-      renderNomen(''); renderDebts();
-      setDot('on','Dados carregados',odUser&&odUser.username?odUser.username:'');
-      toast('Dados restaurados!','ok');
-    } else if(r.status===404) { setDot('on','OneDrive pronto',''); toast('Nenhum dado anterior.','in'); }
-    else if(r.status===401) { await refreshTok(); await odLoad(); }
-    else setDot('on','Conectado','');
-  } catch(e) { setDot('er','Erro ao carregar',''); }
-}
-async function refreshTok() {
-  if(!msalApp||!odUser) return;
-  try { const r=await msalApp.acquireTokenSilent({scopes:GRAPH_SCOPES,account:odUser}); odToken=r.accessToken; }
-  catch(e) { const r=await msalApp.acquireTokenPopup({scopes:GRAPH_SCOPES}); odToken=r.accessToken; }
-}
-function sched() { if(!odToken)return; clearTimeout(autoSaveTimer); autoSaveTimer=setTimeout(odSave,3000); }
-function setDot(state,msg,user) {
-  const d=document.getElementById('od-dot');
-  d.className='od-dot'+(state?' '+state:'');
-  document.getElementById('od-status').textContent=msg;
-  document.getElementById('od-user').textContent=user?' · '+user:'';
+    const r = await fetch('https://graph.microsoft.com/v1.0'+OD_PATH,{
+      headers:{'Authorization':'Bearer '+odToken}
+    });
+    if(!r.ok) return;
+    const d = await r.json();
+    if(d.transacoes)  { transacoes=d.transacoes; ntid=Math.max(...transacoes.map(t=>t.id||0),0)+1; }
+    if(d.debts)       { debts=d.debts; }
+    if(d.passeios)    { passeios=d.passeios; npid=Math.max(...passeios.map(p=>p.id||0),0)+1; histSeeded=true; }
+    if(d.nomenclaturas) nomenclaturas=d.nomenclaturas;
+    if(d.importedFiles) importedFiles=d.importedFiles;
+    const st = document.getElementById('od-status');
+    if(st) st.textContent = 'Dados carregados · '+(odUser?.username||'');
+    renderExtrato(); renderDebts(); renderNomen('');
+    toast('Dados carregados do OneDrive!','ok');
+  } catch(e){ console.warn('odLoad:', e.message); }
 }
 
-// ── TOAST ──
-function toast(msg,type) {
-  const icons={ok:'ti-check',er:'ti-x',in:'ti-info-circle',wa:'ti-alert-triangle'};
-  const w=document.getElementById('toast-wrap');
-  const t=document.createElement('div');
-  t.className='toast '+(type||'in');
-  t.innerHTML='<i class="ti '+(icons[type]||'ti-info-circle')+'" style="font-size:13px"></i><span>'+msg+'</span>';
-  w.appendChild(t);
-  setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(16px)';t.style.transition='all .3s';setTimeout(()=>t.remove(),300);},3200);
+let _schedTimer = null;
+function sched() {
+  clearTimeout(_schedTimer);
+  _schedTimer = setTimeout(()=>{ if(odToken) odSave(); }, 3000);
 }
 
-// ── NAV ──
-function go(n) {
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
-  const ni=document.getElementById('nav-'+n); if(ni) ni.classList.add('active');
-  const si=document.getElementById('sec-'+n); if(si) si.classList.add('on');
-  const map=['dashboard','chat','extrato','mensal','dividas','nomen','roi','golpes','lancha','equilibrio','faturas','maquininha','diag','importacoes','relatorio','pdf','fluxo'];
-  const pi=map.indexOf(n);
-  if(pi>=0) { const tabs=document.querySelectorAll('.tab'); if(tabs[pi]) tabs[pi].classList.add('active'); }
-  if(n==='mensal') renderMensal();
-  if(n==='roi') calcROI();
-  if(n==='equilibrio') calcEquilibrio();
-  if(n==='lancha') renderLancha();
-  if(n==='faturas') renderFaturas();
-  if(n==='maquininha') calcMaquininha();
-  if(n==='diag') renderDiagConsolidado();
-  if(n==='dashboard') renderDashboard();
-  if(n==='importacoes') renderImportacoes();
-  if(n==='fluxo') renderFluxo();
-  if(n==='relatorio') renderRelatorioCartoes();
-  if(n==='pdf') renderPdfScreen();
-  setTopbarTitle(n);
-  if(['extrato','faturas','dividas','lancha','mensal','equilibrio'].includes(n)) injectDataStatus(n);
-  if(window.innerWidth<=860) closeSidebar();
-  if(n==='nomen') renderNomen('');
-}
 
-// ── CHAT ──
-const PILLS = [
-  'Quais minhas maiores despesas?','Quanto pago de juros por mês?',
-  'Qual dívida devo pagar primeiro?','Quando vou sair do vermelho?',
-  'Como negociar minha dívida?','Posso economizar algo este mês?',
-  'O que é esse lançamento suspeito?','Como parar de pagar o mínimo do cartão?'
-];
+function parseExtratoTabular(text) {
+  if(!text) return null;
+  const ignorar = /Saldo (Total Disponível|do Dia|Anterior|em conta|Parcial)|Saldo Disponível|S A L D O|Limite (total|utilizado)|saldo devedor/i;
+  const VALOR_RE = /(-?\d{1,3}(?:\.\d{3})*,\d{2})\s*$/;
+  const DATE_LEAD = /^(\d{2}\/\d{2}\/\d{4})\s+/;
 
-function autoH(el) { el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,90)+'px'; }
-
-function sendInput() {
-  const el=document.getElementById('chat-input');
-  const msg=el.value.trim();
-  if(!msg||chatTyping) return;
-  el.value=''; el.style.height='auto';
-  chatSend(msg);
-}
-
-async function chatSend(msg) {
-  document.getElementById('chat-welcome').style.display='none';
-  const area=document.getElementById('chat-area'); area.style.display='flex';
-  document.getElementById('pills-row').style.display='none';
-  addBubble('user',msg);
-  chatHistory.push({role:'user',content:msg});
-  showTyping();
-  document.getElementById('send-btn').disabled=true;
-  chatTyping=true;
-  try {
-    const reply=await callChat(msg);
-    hideTyping();
-    addBubble('ai',reply);
-    chatHistory.push({role:'assistant',content:reply});
-    showPills(reply);
-  } catch(e) {
-    hideTyping();
-    addBubble('ai','Desculpe, tive um problema. Tente novamente.');
+  // MODO 1: texto linha-por-linha (pdfplumber, texto direto, CSV)
+  const reLinhas = /^(\d{2}\/\d{2}\/\d{4})\s+(.+?)\s+(-?[\d.]+,\d{2})\s*$/gm;
+  const resLinha = [];
+  let mL;
+  while((mL=reLinhas.exec(text))!==null){
+    if(ignorar.test(mL[2])) continue;
+    const v=parseFloat(mL[3].replace(/\./g,'').replace(',','.'));
+    if(!isNaN(v)) resLinha.push({data:mL[1],desc:mL[2].trim(),valor:Math.abs(v),tipo:v<0?'debito':'credito'});
   }
-  chatTyping=false;
-  document.getElementById('send-btn').disabled=false;
-  document.getElementById('chat-input').focus();
-  sched();
-}
+  if(resLinha.length>=5) return resLinha;
 
-function buildCtx() {
-  const cred=transacoes.filter(t=>t.tipo==='credito').reduce((s,t)=>s+t.valor,0);
-  const deb=transacoes.filter(t=>t.tipo==='debito').reduce((s,t)=>s+t.valor,0);
-  const juros=transacoes.filter(t=>t.flag==='juros').reduce((s,t)=>s+t.valor,0);
-  const fat=transacoes.filter(t=>t.flag==='cartao').reduce((s,t)=>s+t.valor,0);
-  const cons=transacoes.filter(t=>t.categoria==='emprestimo'&&t.tipo==='credito').reduce((s,t)=>s+t.valor,0);
-  const sal=transacoes.filter(t=>t.categoria==='salario'&&t.tipo==='credito').reduce((s,t)=>s+t.valor,0);
-  const bycat={}; transacoes.filter(t=>t.tipo==='debito').forEach(t=>{bycat[t.categoria]=(bycat[t.categoria]||0)+t.valor;});
-  const cats=Object.entries(bycat).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([c,v])=>c+': '+fmt(v)).join(', ');
-  const meses=[...new Set(transacoes.map(t=>{if(!t.data)return null;const p=t.data.split('/');return p[1]+'/'+p[2];}).filter(Boolean))].length;
-  const tdiv=debts.reduce((s,d)=>s+d.valor,0);
-  const tjuros=debts.reduce((s,d)=>s+d.valor*(d.juros/100),0);
-  const cycle=cons>0&&fat>cons*0.4;
-  const maquininha=transacoes.filter(t=>t.categoria==='maquininha').reduce((s,t)=>s+t.valor,0);
-  const maquininhaN=transacoes.filter(t=>t.categoria==='maquininha').length;
-  let ctx='';
-  if(transacoes.length>0) {
-    ctx+='EXTRATO ('+transacoes.length+' transacoes, '+meses+' meses): ';
-    ctx+='Entradas='+fmt(cred)+', Saidas='+fmt(deb)+', Saldo='+fmt(cred-deb)+', ';
-    ctx+='Salario='+fmt(sal)+', Juros='+fmt(juros)+', Faturas cartao='+fmt(fat)+', Consignados='+fmt(cons)+'. ';
-    ctx+='Maiores gastos: '+cats+'. ';
-    if(cycle) ctx+='ALERTA: ciclo de endividamento (consignado pagando cartao). ';
+  // MODO 2: texto inline pdfjs (palavras juntas por espaço, sem quebra de linha por transação)
+  // Estratégia: divide no início de cada data e extrai valor no final de cada segmento
+  const parts = text.split(/(?=\b\d{2}\/\d{2}\/\d{4}\b)/);
+  const resInline = [];
+  for(const part of parts){
+    const p = part.trim();
+    if(!p) continue;
+    const dm = DATE_LEAD.exec(p);
+    if(!dm) continue;
+    const data = dm[1];
+    const rest = p.slice(dm[0].length);
+    const vm = VALOR_RE.exec(rest);
+    if(!vm) continue;
+    const desc = rest.slice(0, vm.index).trim();
+    if(!desc || ignorar.test(desc)) continue;
+    const v = parseFloat(vm[1].replace(/\./g,'').replace(',','.'));
+    if(!isNaN(v)) resInline.push({data,desc,valor:Math.abs(v),tipo:v<0?'debito':'credito'});
   }
-  if(debts.length>0) {
-    ctx+='DIVIDAS: '+debts.map(d=>d.nome+': '+fmt(d.valor)+' a '+d.juros+'% am').join(', ')+'. ';
-    ctx+='Total: '+fmt(tdiv)+', Juros/mes: '+fmt(tjuros)+'. ';
-  }
-  const maqTotal=transacoes.filter(t=>t.categoria==='maquininha').reduce((s,t)=>s+t.valor,0);
-  const fatTotal=transacoes.filter(t=>t.src==='fatura'&&t.tipo==='debito').reduce((s,t)=>s+(t.valor||0),0);
-  if(fatTotal>0) ctx+='Faturas de cartao registradas: '+fmt(fatTotal)+'. ';
-  if(maqTotal>0) ctx+='ALERTA CRITICO: '+fmt(maqTotal)+' em operacoes de maquininha informal detectadas — custo real ~25%/mes. ';
-  if(!transacoes.length&&!debts.length) ctx='Nenhum dado importado ainda.';
-  return ctx;
-}
+  if(resInline.length>=5) return resInline;
 
-async function callChat(msg) {
-  const ctx=buildCtx();
-  const sys='Voce e um consultor financeiro pessoal brasileiro. Fale como um amigo que entende de financas.\nUse linguagem simples, sem jargao. Frases curtas. Seja direto: diga QUANTO, QUANDO e COMO.\nSempre termine com 1 acao concreta para hoje ou essa semana.\nMaximo 200 palavras. Max 2 emojis por resposta.\nSe identificar ciclo de endividamento, explique de forma simples e sugira saida.\n\nDADOS DO USUARIO:\n'+ctx;
-  const msgs=chatHistory.slice(-8);
-  const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:MODEL,max_tokens:500,system:sys,messages:msgs.length>0?msgs:[{role:'user',content:msg}]})});
-  const d=await r.json();
-  if(d.error) throw new Error(d.error.message);
-  return (d.content||[]).map(c=>c.text||'').join('').trim();
-}
-
-function addBubble(role,text) {
-  const el=document.getElementById('chat-msgs');
-  const d=document.createElement('div');
-  d.className='bubble '+role;
-  const html=esc(text).replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
-  d.innerHTML=html;
-  el.appendChild(d);
-  el.scrollTop=el.scrollHeight;
-}
-function showTyping() {
-  const el=document.getElementById('chat-msgs');
-  const d=document.createElement('div');
-  d.id='typing'; d.className='typing-wrap';
-  d.innerHTML='<div class="dots"><span></span><span></span><span></span></div>';
-  el.appendChild(d); el.scrollTop=el.scrollHeight;
-}
-function hideTyping() { const t=document.getElementById('typing'); if(t) t.remove(); }
-
-function showPills(reply) {
-  const el=document.getElementById('pills-row');
-  const rel=PILLS.filter(q=>{
-    if(reply.includes('juros')&&q.includes('juros')) return true;
-    if(reply.includes('divida')&&q.includes('divida')) return true;
-    if(reply.includes('cartao')&&q.includes('cartao')) return true;
-    return false;
-  }).slice(0,2);
-  const extra=PILLS.filter(q=>!rel.includes(q)).slice(0,3-rel.length);
-  const show=[...rel,...extra].slice(0,3);
-  el.innerHTML=show.map(q=>'<button class="pill" onclick="chatSend('+JSON.stringify(q)+')">'+q+'</button>').join('');
-  el.style.display='flex';
-}
-
-async function onChatFile(e) {
-  const files=e.target.files; if(!files.length) return;
-  document.getElementById('chat-welcome').style.display='none';
-  document.getElementById('chat-area').style.display='flex';
-  addBubble('user','📄 Analisando seu extrato...');
-  showTyping(); chatTyping=true;
-  document.getElementById('send-btn').disabled=true;
-  const f=files[0]; let txt='';
-  try {
-    if(typeof pdfjsLib!=='undefined') {
-      pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
-      const buf=await f.arrayBuffer();
-      const pdf=await pdfjsLib.getDocument({data:buf}).promise;
-      for(let i=1;i<=Math.min(pdf.numPages,40);i++) {
-        const p=await pdf.getPage(i);
-        const tc=await p.getTextContent();
-        txt+=tc.items.map(x=>x.str).join(' ')+'\n';
-      }
-    }
-  } catch(err) { txt='[PDF: '+f.name+']'; }
-  processBankFiles(files);
-  try {
-    const sys='Voce e consultor financeiro. O usuario enviou extrato bancario.\nAnalise e responda em linguagem simples:\n1. Situacao geral em 2-3 frases\n2. Os 3 pontos mais importantes\n3. A acao mais urgente agora\nMaximo 200 palavras. Termine perguntando o que mais quer saber.';
-    const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:MODEL,max_tokens:600,system:sys,messages:[{role:'user',content:'Extrato: '+txt.slice(0,5000)}]})});
-    const d=await r.json();
-    const reply=(d.content||[]).map(c=>c.text||'').join('').trim();
-    hideTyping();
-    addBubble('ai','Extrato analisado!\n\n'+(reply||'Analise completa na aba Extrato.'));
-    chatHistory.push({role:'assistant',content:reply});
-    showPills(reply||'');
-  } catch(err) {
-    hideTyping();
-    addBubble('ai','Extrato importado! Veja a analise completa na aba Extrato Bancario.');
-  }
-  chatTyping=false;
-  document.getElementById('send-btn').disabled=false;
-  e.target.value='';
-}
-
-// ── NOMENCLATURAS ──
-function applyNomen(desc) {
-  const u=(desc||'').toUpperCase();
-  for(const r of nomenclaturas) { if(u.includes(r.from.toUpperCase())) return r; }
   return null;
-}
-function addNomen() {
-  const from=document.getElementById('nr-from').value.trim();
-  const tipo=document.getElementById('nr-tipo').value;
-  const cat=document.getElementById('nr-cat').value;
-  const obs=document.getElementById('nr-obs').value.trim();
-  if(!from) { toast('Digite o texto a identificar.','wa'); return; }
-  if(nomenclaturas.some(r=>r.from.toUpperCase()===from.toUpperCase())) { toast('Regra ja existe.','wa'); return; }
-  nomenclaturas.push({id:nnid++,from,tipo,cat,obs});
-  document.getElementById('nr-from').value='';
-  document.getElementById('nr-obs').value='';
-  renderNomen(''); sched();
-  toast('Regra salva!','ok');
-}
-function fillNomen(from,tipo,cat,obs) {
-  document.getElementById('nr-from').value=from;
-  document.getElementById('nr-tipo').value=tipo;
-  document.getElementById('nr-cat').value=cat;
-  document.getElementById('nr-obs').value=obs;
-  toast('Preencha e clique Salvar regra.','in');
-}
-function delNomen(id) { nomenclaturas=nomenclaturas.filter(r=>r.id!==id); renderNomen(''); sched(); }
-function renderNomen(q) {
-  const el=document.getElementById('nomen-list');
-  const cnt=document.getElementById('nomen-count'); if(cnt) cnt.textContent=nomenclaturas.length;
-  const f=q?q.toLowerCase():'';
-  const shown=f?nomenclaturas.filter(r=>r.from.toLowerCase().includes(f)):nomenclaturas;
-  if(!shown.length) { el.innerHTML='<div class="empty"><i class="ti ti-tags"></i><p>Nenhuma regra encontrada.</p></div>'; return; }
-  el.innerHTML=shown.map(r=>{
-    const tl=r.tipo==='receita'?'↑ Receita':r.tipo==='ignore'?'🚫 Ignorar':'↓ Despesa';
-    const tc=r.tipo==='receita'?'tag-gn':'tag-rd';
-    return '<div class="nr-item"><div class="nr-from" title="'+esc(r.from)+'">'+esc(r.from)+'</div><div class="nr-arrow">→</div><div class="nr-to"><span class="'+tc+'">'+tl+'</span><span style="font-size:10px;color:var(--text3)"> '+r.cat+'</span></div><button class="nr-del" onclick="delNomen('+r.id+')">×</button></div>';
-  }).join('');
-}
-
-// ── EXTRATO ──
-function selBank(b) {
-  selBankId=b;
-  document.querySelectorAll('.bank-card').forEach(el=>el.classList.remove('active'));
-  const el=document.getElementById('bk-'+b); if(el) el.classList.add('active');
-  toast((BANKS[b]||b)+' selecionado!','ok');
-}
-function doDrag(e,on) { e.preventDefault(); document.getElementById('ext-drop').classList.toggle('drag',on); }
-function doDrop(e) { e.preventDefault(); document.getElementById('ext-drop').classList.remove('drag'); processBankFiles(e.dataTransfer.files); }
-function onExtFile(e) { processBankFiles(e.target.files); }
-
-async function processBankFiles(files) {
-  Array.from(files).forEach(async f => {
-    if(isFileImported(f)) {
-      if(!confirm('O arquivo "'+f.name+'" já foi importado antes. Importar de novo pode duplicar lançamentos. Deseja continuar mesmo assim?')) {
-        toast('Importação cancelada — arquivo já usado','wa');
-        return;
-      }
-    }
-    const _imp = registerFile(f, 0, BANKS[selBankId]||selBankId, 'extrato');
-    window._curImpId = _imp.impId;
-    document.getElementById('ext-chips').innerHTML+='<span class="chip"><i class="ti ti-file-type-pdf" style="font-size:10px"></i>'+esc(f.name)+'</span>';
-    if(f.name.toLowerCase().endsWith('.pdf')) await extractAndAnalyze(f);
-    else { const rd=new FileReader(); rd.onload=ev=>analyzeBank(ev.target.result,null,f.name); rd.readAsText(f,'latin1'); }
-  });
-}
-function setStepEl(n,s) {
-  const el=document.getElementById('st-'+n); if(!el) return;
-  el.className='step '+s;
-  document.getElementById('prog-fill').style.width=(n*20)+'%';
-}
-function setProgLabel(t) { const el=document.getElementById('prog-label'); if(el) el.textContent=t; }
-function showProg(v) { document.getElementById('prog-card').style.display=v?'block':'none'; }
-
-
-
-// ── ITEM 9: RECONHECIMENTO DE ADQUIRENTES (MAQUININHAS) ──
-const ADQUIRENTES = ['STONE','CIELO','\\bREDE\\b','GETNET','PAGSEGURO','PAGBANK','MERCADO ?PAGO','MP\\*','SUMUP','SAFRAPAY','\\bTON\\b','INFINITEPAY','JIM\\.COM','GABRIEL GONCALV'];
-const ADQ_RE = new RegExp('('+ADQUIRENTES.join('|')+')','i');
-function isAdquirente(desc){ return ADQ_RE.test(desc||''); }
-function detectAdquirenteNome(desc){
-  const d=(desc||'').toUpperCase();
-  if(/STONE/.test(d))return'Stone'; if(/CIELO/.test(d))return'Cielo';
-  if(/REDE/.test(d))return'Rede'; if(/GETNET/.test(d))return'Getnet';
-  if(/PAGSEGURO|PAGBANK/.test(d))return'PagSeguro'; if(/MERCADO ?PAGO|MP\*/.test(d))return'Mercado Pago';
-  if(/SUMUP/.test(d))return'SumUp'; if(/SAFRAPAY/.test(d))return'SafraPay';
-  if(/\bTON\b/.test(d))return'Ton'; if(/INFINITEPAY/.test(d))return'InfinitePay';
-  if(/JIM\.COM|GABRIEL/.test(d))return'JIM.COM (informal)';
-  return'Maquininha';
-}
-
-// ── ITEM 1: NORMALIZAÇÃO PRÉ-IMPORTAÇÃO ──
-function normalizeDoc(text) {
-  if(!text) return '';
-  let t = text;
-  // Remove espaços redundantes mantendo quebras
-  t = t.replace(/[ \t]{2,}/g,' ');
-  // Junta linhas quebradas no meio de um lançamento (data órfã ou valor órfão na linha seguinte)
-  t = t.replace(/\n[ \t]*(?=[\d.,]+\s*$)/g,' ');
-  // Remove caracteres de controle e zero-width
-  t = t.replace(/[\u200B-\u200D\uFEFF]/g,'');
-  // Remove cabeçalhos/rodapés repetidos comuns em extratos
-  const ruido = [
-    /SAC\s+\d{4}.*$/gmi,
-    /Ouvidoria.*$/gmi,
-    /www\.[a-z0-9.\/-]+/gmi,
-    /Central de (Atendimento|Relacionamento).*$/gmi,
-    /P[áa]gina\s+\d+\s*(de|\/)\s*\d+/gmi,
-    /CNPJ[:\s]+[\d.\/-]+/gmi,
-    /Este (documento|extrato) (foi|é).*$/gmi,
-    /Demonstrativo (de|gerado).*$/gmi,
-  ];
-  ruido.forEach(r=>{ t = t.replace(r,''); });
-  // Remove linhas em branco múltiplas
-  t = t.replace(/\n{3,}/g,'\n\n');
-  return t.trim();
 }
 
 // Detecta se uma "página" tem movimentação financeira (tem padrão de valor R$/data)
@@ -2591,7 +1682,24 @@ function selFatCard(c) {
 
 function onFatFile(e) { processFatFiles(e.target.files); }
 
-async function processFatFiles(files) {
+async 
+function processBankFiles(files) {
+  Array.from(files).forEach(async f => {
+    if(isFileImported(f)) {
+      if(!confirm('O arquivo "'+f.name+'" já foi importado antes. Importar de novo pode duplicar lançamentos. Deseja continuar mesmo assim?')) {
+        toast('Importação cancelada — arquivo já usado','wa');
+        return;
+      }
+    }
+    const _imp = registerFile(f, 0, BANKS[selBankId]||selBankId, 'extrato');
+    window._curImpId = _imp.impId;
+    document.getElementById('ext-chips').innerHTML+='<span class="chip"><i class="ti ti-file-type-pdf" style="font-size:10px"></i>'+esc(f.name)+'</span>';
+    if(f.name.toLowerCase().endsWith('.pdf')) await extractAndAnalyze(f);
+    else { const rd=new FileReader(); rd.onload=ev=>analyzeBank(ev.target.result,null,f.name); rd.readAsText(f,'latin1'); }
+  });
+}
+
+function processFatFiles(files) {
   Array.from(files).forEach(async f => {
     if(isFileImported(f)) {
       if(!confirm('A fatura "'+f.name+'" já foi importada antes. Importar de novo pode duplicar lançamentos. Continuar?')) {
@@ -4867,17 +3975,147 @@ async function gerarPdfFluxo() {
 
 function pdfFmtFull(v){ return (v<0?'-':'+')+' R$'+Math.abs(Math.round(v)).toLocaleString('pt-BR'); }
 
+
+// ── NAVEGAÇÃO ──
+function go(n) {
+  document.querySelectorAll('.nav-item').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  const ni=document.getElementById('nav-'+n); if(ni) ni.classList.add('active');
+  const si=document.getElementById('sec-'+n); if(si) si.classList.add('on');
+  const map=['dashboard','chat','extrato','mensal','dividas','nomen','roi','golpes','lancha','equilibrio','faturas','maquininha','diag','importacoes','relatorio','pdf','fluxo'];
+  if(n==='extrato') renderExtrato();
+  if(n==='mensal') renderMensal();
+  if(n==='roi') calcROI();
+  if(n==='equilibrio') calcEquilibrio();
+  if(n==='lancha') renderLancha();
+  if(n==='faturas') renderFaturas();
+  if(n==='maquininha') calcMaquininha();
+  if(n==='diag') renderDiagConsolidado();
+  if(n==='dashboard') renderDashboard();
+  if(n==='importacoes') renderImportacoes();
+  if(n==='fluxo') renderFluxo();
+  if(n==='relatorio') renderRelatorioCartoes();
+  if(n==='pdf') renderPdfScreen();
+  if(n==='nomen') renderNomen('');
+  setTopbarTitle(n);
+  if(['faturas','dividas','lancha','mensal','equilibrio'].includes(n)) injectDataStatus(n);
+  if(n==='extrato' && !transacoes.filter(t=>t.src!=='fatura').length) injectDataStatus(n);
+  if(window.innerWidth<=860) closeSidebar();
+}
+
+function setTopbarTitle(n){ const el=document.getElementById('topbar-title'); if(el) el.textContent=SEC_TITLES[n]||''; }
+
+function toggleSidebar(){
+  const sb=document.getElementById('sidebar'); const bd=document.getElementById('sidebar-backdrop');
+  if(sb.classList.contains('open')){ sb.classList.remove('open'); bd.classList.remove('show'); }
+  else { sb.classList.add('open'); bd.classList.add('show'); }
+}
+function closeSidebar(){
+  document.getElementById('sidebar')?.classList.remove('open');
+  document.getElementById('sidebar-backdrop')?.classList.remove('show');
+}
+
+// ── BANCO ──
+let selBankId='itau';
+const BANKS={itau:'Itaú',nubank:'Nubank',inter:'Inter',bradesco:'Bradesco',bb:'Banco do Brasil',santander:'Santander',caixa:'Caixa',outro:'Outro'};
+function selBank(b){
+  selBankId=b;
+  document.querySelectorAll('.bank-card').forEach(el=>el.classList.remove('active'));
+  const el=document.getElementById('bk-'+b); if(el) el.classList.add('active');
+  toast((BANKS[b]||b)+' selecionado!','ok');
+}
+
+// ── PROGRESSO ──
+function showProg(v){ const c=document.getElementById('prog-card'); if(c) c.style.display=v?'block':'none'; }
+function setStepEl(n,s){ const e=document.getElementById('st-'+n); if(e){ e.className='step '+(s||''); } const fill=document.getElementById('prog-fill'); if(fill) fill.style.width=(n*20)+'%'; }
+function setProgLabel(t){ const e=document.getElementById('prog-label'); if(e) e.textContent=t; }
+
+// ── TOAST ──
+function toast(msg,type){
+  const t=document.createElement('div');
+  t.style.cssText='position:fixed;bottom:20px;right:16px;padding:10px 16px;border-radius:10px;font-size:13px;z-index:9999;font-family:DM Sans,sans-serif;box-shadow:0 4px 16px #00000030;max-width:280px;transition:opacity .3s';
+  t.style.background=type==='err'?'#d63333':type==='wa'?'#c47d0a':'#1a9d5e';
+  t.style.color='#fff'; t.textContent=msg;
+  document.body.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';setTimeout(()=>t.remove(),300);},3200);
+}
+
+// ── ESC helper ──
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
 window.addEventListener('load',()=>{
+  // Tema
+  (function(){
+    let t='light';
+    try{t=localStorage.getItem('financeai-theme')||'light';}catch(e){}
+    applyTheme(t);
+  })();
+
+  // MSAL / OneDrive
   initMSAL();
+
+  // Nomenclaturas e chat
   renderNomen('');
-  if(CLIENT_ID==='SEU_CLIENT_ID_AQUI') {
-    const btn=document.querySelector('.ms-login-btn');
-    if(btn) btn.textContent='Configurar CLIENT_ID para ativar OneDrive';
+  const pills=document.getElementById('chat-pills');
+  if(pills) pills.innerHTML=PILLS.map(p=>`<div class="pill" onclick="chatSend('${p}')">${p}</div>`).join('');
+
+  // Seed passeios históricos
+  seedHistPasseios();
+
+  // Drag-and-drop extrato
+  const drop=document.getElementById('ext-drop');
+  if(drop){
+    drop.addEventListener('dragover',e=>{e.preventDefault();drop.style.borderColor='var(--blue)';});
+    drop.addEventListener('dragleave',()=>{drop.style.borderColor='';});
+    drop.addEventListener('drop',e=>{e.preventDefault();drop.style.borderColor='';processBankFiles(e.dataTransfer.files);});
   }
+
+  // Drag-and-drop faturas
+  const fatDrop=document.getElementById('fat-drop');
+  if(fatDrop){
+    fatDrop.addEventListener('dragover',e=>{e.preventDefault();fatDrop.style.borderColor='var(--blue)';});
+    fatDrop.addEventListener('dragleave',()=>{fatDrop.style.borderColor='';});
+    fatDrop.addEventListener('drop',e=>{e.preventDefault();fatDrop.style.borderColor='';processFatFiles(e.dataTransfer.files);});
+  }
+
+  // Banco padrão ativo
+  selBank('itau');
+
+  // Mostrar login se necessário
+  const ov=document.getElementById('login-overlay');
+  if(ov) ov.style.display='flex';
+
+  // Tela inicial
+  go('chat');
+
+  // Warn antes de fechar com dados não salvos
+  window.addEventListener('beforeunload',e=>{
+    if(transacoes.length&&!odToken){e.preventDefault();e.returnValue='Dados não salvos.';}
+  });
 });
+
+// ── FUNÇÕES DE ARQUIVO ──
+function onExtFile(e){processBankFiles(e.target.files);}
+function onFatFile(e){processFatFiles(e.target.files);}
+function onChatFile(e){
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=ev=>sendPrint(ev.target.result);
+  r.readAsDataURL(f);
+  e.target.value='';
+}
+
+// ── ONEDRIVE ──
+function skipLogin(){
+  const ov=document.getElementById('login-overlay');
+  if(ov) ov.style.display='none';
+  const s=document.getElementById('od-status'); if(s) s.textContent='Modo local (sem OneDrive)';
+}
+
 window.addEventListener('beforeunload',e=>{
   if((transacoes.length||debts.length)&&!odToken){e.preventDefault();e.returnValue='Dados nao salvos.';}
 });
+
 
 </script>
 </body>
