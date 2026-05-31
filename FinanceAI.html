@@ -7,6 +7,12 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <script src="https://alcdn.msauth.net/browser/2.38.2/js/msal-browser.min.js"></script>
+<script>
+// Fallback: se o CDN da Microsoft falhou, carrega do jsdelivr
+if(typeof msal === 'undefined') {
+  document.write('<script src="https://cdn.jsdelivr.net/npm/@azure/msal-browser@2.38.2/lib/msal-browser.min.js"><\/script>');
+}
+</script>
 <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
@@ -686,21 +692,16 @@ let odUser   = null;
 
 function initMSAL() {
   const ov = document.getElementById('login-overlay');
-  if(CLIENT_ID === 'SEU_CLIENT_ID_AQUI') {
-    if(ov) ov.style.display = 'flex';
-    return;
+  if(CLIENT_ID === 'SEU_CLIENT_ID_AQUI') { if(ov) ov.style.display='flex'; return; }
+  if(typeof msal === 'undefined') {
+    console.warn('MSAL library not loaded yet — will retry on login click');
+    if(ov) ov.style.display='flex'; return;
   }
   try {
-    // MSAL 2.x — sem .initialize()
     msalApp = new msal.PublicClientApplication({
-      auth:{
-        clientId: CLIENT_ID,
-        authority: 'https://login.microsoftonline.com/common',
-        redirectUri: window.location.origin + window.location.pathname
-      },
+      auth:{ clientId:CLIENT_ID, authority:'https://login.microsoftonline.com/common', redirectUri:window.location.origin+window.location.pathname },
       cache:{ cacheLocation:'localStorage', storeAuthStateInCookie:false },
     });
-    // Tenta renovar token silenciosamente se já logou antes
     const accounts = msalApp.getAllAccounts();
     if(accounts.length) {
       odUser = accounts[0];
@@ -708,28 +709,45 @@ function initMSAL() {
         .then(r=>{ odToken=r.accessToken; onLogin(); })
         .catch(()=>{ if(ov) ov.style.display='flex'; });
     } else {
-      if(ov) ov.style.display = 'flex';
+      if(ov) ov.style.display='flex';
     }
   } catch(e) {
     console.warn('MSAL init failed:', e.message);
-    if(ov) ov.style.display = 'flex';
+    if(ov) ov.style.display='flex';
   }
 }
 
+
 async function odLogin() {
   if(CLIENT_ID === 'SEU_CLIENT_ID_AQUI') {
-    alert('Configure o CLIENT_ID no arquivo FinanceAI.html antes de conectar o OneDrive.');
+    alert('Configure o CLIENT_ID no arquivo FinanceAI.html antes de conectar.');
     return;
   }
-  if(!msalApp) { toast('MSAL não iniciado.','err'); return; }
+  // Lazy init: se msalApp ainda não foi criado (CDN demorou), tenta agora
+  if(!msalApp) {
+    if(typeof msal === 'undefined') {
+      toast('Biblioteca Microsoft não carregou. Verifique sua conexão e recarregue a página.','err');
+      return;
+    }
+    try {
+      msalApp = new msal.PublicClientApplication({
+        auth:{ clientId:CLIENT_ID, authority:'https://login.microsoftonline.com/common', redirectUri:window.location.origin+window.location.pathname },
+        cache:{ cacheLocation:'localStorage', storeAuthStateInCookie:false },
+      });
+    } catch(e) {
+      toast('Erro ao iniciar Microsoft Auth: '+e.message,'err');
+      return;
+    }
+  }
   try {
     const r = await msalApp.loginPopup({scopes:GRAPH_SCOPES});
     odToken = r.accessToken; odUser = r.account;
     onLogin();
   } catch(e) {
-    if(!e.toString().includes('user_cancelled')) toast('Erro: '+e.message,'err');
+    if(!e.toString().includes('user_cancelled')) toast('Erro de login: '+e.message,'err');
   }
 }
+
 
 function onLogin() {
   const ov = document.getElementById('login-overlay');
