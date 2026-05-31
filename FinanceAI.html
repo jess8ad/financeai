@@ -8,6 +8,8 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://alcdn.msauth.net/browser/2.38.2/js/msal-browser.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <style>
 
 *{box-sizing:border-box;margin:0;padding:0}
@@ -327,6 +329,74 @@ select option{background:var(--bg3)}
 .dots{animation:diagdots 1.2s infinite}
 @keyframes diagdots{0%,20%{opacity:.3}50%{opacity:1}100%{opacity:.3}}
 
+
+/* ── Diagnóstico UX ── */
+.diag-hero{background:linear-gradient(135deg,var(--blue-dim),transparent);border:.5px solid var(--blue);border-radius:var(--r);padding:16px;margin-bottom:14px}
+.diag-hero-top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:12px}
+.diag-verdict{flex:1;min-width:160px}
+.diag-verdict-label{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--text2)}
+.diag-verdict-text{font-size:16px;font-weight:700;line-height:1.3;margin-top:3px}
+.diag-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
+.diag-kpi{background:var(--bg2);border:.5px solid var(--border);border-radius:10px;padding:9px 11px}
+.diag-kpi-l{font-size:9px;text-transform:uppercase;letter-spacing:.04em;color:var(--text2)}
+.diag-kpi-v{font-size:17px;font-weight:700;font-family:monospace;margin-top:2px}
+.diag-jump{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.diag-jump-btn{display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:18px;font-size:12px;font-weight:600;border:.5px solid var(--border2);background:var(--bg3);color:var(--text);cursor:pointer}
+.diag-jump-btn:hover{background:var(--bg4)}
+.diag-jump-btn.pay{border-color:var(--green);color:var(--green)}
+.diag-jump-btn.skip{border-color:var(--red);color:var(--red)}
+.diag-jump-btn.grow{border-color:var(--amber);color:var(--amber)}
+.diag-accordion{border:.5px solid var(--border);border-radius:var(--r);margin-bottom:10px;overflow:hidden}
+.diag-acc-head{display:flex;align-items:center;gap:10px;padding:13px 15px;cursor:pointer;background:var(--bg3);user-select:none}
+.diag-acc-head:hover{background:var(--bg4)}
+.diag-acc-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;color:#fff}
+.diag-acc-title{flex:1;font-size:14px;font-weight:600}
+.diag-acc-sub{font-size:11px;color:var(--text2);font-weight:400}
+.diag-acc-chev{color:var(--text3);transition:transform .2s}
+.diag-acc.open .diag-acc-chev{transform:rotate(90deg)}
+.diag-acc-body{padding:0 15px;max-height:0;overflow:hidden;transition:max-height .25s ease,padding .25s ease}
+.diag-acc.open .diag-acc-body{max-height:2000px;padding:13px 15px}
+.diag-chat-bubble{padding:9px 13px;border-radius:14px;margin-bottom:8px;font-size:13px;line-height:1.55;max-width:90%;word-wrap:break-word}
+.diag-chat-bubble.user{background:var(--blue);color:#fff;margin-left:auto;border-bottom-right-radius:4px}
+.diag-chat-bubble.ai{background:var(--bg4);color:var(--text);border-bottom-left-radius:4px}
+.diag-chat-bubble.typing{color:var(--text2);font-style:italic}
+#diag-chat-area{max-height:340px;overflow-y:auto;margin-bottom:10px;display:flex;flex-direction:column}
+
+
+/* ── FLUXO DE CAIXA ── */
+.fc-toolbar{display:flex;flex-direction:column;gap:8px;padding:10px 12px;background:var(--bg3);border:.5px solid var(--border);border-radius:var(--r);margin-bottom:12px}
+.fc-filter-group{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.fc-label{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--text3);white-space:nowrap;min-width:58px}
+.fc-chips{display:flex;gap:4px;flex-wrap:wrap}
+.fc-chip{padding:4px 10px;border-radius:14px;font-size:11px;font-weight:500;border:.5px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;transition:all .12s}
+.fc-chip:hover{background:var(--bg4);color:var(--text)}
+.fc-chip.active{background:var(--blue-dim);border-color:var(--blue);color:var(--blue);font-weight:600}
+.fc-custom{display:flex;align-items:center;gap:6px;padding:4px 0}
+.fc-custom input{border:.5px solid var(--border2);border-radius:6px;background:var(--bg2);color:var(--text);font-size:11px;padding:4px 8px}
+.fc-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:12px}
+.fc-kpi{background:var(--bg2);border:.5px solid var(--border);border-radius:var(--r2);padding:10px 12px}
+.fc-kpi-l{font-size:9px;text-transform:uppercase;letter-spacing:.04em;color:var(--text2);margin-bottom:3px}
+.fc-kpi-v{font-size:18px;font-weight:700;font-family:monospace}
+.fc-kpi-sub{font-size:9px;color:var(--text3);margin-top:2px}
+.fc-table-head{display:grid;padding:7px 12px;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--text2);background:var(--bg3);border-bottom:.5px solid var(--border)}
+.fc-row{display:grid;padding:10px 12px;border-bottom:.5px solid var(--border);cursor:pointer;transition:background .1s}
+.fc-row:hover{background:var(--bg3)}
+.fc-row.open{background:var(--bg4)}
+.fc-drill{padding:8px 12px 12px 28px;background:var(--bg3);border-bottom:.5px solid var(--border);font-size:11px}
+.fc-drill-row{display:flex;justify-content:space-between;align-items:center;padding:3px 0;color:var(--text2)}
+.fc-drill-row .val{font-family:monospace;font-size:11px}
+.fc-bar{height:4px;border-radius:2px;margin-top:3px;opacity:.8}
+.fc-badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600}
+.fc-badge.pos{background:var(--green-dim);color:var(--green)}
+.fc-badge.neg{background:var(--red-dim);color:var(--red)}
+.fc-badge.neu{background:var(--bg4);color:var(--text2)}
+.fc-insight{display:flex;gap:9px;padding:10px 12px;background:var(--bg2);border:.5px solid var(--border);border-radius:var(--r2);margin-bottom:8px;font-size:12px;line-height:1.6}
+.fc-insight i{font-size:16px;flex-shrink:0;margin-top:1px}
+@media(max-width:480px){
+  .fc-kpi-v{font-size:15px}
+  .fc-toolbar{padding:8px}
+}
+
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 </head>
@@ -357,13 +427,19 @@ select option{background:var(--bg3)}
   <div class="nav-sec"><i class="ti ti-wallet" style="font-size:11px"></i> Dinheiro</div>
   <div class="nav-item" id="nav-extrato" onclick="go('extrato')"><i class="ti ti-file-invoice"></i> Extrato bancário</div>
   <div class="nav-item" id="nav-faturas" onclick="go('faturas')"><i class="ti ti-credit-card"></i> Faturas de cartão</div>
+  <div class="nav-item" id="nav-importacoes" onclick="go('importacoes')"><i class="ti ti-file-import"></i> Importações</div>
+  <div class="nav-item" id="nav-relatorio" onclick="go('relatorio')"><i class="ti ti-report-money"></i> Relatório cartões</div>
   <div class="nav-item" id="nav-mensal" onclick="go('mensal')"><i class="ti ti-calendar-stats"></i> Mês a mês</div>
   <div class="nav-item" id="nav-dividas" onclick="go('dividas')"><i class="ti ti-coins"></i> Dívidas</div>
   <div class="nav-item" id="nav-equilibrio" onclick="go('equilibrio')"><i class="ti ti-target"></i> Ponto de equilíbrio</div>
+  <div class="nav-item" id="nav-fluxo" onclick="go('fluxo')" style="color:var(--blue)"><i class="ti ti-cash"></i> Fluxo de caixa</div>
 
   <div class="nav-sec"><i class="ti ti-trending-up" style="font-size:11px"></i> Renda & negócios</div>
   <div class="nav-item" id="nav-lancha" onclick="go('lancha')" style="color:#0F6E56"><i class="ti ti-ship"></i> DRE Lancha</div>
   <div class="nav-item" id="nav-roi" onclick="go('roi')" style="color:#534AB7"><i class="ti ti-chart-pie"></i> ROI Investimentos</div>
+
+  <div class="nav-sec"><i class="ti ti-file-description" style="font-size:11px"></i> Relatórios</div>
+  <div class="nav-item" id="nav-pdf" onclick="go('pdf')"><i class="ti ti-file-type-pdf"></i> Gerar relatório PDF</div>
 
   <div class="nav-sec"><i class="ti ti-alert-triangle" style="font-size:11px"></i> Alertas</div>
   <div class="nav-item" id="nav-golpes" onclick="go('golpes')" style="color:var(--red)"><i class="ti ti-shield-x"></i> Dossiê de golpes</div>
@@ -785,7 +861,6 @@ select option{background:var(--bg3)}
       <span style="color:var(--color-text-primary);font-weight:500">Recomendado:</span> Cobrar mínimo R$1.700. Com 8 passeios/mês: lucro ~R$6.200/mês.
     </div>
   </div>
-</div>
 
 <!-- PONTO DE EQUILIBRIO -->
 <div class="sec" id="sec-equilibrio">
@@ -952,6 +1027,99 @@ select option{background:var(--bg3)}
 </div>
 
 
+
+<!-- IMPORTAÇÕES (item 4 e 5) -->
+<div class="sec" id="sec-importacoes">
+  <div class="sec-title">Importações</div>
+  <div class="sec-sub">Histórico de tudo que foi importado — com origem, data e opção de excluir em lote</div>
+  <div class="qfilter">
+    <span class="qfilter-label">Tipo</span>
+    <button class="qf-chip active" id="impf-todos" onclick="setImpFilter('todos',event)">Todos</button>
+    <button class="qf-chip" id="impf-extrato" onclick="setImpFilter('extrato',event)">Extratos</button>
+    <button class="qf-chip" id="impf-fatura" onclick="setImpFilter('fatura',event)">Faturas</button>
+  </div>
+  <div id="imp-list"></div>
+</div>
+
+<!-- RELATÓRIO DE CARTÕES (item 8) -->
+<div class="sec" id="sec-relatorio">
+  <div class="sec-title">Relatório de cartões</div>
+  <div class="sec-sub">Juros, parcelamentos, rotativo e indicadores por cartão</div>
+  <div id="rel-content"></div>
+</div>
+
+<!-- RELATÓRIOS PDF -->
+<div class="sec" id="sec-pdf">
+  <div class="sec-title">Gerar relatório PDF</div>
+  <div class="sec-sub">Relatórios profissionais com dados reais, insights e plano de ação. Escolha o módulo e os filtros.</div>
+
+  <div id="pdf-report-cards"></div>
+</div>
+
+<!-- FLUXO DE CAIXA -->
+<div class="sec" id="sec-fluxo">
+  <div class="sec-title">Fluxo de caixa</div>
+  <div class="sec-sub">Real · Previsto · Diagnóstico — compare os três cenários e veja o impacto das decisões</div>
+
+  <!-- FILTROS COMPACTOS -->
+  <div class="fc-toolbar">
+    <div class="fc-filter-group">
+      <label class="fc-label">Período</label>
+      <div class="fc-chips">
+        <button class="fc-chip active" onclick="setFcPeriodo(3,this)">3m</button>
+        <button class="fc-chip" onclick="setFcPeriodo(6,this)">6m</button>
+        <button class="fc-chip" onclick="setFcPeriodo(12,this)">12m</button>
+        <button class="fc-chip" onclick="setFcPeriodo('custom',this)">Personalizado</button>
+      </div>
+    </div>
+    <div class="fc-custom" id="fc-custom-range" style="display:none">
+      <input type="month" id="fc-de" oninput="renderFluxo()"/>
+      <span style="color:var(--text2);font-size:12px">a</span>
+      <input type="month" id="fc-ate" oninput="renderFluxo()"/>
+    </div>
+    <div class="fc-filter-group">
+      <label class="fc-label">Visão</label>
+      <div class="fc-chips">
+        <button class="fc-chip active" onclick="setFcVisao('comparativo',this)">Comparativo</button>
+        <button class="fc-chip" onclick="setFcVisao('real',this)">Real</button>
+        <button class="fc-chip" onclick="setFcVisao('previsto',this)">Previsto</button>
+        <button class="fc-chip" onclick="setFcVisao('diagnostico',this)">Diagnóstico</button>
+      </div>
+    </div>
+    <div class="fc-filter-group">
+      <label class="fc-label">Cenário</label>
+      <div class="fc-chips">
+        <button class="fc-chip active" onclick="setFcCenario('conservador',this)">Conservador</button>
+        <button class="fc-chip" onclick="setFcCenario('otimista',this)">Otimista</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPIS -->
+  <div class="fc-kpis" id="fc-kpis"></div>
+
+  <!-- GRÁFICO CANVAS -->
+  <div class="card" style="padding:12px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <div style="font-size:12px;font-weight:600;color:var(--text)" id="fc-chart-label">Entradas x Saídas x Saldo</div>
+      <div style="display:flex;gap:10px;font-size:10px;color:var(--text2)" id="fc-legend"></div>
+    </div>
+    <canvas id="fc-canvas" height="180" style="width:100%;display:block"></canvas>
+  </div>
+
+  <!-- TABELA MENSAL DRILLDOWN -->
+  <div class="card" style="padding:0;overflow:hidden">
+    <div id="fc-table"></div>
+  </div>
+
+  <!-- INSIGHTS DO DIAGNÓSTICO -->
+  <div id="fc-insights"></div>
+
+  <!-- BOTÃO PDF -->
+  <button class="btn-p" style="width:100%;margin-top:8px" onclick="gerarPdfFluxo()">
+    <i class="ti ti-file-type-pdf" style="font-size:13px"></i> Exportar período em PDF
+  </button>
+</div>
 </div>
 </div>
 </div>
@@ -976,6 +1144,7 @@ select option{background:var(--bg3)}
 <div style="font-size:12px;color:var(--text2);margin-bottom:12px">Escolha o que deseja apagar:</div>
 <label class="chk-row"><input type="checkbox" id="rst-ext" checked/> Extrato bancário (transações importadas)</label>
 <label class="chk-row"><input type="checkbox" id="rst-dividas" checked/> Dívidas cadastradas</label>
+<label class="chk-row"><input type="checkbox" id="rst-lancha" checked/> Passeios da lancha (DRE)</label>
 <label class="chk-row"><input type="checkbox" id="rst-chat" /> Histórico do chat</label>
 <label class="chk-row"><input type="checkbox" id="rst-nomen" /> Regras de nomenclatura</label>
 <div class="alert a-red" style="margin:10px 0"><i class="ti ti-info-circle"></i> Esta ação também atualiza o OneDrive. Não pode ser desfeita.</div>
@@ -1260,7 +1429,7 @@ function go(n) {
   document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
   const ni=document.getElementById('nav-'+n); if(ni) ni.classList.add('active');
   const si=document.getElementById('sec-'+n); if(si) si.classList.add('on');
-  const map=['dashboard','chat','extrato','mensal','dividas','nomen','roi','golpes','lancha','equilibrio','faturas','maquininha','diag'];
+  const map=['dashboard','chat','extrato','mensal','dividas','nomen','roi','golpes','lancha','equilibrio','faturas','maquininha','diag','importacoes','relatorio','pdf','fluxo'];
   const pi=map.indexOf(n);
   if(pi>=0) { const tabs=document.querySelectorAll('.tab'); if(tabs[pi]) tabs[pi].classList.add('active'); }
   if(n==='mensal') renderMensal();
@@ -1271,6 +1440,10 @@ function go(n) {
   if(n==='maquininha') calcMaquininha();
   if(n==='diag') renderDiagConsolidado();
   if(n==='dashboard') renderDashboard();
+  if(n==='importacoes') renderImportacoes();
+  if(n==='fluxo') renderFluxo();
+  if(n==='relatorio') renderRelatorioCartoes();
+  if(n==='pdf') renderPdfScreen();
   setTopbarTitle(n);
   if(['extrato','faturas','dividas','lancha','mensal','equilibrio'].includes(n)) injectDataStatus(n);
   if(window.innerWidth<=860) closeSidebar();
@@ -1495,7 +1668,8 @@ async function processBankFiles(files) {
         return;
       }
     }
-    registerFile(f);
+    const _imp = registerFile(f, 0, BANKS[selBankId]||selBankId, 'extrato');
+    window._curImpId = _imp.impId;
     document.getElementById('ext-chips').innerHTML+='<span class="chip"><i class="ti ti-file-type-pdf" style="font-size:10px"></i>'+esc(f.name)+'</span>';
     if(f.name.toLowerCase().endsWith('.pdf')) await extractAndAnalyze(f);
     else { const rd=new FileReader(); rd.onload=ev=>analyzeBank(ev.target.result,null,f.name); rd.readAsText(f,'latin1'); }
@@ -1509,8 +1683,138 @@ function setStepEl(n,s) {
 function setProgLabel(t) { const el=document.getElementById('prog-label'); if(el) el.textContent=t; }
 function showProg(v) { document.getElementById('prog-card').style.display=v?'block':'none'; }
 
+
+
+// ── ITEM 9: RECONHECIMENTO DE ADQUIRENTES (MAQUININHAS) ──
+const ADQUIRENTES = ['STONE','CIELO','\\bREDE\\b','GETNET','PAGSEGURO','PAGBANK','MERCADO ?PAGO','MP\\*','SUMUP','SAFRAPAY','\\bTON\\b','INFINITEPAY','JIM\\.COM','GABRIEL GONCALV'];
+const ADQ_RE = new RegExp('('+ADQUIRENTES.join('|')+')','i');
+function isAdquirente(desc){ return ADQ_RE.test(desc||''); }
+function detectAdquirenteNome(desc){
+  const d=(desc||'').toUpperCase();
+  if(/STONE/.test(d))return'Stone'; if(/CIELO/.test(d))return'Cielo';
+  if(/REDE/.test(d))return'Rede'; if(/GETNET/.test(d))return'Getnet';
+  if(/PAGSEGURO|PAGBANK/.test(d))return'PagSeguro'; if(/MERCADO ?PAGO|MP\*/.test(d))return'Mercado Pago';
+  if(/SUMUP/.test(d))return'SumUp'; if(/SAFRAPAY/.test(d))return'SafraPay';
+  if(/\bTON\b/.test(d))return'Ton'; if(/INFINITEPAY/.test(d))return'InfinitePay';
+  if(/JIM\.COM|GABRIEL/.test(d))return'JIM.COM (informal)';
+  return'Maquininha';
+}
+
+// ── ITEM 1: NORMALIZAÇÃO PRÉ-IMPORTAÇÃO ──
+function normalizeDoc(text) {
+  if(!text) return '';
+  let t = text;
+  // Remove espaços redundantes mantendo quebras
+  t = t.replace(/[ \t]{2,}/g,' ');
+  // Junta linhas quebradas no meio de um lançamento (data órfã ou valor órfão na linha seguinte)
+  t = t.replace(/\n[ \t]*(?=[\d.,]+\s*$)/g,' ');
+  // Remove caracteres de controle e zero-width
+  t = t.replace(/[\u200B-\u200D\uFEFF]/g,'');
+  // Remove cabeçalhos/rodapés repetidos comuns em extratos
+  const ruido = [
+    /SAC\s+\d{4}.*$/gmi,
+    /Ouvidoria.*$/gmi,
+    /www\.[a-z0-9.\/-]+/gmi,
+    /Central de (Atendimento|Relacionamento).*$/gmi,
+    /P[áa]gina\s+\d+\s*(de|\/)\s*\d+/gmi,
+    /CNPJ[:\s]+[\d.\/-]+/gmi,
+    /Este (documento|extrato) (foi|é).*$/gmi,
+    /Demonstrativo (de|gerado).*$/gmi,
+  ];
+  ruido.forEach(r=>{ t = t.replace(r,''); });
+  // Remove linhas em branco múltiplas
+  t = t.replace(/\n{3,}/g,'\n\n');
+  return t.trim();
+}
+
+// Detecta se uma "página" tem movimentação financeira (tem padrão de valor R$/data)
+function pageHasMovement(pageText) {
+  if(!pageText) return false;
+  const hasValor = /\d{1,3}(\.\d{3})*,\d{2}/.test(pageText) || /R\$\s*\d/.test(pageText);
+  const hasData = /\d{2}\/\d{2}(\/\d{2,4})?/.test(pageText);
+  return hasValor && hasData;
+}
+
+
+// ── PARSER REGEX DIRETO (extratos tabulares — Itaú, BB, etc.) ──
+// Resolve o problema de PDFs grandes: extrai sem depender de dezenas de chamadas à IA.
+function parseExtratoRegex(text) {
+  const out = [];
+  const lines = text.split('\n');
+  // Linha tipo: DD/MM/AAAA <descrição> <valor com vírgula decimal>
+  const lineRe = /^(\d{2}\/\d{2}\/\d{4})\s+(.+?)\s+(-?\d{1,3}(?:\.\d{3})*,\d{2})\s*$/;
+  // Também aceita DD/MM (sem ano) para alguns layouts
+  const lineRe2 = /^(\d{2}\/\d{2})\s+(.+?)\s+(-?\d{1,3}(?:\.\d{3})*,\d{2})\s*$/;
+  for(let raw of lines) {
+    const line = raw.trim();
+    let m = lineRe.exec(line) || lineRe2.exec(line);
+    if(!m) continue;
+    let [, data, desc, valorStr] = m;
+    desc = desc.trim();
+    // Ignora linhas de saldo (não são transações)
+    if(/saldo\s+(total\s+)?dispon|saldo\s+anterior|saldo\s+do\s+dia|saldo\s+em\s+conta/i.test(desc)) continue;
+    if(/limite\s+(total|dispon|utilizado)/i.test(desc)) continue;
+    const valor = parseFloat(valorStr.replace(/\./g,'').replace(',','.'));
+    if(isNaN(valor)) continue;
+    const tipo = valor < 0 ? 'debito' : 'credito';
+    out.push({ data, desc, valor: Math.abs(valor), tipo });
+  }
+  return out;
+}
+
+// Classifica categoria por palavras-chave (sem IA)
+function categorizeLocal(desc) {
+  const d = (desc||'').toLowerCase();
+  if(/sal[áa]rio|pagadoria|marinha|papem/.test(d)) return {cat:'salario', tipo:'credito'};
+  if(/pix\s+enviado|pix\s+recebido|ted|transfer/.test(d)) return {cat:'transferencia'};
+  if(/posto|combust|gasolina|taxi|uber|99|estacion|ped[áa]gio/.test(d)) return {cat:'transporte'};
+  if(/supermerc|mercado|atacad|assa[íi]|hortifruti|padaria|restaura|grill|lanch|food|ifood|burger|pizz/.test(d)) return {cat:'alimentacao'};
+  if(/farm[áa]cia|drogaria|unimed|hospital|cl[íi]nica|m[ée]dic|laborat/.test(d)) return {cat:'saude'};
+  if(/escola|col[ée]gio|faculdade|curso|mensalidade/.test(d)) return {cat:'educacao'};
+  if(/ampla|enel|light|prolagos|[áa]gua|energia|luz|vivo|claro|tim|oi |internet|net /.test(d)) return {cat:'contas'};
+  if(/fatura|cart[ãa]o|ourocard|visa|master|passa[íi]/.test(d)) return {cat:'cartao'};
+  if(/juros|multa|mora|encargo|iof|rotativo/.test(d)) return {cat:'juros', flag:'juros'};
+  if(/tarifa|anuidade|manuten[çc][ãa]o de conta|cesta/.test(d)) return {cat:'tarifa', flag:'tarifa'};
+  if(/empr[ée]stimo|consignado|cr[ée]dito|financ/.test(d)) return {cat:'emprestimo'};
+  if(/rendiment|aplica/.test(d)) return {cat:'outros'};
+  return {cat:'compras'};
+}
+
+
+// ── PARSER DIRETO DE EXTRATO TABULAR (sem IA, mais confiável) ──
+// Detecta o formato "DD/MM/AAAA Descrição Valor" comum em Itaú, BB, etc.
+function parseExtratoTabular(text) {
+  if(!text) return null;
+  const lines = text.split('\n');
+  const trans = [];
+  // Linha de lançamento: data + meio + valor no fim (com vírgula decimal)
+  const re = /^(\d{2}\/\d{2}\/\d{4})\s+(.+?)\s+(-?\s?[\d.]+,\d{2})\s*$/;
+  // Linhas que NÃO são transação (saldos, totais)
+  const ignorar = /Saldo (Total Disponível|do Dia|Anterior|em conta|Parcial)|Saldo Disponível|S A L D O/i;
+  let consideradas = 0;
+  for(let raw of lines) {
+    const ln = raw.trim();
+    const m = ln.match(re);
+    if(!m) continue;
+    consideradas++;
+    const [, data, meio, valorRaw] = m;
+    if(ignorar.test(meio)) continue;
+    // valor: remove pontos de milhar, troca vírgula por ponto
+    const valorNum = parseFloat(valorRaw.replace(/\s/g,'').replace(/\./g,'').replace(',','.'));
+    if(isNaN(valorNum)) continue;
+    // Separa legenda (primeira palavra-chave) da descrição
+    let desc = meio.trim();
+    const tipo = valorNum < 0 ? 'debito' : 'credito';
+    trans.push({ data, desc, valor: Math.abs(valorNum), tipo });
+  }
+  // Só considera sucesso se reconheceu uma quantidade razoável
+  if(trans.length >= 5 && trans.length >= consideradas*0.5) return trans;
+  return null;
+}
+
 async function extractAndAnalyze(file) {
   showProg(true); setStepEl(1,'active'); setProgLabel('Lendo PDF...');
+  const src = file.name;
   let pages=[],total=0;
   try {
     if(typeof pdfjsLib!=='undefined') {
@@ -1527,20 +1831,65 @@ async function extractAndAnalyze(file) {
     } else { analyzeBank(null,null,file.name); return; }
   } catch(e) { setStepEl(1,'done'); analyzeBank('[PDF: '+file.name+']',null,file.name); return; }
 
-  const CHUNK=2500,OVERLAP=300;
-  const full=pages.join('\n');
-  const chunks=[]; let pos=0;
-  while(pos<full.length) { chunks.push(full.slice(pos,pos+CHUNK)); pos+=CHUNK-OVERLAP; }
+  // ITEM 1: filtra páginas sem movimentação e normaliza
+  const pagesComMov = pages.filter(p=>pageHasMovement(p));
+  const usar = pagesComMov.length ? pagesComMov : pages;
+  const full=normalizeDoc(usar.join('\n'));
 
-  setStepEl(2,'active'); setProgLabel('Analisando '+chunks.length+' blocos...');
+  // TENTATIVA 1: parser direto tabular (sem IA) — cobre o documento inteiro de uma vez
+  setStepEl(2,'active'); setProgLabel('Lendo lançamentos linha a linha...');
+  const direto = parseExtratoTabular(usar.join('\n'));
+  if(direto && direto.length>=5) {
+    setStepEl(2,'done'); setStepEl(3,'done'); setStepEl(4,'active');
+    document.getElementById('prog-fill').style.width='85%';
+    const _before = transacoes.length;
+    addTrans(direto.map(t=>({...t,id:ntid++,banco:selBankId,src,conf:false})));
+    if(window._curImpId){ tagImport(window._curImpId); }
+    const _add = transacoes.length-_before;
+    setStepEl(4,'done'); setStepEl(5,'done');
+    document.getElementById('prog-fill').style.width='100%';
+    setProgLabel(_add+' lançamentos lidos de '+total+' páginas!');
+    setTimeout(()=>showProg(false),1500);
+    renderExtrato(); go('extrato');
+    toast('Importação concluída: '+_add+' lançamentos · '+(BANKS[selBankId]||selBankId),'ok');
+    return;
+  }
+  // TENTATIVA 2 (fallback): IA por blocos quando o layout não é tabular reconhecível
+
+  setStepEl(2,'active'); setProgLabel('Extraindo lançamentos...');
+  document.getElementById('prog-fill').style.width='45%';
+
   let all=[];
-  for(let i=0;i<chunks.length;i+=3) {
-    const pct=35+Math.round(i/chunks.length*55);
-    document.getElementById('prog-fill').style.width=pct+'%';
-    setProgLabel('Bloco '+(i+1)+'-'+Math.min(i+3,chunks.length)+' de '+chunks.length+'...');
-    const batch=chunks.slice(i,i+3);
-    const res=await Promise.all(batch.map((c,bi)=>analyzeChunk(c,file.name,i+bi+1,chunks.length)));
-    res.forEach(r=>{all=all.concat(r);});
+  // MÉTODO 1: parser regex direto — captura tudo instantaneamente, sem limite de tamanho
+  const regexHits = parseExtratoRegex(full);
+  if(regexHits.length >= 10) {
+    // Classifica localmente e marca para revisão (sem precisar de IA)
+    all = regexHits.map(t=>{
+      const c = categorizeLocal(t.desc);
+      return {...t, categoria:c.cat, tipo:c.tipo||t.tipo, flag:c.flag||'normal', obs:'', conf:false};
+    });
+    setProgLabel(all.length+' lançamentos extraídos diretamente!');
+    document.getElementById('prog-fill').style.width='90%';
+  } else {
+    // MÉTODO 2 (fallback): chunks via IA, só quando o regex não reconhece o layout
+    const CHUNK=2800;
+    // Quebra por LINHAS, nunca no meio de um lançamento
+    const linhas=full.split('\n');
+    const chunks=[]; let buf='';
+    for(const l of linhas){
+      if((buf.length+l.length+1)>CHUNK && buf){ chunks.push(buf); buf=''; }
+      buf += l+'\n';
+    }
+    if(buf.trim()) chunks.push(buf);
+    setProgLabel('Layout não tabular — analisando '+chunks.length+' blocos com IA...');
+    for(let i=0;i<chunks.length;i+=3) {
+      const pct=45+Math.round(i/chunks.length*45);
+      document.getElementById('prog-fill').style.width=pct+'%';
+      setProgLabel('Bloco '+(i+1)+'-'+Math.min(i+3,chunks.length)+' de '+chunks.length+'...');
+      const batch=chunks.slice(i,i+3);
+      const res=await Promise.all(batch.map((c,bi)=>analyzeChunk(c,file.name,i+bi+1,chunks.length)));
+      res.forEach(r=>{all=all.concat(r);});
+    }
   }
   const seen=new Set();
   all=all.filter(t=>{const k=(t.data||'')+(t.desc||'')+(t.valor||0);if(seen.has(k))return false;seen.add(k);return true;});
@@ -1590,7 +1939,9 @@ async function analyzeBank(text,imgData,src) {
   setStepEl(3,'done'); setStepEl(4,'active');
   setTimeout(()=>{setStepEl(4,'done');setStepEl(5,'active');
     setTimeout(()=>{setStepEl(5,'done');showProg(false);
-      addTrans(parsed.map(t=>({...t,id:ntid++,banco:selBankId,src,conf:false})));
+      const _before = transacoes.length;
+    addTrans(parsed.map(t=>({...t,id:ntid++,banco:selBankId,src,conf:false})));
+    if(window._curImpId){ tagImport(window._curImpId); const _r=importedFiles.find(x=>x.impId===window._curImpId); if(_r) toast('Importação concluída: '+_r.count+' lançamentos · '+(BANKS[selBankId]||selBankId),'ok'); }
       renderExtrato();
     },600);
   },800);
@@ -1605,6 +1956,8 @@ function addTrans(novas) {
       t.categoria=r.cat; t.obs=(r.obs||r.from)+' (regra automatica)'; t.confianca='alta';
       if(r.tipo==='receita') t.flag='normal';
     }
+    // ITEM 9: reconhece adquirente/maquininha
+    if(isAdquirente(t.desc||'')){ t.categoria='maquininha'; t.adquirente=detectAdquirenteNome(t.desc); }
   });
   novas=novas.filter(t=>!t._skip);
   const {novas:limpas, dups} = dedupBatch(novas);
@@ -1897,12 +2250,27 @@ function renderStrats() {
 function openReset() { document.getElementById('modal-reset').style.display='flex'; }
 function closeReset() { document.getElementById('modal-reset').style.display='none'; }
 async function doReset() {
-  printFiles=[]; printB64s=[]; passeios=[];
-  if(document.getElementById('rst-ext').checked) { transacoes=[]; importedFiles=[];ntid=1;document.getElementById('ext-results').style.display='none';document.getElementById('ext-chips').innerHTML=''; }
-  if(document.getElementById('rst-dividas').checked) { debts=[];ndid=1; }
-  if(document.getElementById('rst-chat').checked) { chatHistory=[];document.getElementById('chat-msgs').innerHTML='';document.getElementById('chat-welcome').style.display='block';document.getElementById('chat-area').style.display='none';  diagChatHistory=[]; }
-  if(document.getElementById('rst-nomen').checked) { nomenclaturas=getDefaultNomen();nnid=100; }
+  printFiles=[]; printB64s=[];
+  if(document.getElementById('rst-ext').checked) {
+    transacoes=[]; importedFiles=[]; ntid=1;
+    const r=document.getElementById('ext-results'); if(r) r.style.display='none';
+    const c=document.getElementById('ext-chips'); if(c) c.innerHTML='';
+    const fr=document.getElementById('fat-results'); if(fr) fr.style.display='none';
+    const fc=document.getElementById('fat-chips'); if(fc) fc.innerHTML='';
+  }
+  if(document.getElementById('rst-dividas').checked) { debts=[]; ndid=1; }
+  if(document.getElementById('rst-lancha') && document.getElementById('rst-lancha').checked) { passeios=[]; npid=1; histSeeded=true; }
+  if(document.getElementById('rst-chat').checked) { chatHistory=[]; const m=document.getElementById('chat-msgs'); if(m)m.innerHTML=''; const w=document.getElementById('chat-welcome'); if(w)w.style.display='block'; const a=document.getElementById('chat-area'); if(a)a.style.display='none'; diagChatHistory=[]; }
+  if(document.getElementById('rst-nomen').checked) { nomenclaturas=getDefaultNomen(); nnid=100; }
+  // Atualiza TODAS as telas dependentes
   renderDebts(); renderNomen('');
+  if(typeof renderTrans==='function') renderTrans();
+  if(typeof renderFatTrans==='function') renderFatTrans();
+  if(typeof renderLanchaDRE==='function') renderLanchaDRE();
+  if(typeof renderHistPasseios==='function') renderHistPasseios();
+  if(typeof renderImportacoes==='function') renderImportacoes();
+  if(typeof renderDashboard==='function') renderDashboard();
+  if(typeof renderDiagConsolidado==='function') renderDiagConsolidado();
   if(odToken) await odSave();
   toast('Sistema zerado!','ok'); closeReset(); go('chat');
 }
@@ -2231,7 +2599,8 @@ async function processFatFiles(files) {
         return;
       }
     }
-    registerFile(f);
+    const _imp = registerFile(f, 0, FATCARDS[selFatCardId]||selFatCardId, 'fatura');
+    window._curImpId = _imp.impId;
     document.getElementById('fat-chips').innerHTML += '<span class="chip"><i class="ti ti-file-type-pdf" style="font-size:10px"></i>'+esc(f.name)+'</span>';
     if(f.name.toLowerCase().endsWith('.pdf')) await extractAndAnalyzeFat(f);
     else { const rd=new FileReader(); rd.onload=ev=>analyzeFat(ev.target.result,null,f.name); rd.readAsText(f,'latin1'); }
@@ -2256,7 +2625,7 @@ async function extractAndAnalyzeFat(file) {
       }
     }
   } catch(err){ console.error(err); }
-  fatStep(1,'done'); analyzeFat(text,null,file.name);
+  fatStep(1,'done'); analyzeFat(normalizeDoc(text),null,file.name);
 }
 
 async function analyzeFat(text,imgData,src) {
@@ -2275,6 +2644,7 @@ async function analyzeFat(text,imgData,src) {
     try { parsed=JSON.parse(raw); } catch(e){ const mm=raw.match(/\[[\s\S]*\]/); if(mm) parsed=JSON.parse(mm[0]); }
     fatStep(3,'done'); fatStep(4,'active');
     addFatTrans(parsed.map(t=>({...t,id:ntid++,banco:selFatCardId,src:'fatura',cardName:card,conf:false})));
+    if(window._curImpId){ tagImport(window._curImpId); const _r=importedFiles.find(x=>x.impId===window._curImpId); if(_r) toast('Fatura importada: '+_r.count+' lançamentos · '+card,'ok'); }
     fatStep(4,'done'); fatStep(5,'done');
     setTimeout(()=>fatProg(false),600);
     document.getElementById('fat-results').style.display='block';
@@ -2297,7 +2667,7 @@ function addFatTrans(novas) {
       if(!t.tipo) t.tipo='debito';
     }
     // auto-detect maquininha
-    if(/JIM\.COM|GABRIEL GONCALV/i.test(t.desc||'')){ t.categoria='maquininha'; }
+    if(isAdquirente(t.desc||'')){ t.categoria='maquininha'; t.adquirente=detectAdquirenteNome(t.desc); }
     if(/JUROS|MULTA|MORA|ENCARGO|IOF|ROTATIVO/i.test(t.desc||'')){ t.categoria='juros'; }
   });
   const {novas:limpas, dups} = dedupBatch(novas);
@@ -2486,6 +2856,33 @@ function calcMaquininha() {
 }
 
 // ── DIAGNOSTICO CONSOLIDADO ──
+
+// ── DIAGNÓSTICO: helpers de UI (accordion) ──
+function diagAcc(id, icon, color, title, sub, body, openByDefault) {
+  return '<div class="diag-accordion diag-acc'+(openByDefault?' open':'')+'" id="diagacc-'+id+'">'
+    +'<div class="diag-acc-head" onclick="toggleDiagAcc(\''+id+'\')">'
+    +'<div class="diag-acc-icon" style="background:'+color+'"><i class="ti ti-'+icon+'"></i></div>'
+    +'<div class="diag-acc-title">'+title+'<div class="diag-acc-sub">'+sub+'</div></div>'
+    +'<i class="ti ti-chevron-right diag-acc-chev"></i>'
+    +'</div>'
+    +'<div class="diag-acc-body">'+body+'</div>'
+    +'</div>';
+}
+function diagItem(color, ic, title, desc) {
+  return '<div style="padding:8px 0;border-bottom:.5px solid var(--border)"><div style="font-weight:600;color:'+color+';font-size:13px">'+ic+' '+title+'</div><div style="color:var(--text2);font-size:12px;margin-top:2px;line-height:1.5">'+desc+'</div></div>';
+}
+function toggleDiagAcc(id){
+  const el = document.getElementById('diagacc-'+id);
+  if(el) el.classList.toggle('open');
+}
+function diagScrollTo(id){
+  const el = document.getElementById('diagacc-'+id);
+  if(el){
+    el.classList.add('open');
+    el.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+}
+
 function renderDiagConsolidado() {
   const fmt = v => 'R$'+Math.round(v).toLocaleString('pt-BR');
   const el = document.getElementById('diag-content');
@@ -2496,7 +2893,7 @@ function renderDiagConsolidado() {
   const fixosL = parseFloat(document.getElementById('lan-fixos')?.value)||0;
   let lancRec=0,lancVar=0;
   passeios.forEach(p=>{lancRec+=p.receita;lancVar+=(p.comb||0)+(p.marim||0)+(p.extras||0);});
-  const lancLucro = passeios.length? Math.max(0,(lancRec-lancVar-(marinaL+fixosL))) : 3050;
+  const lancLucro = passeios.length? Math.max(0,(lancRec-lancVar-(marinaL+fixosL))) : 0;
   const rendaTotal = SALARIO + lancLucro;
 
   // Obrigações
@@ -2513,13 +2910,6 @@ function renderDiagConsolidado() {
     obrig.push({nome:c+' (fatura)', valor:cartoes[c], juros:jr, tipo:'cartao'});
   });
   debts.forEach(d=>{ obrig.push({nome:d.nome||'Dívida', valor:d.saldo||d.valor||0, juros:d.juros||5, tipo:'divida'}); });
-  if(!obrig.length){
-    obrig = [
-      {nome:'Itaú Passaí (5695)', valor:10135.84, juros:15.87, tipo:'cartao'},
-      {nome:'BB Ourocard (0827)', valor:8279.43, juros:13.76, tipo:'cartao'},
-      {nome:'Consignados (folha)', valor:0, juros:1.85, tipo:'consignado'},
-    ];
-  }
   obrig.sort((a,b)=>b.juros-a.juros);
   const gastoEssencial = 8000;
   const totObrig = obrig.reduce((s,o)=>s+o.valor,0);
@@ -2534,74 +2924,79 @@ function renderDiagConsolidado() {
 
   let html = '';
 
-  // ── HERO: STATUS + NÚMEROS PRINCIPAIS ──
-  html += '<div class="card" style="border:1.5px solid '+statusColor+';padding:0;overflow:hidden">';
-  html += '<div style="background:'+statusColor+'15;padding:14px 16px;display:flex;align-items:center;gap:12px;border-bottom:.5px solid '+statusColor+'30">';
-  html += '<div style="width:44px;height:44px;border-radius:50%;background:'+statusColor+'25;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-'+statusIcon+'" style="font-size:22px;color:'+statusColor+'"></i></div>';
-  html += '<div style="flex:1"><div style="font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.04em">Situação geral</div><div style="font-size:18px;font-weight:700;color:'+statusColor+'">'+status+'</div></div>';
+  // Estado vazio — nada importado ainda
+  const semDados = transacoes.length===0 && debts.length===0 && passeios.length===0;
+  if(semDados){
+    el.innerHTML = '<div class="data-status empty" style="margin-bottom:0"><i class="ti ti-info-circle"></i><div class="ds-text"><b>Sem dados ainda.</b> Importe um extrato ou fatura e cadastre suas dívidas. O diagnóstico é montado a partir dos seus dados reais — nada é pré-preenchido.</div></div>';
+    renderDiagSuggestions();
+    return;
+  }
+
+  // HERO — veredito + KPIs
+  html += '<div class="diag-hero">';
+  html += '<div class="diag-hero-top">';
+  html += '<div style="width:48px;height:48px;border-radius:12px;background:'+statusColor+';display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-'+statusIcon+'" style="font-size:24px;color:#fff"></i></div>';
+  html += '<div class="diag-verdict"><div class="diag-verdict-label">Situação geral</div><div class="diag-verdict-text" style="color:'+statusColor+'">'+status+'</div><div style="font-size:12px;color:var(--text2);margin-top:2px">'+statusMsg+'</div></div>';
   html += '</div>';
-  html += '<div style="padding:10px 16px;font-size:12px;color:var(--text2)">'+statusMsg+'</div>';
-  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)">';
-  const cells = [
-    ['Renda/mês', fmt(rendaTotal), 'var(--green)'],
-    ['Essencial/mês', fmt(gastoEssencial), 'var(--amber)'],
-    ['Sobra p/ dívidas', fmt(sobra), sobra>=0?'var(--green)':'var(--red)'],
-    ['Dívida total', fmt(totObrig), 'var(--red)'],
-  ];
-  cells.forEach(c=>{
-    html += '<div style="background:var(--bg3);padding:11px 14px"><div style="font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.03em">'+c[0]+'</div><div style="font-size:17px;font-weight:700;font-family:monospace;color:'+c[2]+'">'+c[1]+'</div></div>';
-  });
+  html += '<div class="diag-kpis">';
+  html += '<div class="diag-kpi"><div class="diag-kpi-l">Renda/mês</div><div class="diag-kpi-v" style="color:var(--green)">'+fmt(rendaTotal)+'</div></div>';
+  html += '<div class="diag-kpi"><div class="diag-kpi-l">Essencial/mês</div><div class="diag-kpi-v" style="color:var(--amber)">'+fmt(gastoEssencial)+'</div></div>';
+  html += '<div class="diag-kpi"><div class="diag-kpi-l">Sobra p/ dívidas</div><div class="diag-kpi-v" style="color:'+(sobra>=0?'var(--green)':'var(--red)')+'">'+fmt(sobra)+'</div></div>';
+  html += '<div class="diag-kpi"><div class="diag-kpi-l">Dívida total</div><div class="diag-kpi-v" style="color:var(--red)">'+fmt(totObrig)+'</div></div>';
   html += '</div></div>';
 
-  // ── O QUE FAZER AGORA (passos numerados, destaque) ──
-  html += '<div class="card" style="border-color:var(--blue)"><div class="card-title" style="color:var(--blue)"><i class="ti ti-list-check"></i> O que fazer agora</div>';
-  const passos = [
-    {n:1, txt:'<b>Parar a maquininha JIM.COM.</b> Cada operação custa ~25%/mês. Não passar mais nada.', cor:'var(--red)'},
-    {n:2, txt:'<b>Não pagar o empréstimo Nubank de R$17.385</b> — é fraude documentada no BO. Contestar.', cor:'var(--red)'},
-    {n:3, txt:'<b>Jogar a sobra de '+fmt(Math.max(0,sobra))+' no '+esc(obrig[0].nome)+'</b> ('+obrig[0].juros.toFixed(2)+'%/mês) — a dívida mais cara.', cor:'var(--amber)'},
-    {n:4, txt:'<b>Pagar o mínimo das outras dívidas</b> para não negativar, enquanto ataca a maior.', cor:'var(--blue)'},
-    {n:5, txt:'<b>Subir a diária da lancha para R$1.700</b> — gera ~R$4.000/mês a mais sem custo extra.', cor:'var(--green)'},
-  ];
-  passos.forEach(p=>{
-    html += '<div style="display:flex;gap:11px;padding:9px 0;border-bottom:.5px solid var(--border)">';
-    html += '<div style="width:24px;height:24px;border-radius:50%;background:'+p.cor+';color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+p.n+'</div>';
-    html += '<div style="flex:1;font-size:13px;line-height:1.55">'+p.txt+'</div></div>';
-  });
+  // JUMP BUTTONS
+  html += '<div class="diag-jump">';
+  html += '<button class="diag-jump-btn pay" onclick="diagScrollTo(\'pay\')"><i class="ti ti-circle-check"></i> O que pagar</button>';
+  html += '<button class="diag-jump-btn skip" onclick="diagScrollTo(\'skip\')"><i class="ti ti-circle-x"></i> O que evitar</button>';
+  html += '<button class="diag-jump-btn grow" onclick="diagScrollTo(\'grow\')"><i class="ti ti-trending-up"></i> Aumentar a sobra</button>';
   html += '</div>';
 
-  // ── PAGAR (ordem avalanche) ──
-  html += '<div class="card" style="border-color:var(--green)"><div class="card-title" style="color:var(--green)"><i class="ti ti-circle-check"></i> Pagar nesta ordem</div>';
-  html += '<div style="font-size:12px;color:var(--text2);margin-bottom:8px">Sempre o maior juro primeiro — é onde o dinheiro mais se multiplica contra você.</div>';
-  let restante = Math.max(0,sobra);
+  // ACCORDION 1 — PAGAR
+  let payRows = '';
+  let restante = sobra;
   obrig.forEach((o,i)=>{
-    const aloca = o.tipo==='consignado'?0:Math.min(restante, o.valor*0.3);
+    const aloca = o.tipo==='consignado' ? 0 : Math.min(Math.max(restante,0), o.valor*0.3);
     const podeAtacar = restante>0 && o.tipo!=='consignado';
-    html += '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:.5px solid var(--border)">';
-    html += '<div style="width:22px;height:22px;border-radius:50%;background:'+(i===0?'var(--red)':i===1?'var(--amber)':'var(--text3)')+';color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+(i+1)+'</div>';
-    html += '<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:500">'+esc(o.nome)+'</div><div style="font-size:11px;color:var(--text2)">'+o.juros.toFixed(2)+'%/mês · saldo '+fmt(o.valor)+'</div></div>';
-    if(o.tipo==='consignado') html += '<span style="font-size:10px;background:var(--green-dim);color:var(--green);padding:3px 8px;border-radius:10px;white-space:nowrap">folha</span>';
-    else if(podeAtacar){ html += '<span style="font-size:12px;font-family:monospace;color:var(--green);font-weight:600;white-space:nowrap">'+fmt(aloca)+'/mês</span>'; restante-=aloca; }
-    else html += '<span style="font-size:10px;color:var(--text3)">mínimo</span>';
-    html += '</div>';
+    payRows += '<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:.5px solid var(--border)">';
+    payRows += '<div style="width:26px;height:26px;border-radius:50%;background:'+(i===0?'var(--red)':i===1?'var(--amber)':'var(--text3)')+';color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+(i+1)+'</div>';
+    payRows += '<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:500">'+esc(o.nome)+'</div><div style="font-size:11px;color:var(--text2)">'+(o.juros).toFixed(2)+'%/mês · saldo '+fmt(o.valor)+'</div></div>';
+    if(o.tipo==='consignado') payRows += '<span style="font-size:10px;background:var(--green-dim);color:var(--green);padding:3px 8px;border-radius:10px;white-space:nowrap">folha</span>';
+    else if(podeAtacar) payRows += '<span style="font-size:12px;font-family:monospace;color:var(--green);font-weight:600">'+fmt(aloca)+'/mês</span>';
+    else payRows += '<span style="font-size:10px;color:var(--text3)">mínimo</span>';
+    payRows += '</div>';
+    if(podeAtacar) restante -= aloca;
   });
-  html += '</div>';
+  html += diagAcc('pay','circle-check','var(--green)','O que pagar — nesta ordem','Método avalanche: ataque o maior juro primeiro',
+    '<div style="font-size:12px;color:var(--text2);margin-bottom:8px">Com a sobra de '+fmt(sobra)+'/mês, concentre no de maior juro.</div>'+payRows, true);
 
-  // ── NÃO PAGAR / RENEGOCIAR ──
-  html += '<div class="card" style="border-color:var(--red)"><div class="card-title" style="color:var(--red)"><i class="ti ti-circle-x"></i> Não pagar ou renegociar</div>';
-  html += '<div style="font-size:13px;line-height:1.65">';
-  html += '<div style="padding:7px 0;border-bottom:.5px solid var(--border)">🚫 <b>Empréstimo Nubank R$17.385 (golpe)</b> — não pagar nada. Foi contratado por golpistas.</div>';
-  html += '<div style="padding:7px 0;border-bottom:.5px solid var(--border)">🚫 <b>Maquininha JIM.COM</b> — parar. Cada operação custa ~25%/mês.</div>';
-  html += '<div style="padding:7px 0;border-bottom:.5px solid var(--border)">⚠️ <b>Cartão de maior juro</b> — pedir parcelamento no banco para sair do rotativo.</div>';
-  html += '<div style="padding:7px 0">⚠️ <b>Seguros e anuidades não usados</b> — revisar e cancelar para liberar caixa.</div>';
-  html += '</div></div>';
+  // ACCORDION 2 — EVITAR
+  let skipBody = '';
+  skipBody += diagItem('var(--red)','🚫','Empréstimo Nubank R$17.385,88 (golpe)','NÃO pagar nenhuma parcela. Contratado por golpistas — pagar é reconhecer dívida que não é sua.');
+  if(maq>0) skipBody += diagItem('var(--red)','🚫','Maquininha JIM.COM ('+fmt(maq)+')','Parar completamente. Cada operação custa ~25%/mês e só aumenta a dívida.');
+  else skipBody += diagItem('var(--red)','🚫','Operação maquininha','Não usar. Custa ~25%/mês — 14x o consignado.');
+  skipBody += diagItem('var(--amber)','⚠️','Cartão de maior juro — renegociar','Se a sobra não cobre, ligar no banco e parcelar a fatura. Sai do rotativo (15,87%/mês) para algo mais barato.');
+  skipBody += diagItem('var(--amber)','⚠️','Seguros e anuidades não usados','Revisar cartão protegido e seguros embutidos. Cancelar o que não usa libera caixa.');
+  html += diagAcc('skip','circle-x','var(--red)','O que NÃO pagar ou renegociar','Onde o dinheiro está sendo desperdiçado',skipBody,false);
 
-  // ── ALAVANCAS DE RENDA ──
-  html += '<div class="card" style="border-color:var(--green)"><div class="card-title" style="color:var(--green)"><i class="ti ti-trending-up"></i> Como aumentar a sobra</div>';
-  html += '<div style="font-size:13px;line-height:1.5">';
-  [['Subir diária da lancha p/ R$1.700','+R$4.000/mês'],['Ativar Airbnb da casa','+~R$2.000/mês'],['Parar maquininha','para de perder R$600+/mês'],['Recuperar golpe (JEC)','+R$41.902 uma vez']].forEach(a=>{
-    html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:.5px solid var(--border);gap:10px"><span style="color:var(--text)">'+a[0]+'</span><span style="color:var(--green);font-weight:600;white-space:nowrap;font-size:12px">'+a[1]+'</span></div>';
-  });
-  html += '</div></div>';
+  // ACCORDION 3 — REGRA QUANDO FALTA
+  let ruleBody = '<div style="font-size:13px;line-height:1.9">';
+  ruleBody += '<div style="padding:4px 0"><b>1️⃣ Essencial primeiro:</b> moradia, água, luz, comida, remédios, saúde.</div>';
+  ruleBody += '<div style="padding:4px 0"><b>2️⃣ Consignado:</b> já é descontado em folha — juro mais barato, não dá pra atrasar.</div>';
+  ruleBody += '<div style="padding:4px 0"><b>3️⃣ Maior juro:</b> toda a sobra no cartão de maior taxa (Itaú Passaí 15,87%).</div>';
+  ruleBody += '<div style="padding:4px 0"><b>4️⃣ Demais cartões:</b> só o mínimo, para não negativar.</div>';
+  ruleBody += '<div style="padding:4px 0"><b>5️⃣ Nunca:</b> maquininha ou novo empréstimo para pagar dívida.</div>';
+  ruleBody += '</div>';
+  html += diagAcc('rule','route','var(--blue)','Quando o dinheiro não cobre tudo','A ordem de prioridade absoluta',ruleBody,false);
+
+  // ACCORDION 4 — AUMENTAR SOBRA
+  let growBody = '<div style="font-size:13px;line-height:1.8;color:var(--text2)">';
+  growBody += '<div style="padding:5px 0;border-bottom:.5px solid var(--border);display:flex;justify-content:space-between"><span style="color:var(--text)">Subir diária da lancha p/ R$1.700</span><span style="color:var(--green);font-weight:600">+R$4.000/mês</span></div>';
+  growBody += '<div style="padding:5px 0;border-bottom:.5px solid var(--border);display:flex;justify-content:space-between"><span style="color:var(--text)">Ativar Airbnb da casa</span><span style="color:var(--green);font-weight:600">+~R$2.000/mês</span></div>';
+  growBody += '<div style="padding:5px 0;border-bottom:.5px solid var(--border);display:flex;justify-content:space-between"><span style="color:var(--text)">Parar maquininha</span><span style="color:var(--green);font-weight:600">+R$600/mês</span></div>';
+  growBody += '<div style="padding:5px 0;display:flex;justify-content:space-between"><span style="color:var(--text)">Recuperar golpe (JEC)</span><span style="color:var(--green);font-weight:600">+R$41.902 uma vez</span></div>';
+  growBody += '</div>';
+  html += diagAcc('grow','trending-up','var(--amber)','Como aumentar a sobra','Alavancas de renda quantificadas',growBody,false);
 
   el.innerHTML = html;
   renderDiagSuggestions();
@@ -2824,7 +3219,7 @@ function renderDashboard() {
   const fixosL = parseFloat(document.getElementById('lan-fixos')?.value)||0;
   let lancRec=0,lancVar=0;
   passeios.forEach(p=>{lancRec+=p.receita;lancVar+=p.comb+p.marim+p.extras;});
-  const lancLucro = passeios.length? (lancRec-lancVar-(marinaL+fixosL)) : 3050;
+  const lancLucro = passeios.length? Math.max(0,(lancRec-lancVar-(marinaL+fixosL))) : 0;
 
   // Health score (0-100)
   let score = 100;
@@ -2845,13 +3240,18 @@ function renderDashboard() {
   let acum = 0;
   for(let m=1;m<=6;m++){ acum += folgaMensal; proj.push(acum); }
 
+  const dashSemDados = transacoes.length===0 && debts.length===0 && passeios.length===0;
+  if(dashSemDados){
+    el.innerHTML = '<div class="data-status empty"><i class="ti ti-info-circle"></i><div class="ds-text"><b>Dashboard vazio.</b> Importe extratos e faturas, cadastre dívidas e lance passeios da lancha. Os números abaixo refletem só os seus dados reais — nada vem pré-preenchido.</div></div>';
+    return;
+  }
   let html = '';
 
   // STICKY SUMMARY — acompanha ao rolar
   html += '<div class="dash-sticky">'
     +'<div class="dss-pill"><span class="dss-l">Saúde</span><span class="dss-v" style="color:'+scoreColor+'">'+score+'</span></div>'
     +'<div class="dss-pill"><span class="dss-l">Renda/mês</span><span class="dss-v" style="color:var(--green)">'+fmt(rendaMensal)+'</span></div>'
-    +'<div class="dss-pill"><span class="dss-l">Dívidas</span><span class="dss-v" style="color:var(--red)">'+fmt(totDividas||18415)+'</span></div>'
+    +'<div class="dss-pill"><span class="dss-l">Dívidas</span><span class="dss-v" style="color:var(--red)">'+fmt(totDividas)+'</span></div>'
     +'<div class="dss-pill"><span class="dss-l">Sobra/mês</span><span class="dss-v" style="color:'+(folgaMensal>=0?'var(--green)':'var(--red)')+'">'+fmt(folgaMensal)+'</span></div>'
     +'</div>';
 
@@ -2869,8 +3269,8 @@ function renderDashboard() {
   // KEY METRICS
   html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:14px">';
   html += '<div class="card" style="margin:0;padding:14px"><div style="font-size:10px;color:var(--text2);text-transform:uppercase">Renda mensal</div><div style="font-size:20px;font-weight:600;color:var(--green)">'+fmt(rendaMensal)+'</div><div style="font-size:10px;color:var(--text2)">Marinha + lancha</div></div>';
-  html += '<div class="card" style="margin:0;padding:14px"><div style="font-size:10px;color:var(--text2);text-transform:uppercase">Dívidas totais</div><div style="font-size:20px;font-weight:600;color:var(--red)">'+fmt(totDividas||18415)+'</div><div style="font-size:10px;color:var(--text2)">cartões + consignados</div></div>';
-  html += '<div class="card" style="margin:0;padding:14px"><div style="font-size:10px;color:var(--text2);text-transform:uppercase">Custo maquininha</div><div style="font-size:20px;font-weight:600;color:var(--red)">'+fmt(maq||10844)+'</div><div style="font-size:10px;color:var(--text2)">parar imediatamente</div></div>';
+  html += '<div class="card" style="margin:0;padding:14px"><div style="font-size:10px;color:var(--text2);text-transform:uppercase">Dívidas totais</div><div style="font-size:20px;font-weight:600;color:var(--red)">'+fmt(totDividas)+'</div><div style="font-size:10px;color:var(--text2)">cartões + consignados</div></div>';
+  html += '<div class="card" style="margin:0;padding:14px"><div style="font-size:10px;color:var(--text2);text-transform:uppercase">Custo maquininha</div><div style="font-size:20px;font-weight:600;color:var(--red)">'+fmt(maq)+'</div><div style="font-size:10px;color:var(--text2)">parar imediatamente</div></div>';
   html += '<div class="card" style="margin:0;padding:14px"><div style="font-size:10px;color:var(--text2);text-transform:uppercase">A recuperar (golpe)</div><div style="font-size:20px;font-weight:600;color:var(--amber)">R$41.902</div><div style="font-size:10px;color:var(--text2)">BO registrado</div></div>';
   html += '</div>';
 
@@ -2914,7 +3314,7 @@ function closeSidebar(){
   document.getElementById('sidebar')?.classList.remove('open');
   document.getElementById('sidebar-backdrop')?.classList.remove('show');
 }
-const SEC_TITLES={chat:'Consultor IA',dashboard:'Dashboard',diag:'Diagnóstico',extrato:'Extrato bancário',faturas:'Faturas de cartão',mensal:'Mês a mês',dividas:'Dívidas',equilibrio:'Ponto de equilíbrio',lancha:'DRE Lancha',roi:'ROI Investimentos',golpes:'Dossiê de golpes',maquininha:'Maquininha',nomen:'Regras de nomes'};
+const SEC_TITLES={chat:'Consultor IA',dashboard:'Dashboard',diag:'Diagnóstico',importacoes:'Importações',relatorio:'Relatório de cartões',pdf:'Gerar relatório PDF',fluxo:'Fluxo de caixa',extrato:'Extrato bancário',faturas:'Faturas de cartão',mensal:'Mês a mês',dividas:'Dívidas',equilibrio:'Ponto de equilíbrio',lancha:'DRE Lancha',roi:'ROI Investimentos',golpes:'Dossiê de golpes',maquininha:'Maquininha',nomen:'Regras de nomes'};
 function setTopbarTitle(n){ const el=document.getElementById('topbar-title'); if(el) el.textContent=SEC_TITLES[n]||''; }
 
 
@@ -2989,8 +3389,18 @@ function isDuplicatePasseio(p) {
 function isFileImported(file) {
   return importedFiles.some(f => f.name===file.name && f.size===file.size);
 }
-function registerFile(file, count) {
-  importedFiles.push({name:file.name, size:file.size, when:Date.now(), count:count||0});
+let nimpid = 1;
+function registerFile(file, count, origem, tipo) {
+  const rec = {impId:nimpid++, name:file.name, size:file.size, when:Date.now(), count:count||0, origem:origem||'', tipo:tipo||'extrato', status:'ok'};
+  importedFiles.push(rec);
+  return rec;
+}
+// Vincula transações a um import e conta quantas entraram
+function tagImport(impId, before) {
+  const novas = transacoes.filter(t=>!t._impId).length;
+  transacoes.forEach(t=>{ if(!t._impId) t._impId = impId; });
+  const rec = importedFiles.find(f=>f.impId===impId);
+  if(rec) rec.count = transacoes.filter(t=>t._impId===impId).length;
 }
 
 // Filtra duplicatas de um lote e retorna {novas, dups}
@@ -3209,6 +3619,1253 @@ async function callDiagChat(msg) {
   if(d.error) throw new Error(d.error.message);
   return (d.content||[]).map(c=>c.text||'').join('').trim();
 }
+
+
+// ── ITEM 5: TELA DE CONSULTA DE IMPORTAÇÕES ──
+let impFilter = 'todos';
+function setImpFilter(f,e){ impFilter=f; document.querySelectorAll('#sec-importacoes .qf-chip').forEach(c=>c.classList.remove('active')); if(e&&e.target)e.target.classList.add('active'); renderImportacoes(); }
+
+function renderImportacoes() {
+  const el = document.getElementById('imp-list'); if(!el) return;
+  const fmtD = ts => { const d=new Date(ts); return d.toLocaleDateString('pt-BR')+' '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}); };
+
+  let list = [...importedFiles];
+  if(impFilter!=='todos') list = list.filter(f=>f.tipo===impFilter);
+  list.sort((a,b)=>b.when-a.when);
+
+  if(!list.length){
+    el.innerHTML = '<div class="data-status empty"><i class="ti ti-info-circle"></i><div class="ds-text">Nenhuma importação ainda. Importe um extrato ou fatura — o histórico aparece aqui com opção de excluir.</div></div>';
+    return;
+  }
+
+  let html = '';
+  list.forEach(f=>{
+    const ativo = transacoes.filter(t=>t._impId===f.impId).length;
+    const tipoLabel = f.tipo==='fatura' ? 'Fatura' : 'Extrato';
+    const tipoColor = f.tipo==='fatura' ? 'var(--amber)' : 'var(--blue)';
+    html += '<div class="card" style="margin-bottom:8px;padding:13px 15px">';
+    html += '<div style="display:flex;align-items:center;gap:10px">';
+    html += '<div style="width:34px;height:34px;border-radius:8px;background:'+tipoColor+';display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff"><i class="ti ti-'+(f.tipo==='fatura'?'credit-card':'file-invoice')+'"></i></div>';
+    html += '<div style="flex:1;min-width:0">';
+    html += '<div style="font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(f.name)+'</div>';
+    html += '<div style="font-size:11px;color:var(--text2)">'+tipoLabel+' · '+esc(f.origem||'—')+' · '+fmtD(f.when)+'</div>';
+    html += '</div>';
+    html += '<div style="text-align:right;flex-shrink:0"><div style="font-size:15px;font-weight:700;font-family:monospace;color:'+tipoColor+'">'+ativo+'</div><div style="font-size:9px;color:var(--text2);text-transform:uppercase">registros</div></div>';
+    html += '</div>';
+    html += '<div style="display:flex;gap:6px;margin-top:10px">';
+    html += '<button class="btn-sm bs-gy" onclick="verImportacao('+f.impId+')" style="flex:1"><i class="ti ti-eye"></i> Ver</button>';
+    html += '<button class="btn-sm bs-rd" onclick="excluirImportacao('+f.impId+')" style="flex:1"><i class="ti ti-trash"></i> Excluir tudo</button>';
+    html += '</div>';
+    html += '</div>';
+  });
+  el.innerHTML = html;
+}
+
+function verImportacao(impId) {
+  const rec = importedFiles.find(f=>f.impId===impId); if(!rec) return;
+  if(rec.tipo==='fatura'){ go('faturas'); } else { go('extrato'); }
+}
+
+// ── ITEM 4: EXCLUSÃO TOTAL DE IMPORTAÇÃO ──
+function excluirImportacao(impId) {
+  const rec = importedFiles.find(f=>f.impId===impId); if(!rec) return;
+  const n = transacoes.filter(t=>t._impId===impId).length;
+  if(!confirm('Excluir a importação "'+rec.name+'"?\n\nIsso remove os '+n+' lançamentos vinculados, suas classificações e vínculos analíticos. Não pode ser desfeito.')) return;
+  transacoes = transacoes.filter(t=>t._impId!==impId);
+  importedFiles = importedFiles.filter(f=>f.impId!==impId);
+  renderImportacoes();
+  if(typeof renderTrans==='function') renderTrans();
+  if(typeof renderFatTrans==='function') renderFatTrans();
+  if(typeof renderSummary==='function') renderSummary();
+  sched();
+  toast('Importação excluída ('+n+' lançamentos removidos)','ok');
+}
+
+// ── ITEM 8: RELATÓRIO FINANCEIRO DOS CARTÕES ──
+function renderRelatorioCartoes() {
+  const el = document.getElementById('rel-content'); if(!el) return;
+  const fmt = v => 'R$'+Math.round(v).toLocaleString('pt-BR');
+
+  // Agrupa transações de fatura por cartão
+  const cartoes = {};
+  transacoes.filter(t=>t.src==='fatura').forEach(t=>{
+    const c = t.cardName || FATCARDS[t.banco] || t.banco || 'Cartão';
+    if(!cartoes[c]) cartoes[c]={gasto:0,juros:0,parcelado:0,maquininha:0,n:0};
+    const g = cartoes[c];
+    if(t.tipo==='debito') g.gasto += (t.valor||0);
+    if(t.categoria==='juros') g.juros += (t.valor||0);
+    if(t.categoria==='maquininha') g.maquininha += (t.valor||0);
+    if(/PARC|PARCELAMEN/i.test(t.desc||'')) g.parcelado += (t.valor||0);
+    g.n++;
+  });
+
+  if(!Object.keys(cartoes).length){
+    el.innerHTML = '<div class="data-status empty"><i class="ti ti-info-circle"></i><div class="ds-text">Importe faturas de cartão para gerar o relatório de juros, parcelamentos e rotativo.</div></div>';
+    return;
+  }
+
+  let html='';
+  let totGasto=0, totJuros=0;
+  Object.keys(cartoes).forEach(c=>{
+    const g = cartoes[c];
+    totGasto += g.gasto; totJuros += g.juros;
+    const pctJuros = g.gasto>0 ? Math.round(g.juros/g.gasto*100) : 0;
+    html += '<div class="card"><div class="card-title"><i class="ti ti-credit-card"></i> '+esc(c)+'</div>';
+    html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-bottom:8px">';
+    html += '<div class="diag-kpi"><div class="diag-kpi-l">Total gasto</div><div class="diag-kpi-v">'+fmt(g.gasto)+'</div></div>';
+    html += '<div class="diag-kpi"><div class="diag-kpi-l">Juros pagos</div><div class="diag-kpi-v" style="color:var(--red)">'+fmt(g.juros)+'</div></div>';
+    html += '<div class="diag-kpi"><div class="diag-kpi-l">Parcelado</div><div class="diag-kpi-v" style="color:var(--amber)">'+fmt(g.parcelado)+'</div></div>';
+    html += '<div class="diag-kpi"><div class="diag-kpi-l">% em juros</div><div class="diag-kpi-v" style="color:'+(pctJuros>5?'var(--red)':'var(--text)')+'">'+pctJuros+'%</div></div>';
+    html += '</div>';
+    if(g.maquininha>0) html += '<div class="alert a-red" style="margin:0"><i class="ti ti-device-mobile"></i><span>Maquininha neste cartão: '+fmt(g.maquininha)+'</span></div>';
+    html += '</div>';
+  });
+
+  // Resumo geral
+  html = '<div class="diag-hero"><div class="diag-hero-top"><div style="width:44px;height:44px;border-radius:11px;background:var(--red);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-receipt-2" style="font-size:22px;color:#fff"></i></div>'
+    +'<div class="diag-verdict"><div class="diag-verdict-label">Total em juros pagos</div><div class="diag-verdict-text" style="color:var(--red)">'+fmt(totJuros)+'</div><div style="font-size:12px;color:var(--text2);margin-top:2px">de '+fmt(totGasto)+' gastos no total dos cartões</div></div></div></div>' + html;
+
+  el.innerHTML = html;
+}
+
+// ── MOTOR DE RELATÓRIOS PDF ──
+
+// ── ESTILOS BASE (cores e fontes padrão corporativo) ──
+const PDF_CFG = {
+  colors: {
+    primary:   [37, 99, 235],   // azul
+    danger:    [214, 51, 51],   // vermelho
+    warning:   [196, 125, 10],  // âmbar
+    success:   [26, 157, 94],   // verde
+    dark:      [30, 36, 45],    // texto escuro
+    mid:       [92, 101, 112],  // texto secundário
+    light:     [240, 242, 245], // fundo claro
+    white:     [255, 255, 255],
+    border:    [220, 224, 230],
+  },
+  fonts: { normal: 'helvetica', bold: 'helvetica' },
+  page: { w: 210, h: 297, ml: 14, mr: 14, mt: 20 },
+};
+
+function pdfFmt(v) { return 'R$ '+Math.abs(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function pdfDate() { return new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'}); }
+
+function pdfNewDoc(titulo) {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+  doc._pdfTitulo = titulo;
+  doc._pdfY = PDF_CFG.page.mt;
+  return doc;
+}
+
+// Cabeçalho de página
+function pdfHeader(doc, titulo, subtitulo) {
+  const C = PDF_CFG.colors; const P = PDF_CFG.page;
+  // Barra superior
+  doc.setFillColor(...C.primary); doc.rect(0,0,P.w,14,'F');
+  doc.setTextColor(...C.white); doc.setFontSize(11); doc.setFont('helvetica','bold');
+  doc.text('FinanceAI — Rosane Machado Felipe Duarte', P.ml, 9);
+  doc.setFontSize(8); doc.setFont('helvetica','normal');
+  doc.text('Gerado em: '+pdfDate(), P.w-P.mr-40, 9);
+  // Título do relatório
+  doc.setFillColor(...C.light); doc.rect(0,14,P.w,16,'F');
+  doc.setTextColor(...C.dark); doc.setFontSize(13); doc.setFont('helvetica','bold');
+  doc.text(titulo, P.ml, 24);
+  if(subtitulo){ doc.setFontSize(8); doc.setFont('helvetica','normal'); doc.setTextColor(...C.mid); doc.text(subtitulo, P.ml, 29); }
+  doc._pdfY = 36;
+}
+
+// Seção (título de bloco)
+function pdfSection(doc, txt, color) {
+  const C = PDF_CFG.colors; const P = PDF_CFG.page;
+  pdfCheckPage(doc, 14);
+  const col = color || C.primary;
+  doc.setFillColor(...col); doc.rect(P.ml,doc._pdfY,P.w-P.ml-P.mr,0.6,'F');
+  doc._pdfY += 2;
+  doc.setFontSize(10); doc.setFont('helvetica','bold'); doc.setTextColor(...col);
+  doc.text(txt, P.ml, doc._pdfY+4);
+  doc._pdfY += 8;
+}
+
+// Linha de KPI (label / valor)
+function pdfKpiRow(doc, label, valor, valColor) {
+  const C = PDF_CFG.colors; const P = PDF_CFG.page;
+  pdfCheckPage(doc, 7);
+  doc.setFontSize(9); doc.setFont('helvetica','normal'); doc.setTextColor(...C.mid);
+  doc.text(label, P.ml, doc._pdfY);
+  doc.setFont('helvetica','bold'); doc.setTextColor(...(valColor||C.dark));
+  doc.text(String(valor), P.w-P.mr, doc._pdfY, {align:'right'});
+  doc._pdfY += 6;
+}
+
+// Caixa de destaque (alert/insight)
+function pdfAlert(doc, txt, type) {
+  const C = PDF_CFG.colors; const P = PDF_CFG.page;
+  const lines = doc.splitTextToSize(txt, P.w-P.ml-P.mr-8);
+  const h = lines.length*5.5+7;
+  pdfCheckPage(doc, h+4);
+  const col = type==='danger'?C.danger:type==='warning'?C.warning:type==='success'?C.success:C.primary;
+  const bg = col.map(c=>Math.min(255,c+190));
+  doc.setFillColor(...bg); doc.setDrawColor(...col);
+  doc.roundedRect(P.ml, doc._pdfY, P.w-P.ml-P.mr, h, 2, 2, 'FD');
+  doc.setTextColor(...col); doc.setFontSize(8); doc.setFont('helvetica','bold');
+  doc.text(type==='danger'?'⚠ ATENÇÃO':'💡 INSIGHT', P.ml+3, doc._pdfY+5);
+  doc.setFont('helvetica','normal'); doc.setTextColor(...C.dark);
+  doc.text(lines, P.ml+3, doc._pdfY+10);
+  doc._pdfY += h+4;
+}
+
+// Rodapé de página
+function pdfFooter(doc) {
+  const C = PDF_CFG.colors; const P = PDF_CFG.page;
+  const pgs = doc.internal.getNumberOfPages();
+  for(let i=1;i<=pgs;i++){
+    doc.setPage(i);
+    doc.setFillColor(...C.light); doc.rect(0,P.h-10,P.w,10,'F');
+    doc.setFontSize(7); doc.setTextColor(...C.mid); doc.setFont('helvetica','normal');
+    doc.text('FinanceAI · Confidencial · Uso pessoal · '+pdfDate(), P.ml, P.h-4);
+    doc.text('Página '+i+' de '+pgs, P.w-P.mr, P.h-4, {align:'right'});
+  }
+}
+
+function pdfCheckPage(doc, needed) {
+  if(doc._pdfY + (needed||10) > PDF_CFG.page.h-16) {
+    doc.addPage(); pdfHeaderCont(doc); doc._pdfY = 24;
+  }
+}
+function pdfHeaderCont(doc) {
+  const C = PDF_CFG.colors; const P = PDF_CFG.page;
+  doc.setFillColor(...C.primary); doc.rect(0,0,P.w,8,'F');
+  doc.setTextColor(...C.white); doc.setFontSize(8); doc.setFont('helvetica','normal');
+  doc.text((doc._pdfTitulo||'FinanceAI')+' (continuação)', P.ml, 5.5);
+}
+
+// ──────────────────────────────────────────────────────
+// RELATÓRIO 1: SITUAÇÃO FINANCEIRA CONSOLIDADA
+// ──────────────────────────────────────────────────────
+function gerarRelatorioConsolidado(filtros) {
+  const doc = pdfNewDoc('Situação Financeira Consolidada');
+  const C = PDF_CFG.colors; const P = PDF_CFG.page;
+  const SALARIO = 14451;
+  const marinaL = parseFloat(document.getElementById('lan-marina')?.value)||1450;
+  let lancRec=0,lancVar=0;
+  passeios.forEach(p=>{lancRec+=p.receita;lancVar+=(p.comb||0)+(p.marim||0)+(p.extras||0);});
+  const lancLucro = passeios.length? Math.max(0,lancRec-lancVar-(marinaL)) : 0;
+  const rendaTotal = SALARIO + lancLucro;
+  const totDividas = debts.reduce((s,d)=>s+(d.saldo||d.valor||0),0);
+  const maq = transacoes.filter(t=>t.categoria==='maquininha').reduce((s,t)=>s+(t.valor||0),0);
+  const gastoEssencial = 8000;
+  const sobra = rendaTotal - gastoEssencial;
+
+  // Header
+  pdfHeader(doc, 'Situação Financeira Consolidada',
+    'Diagnóstico completo · '+pdfDate());
+
+  // Semáforo
+  let status, statusCol;
+  if(totDividas===0&&maq===0){ status='Sob controle'; statusCol=C.success; }
+  else if(sobra<0||maq>0){ status='Crítico — ação imediata'; statusCol=C.danger; }
+  else { status='Atenção — requer disciplina'; statusCol=C.warning; }
+
+  doc.setFillColor(...statusCol.map(c=>Math.min(255,c+185)));
+  doc.setDrawColor(...statusCol);
+  doc.roundedRect(P.ml,doc._pdfY,P.w-P.ml-P.mr,14,2,2,'FD');
+  doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(...statusCol);
+  doc.text('STATUS: '+status, P.ml+4, doc._pdfY+9);
+  doc._pdfY += 18;
+
+  // KPIs
+  pdfSection(doc,'INDICADORES FINANCEIROS');
+  pdfKpiRow(doc,'Salário Marinha (PAPEM)', pdfFmt(SALARIO), C.success);
+  pdfKpiRow(doc,'Renda da lancha (estimada)', pdfFmt(lancLucro), C.success);
+  pdfKpiRow(doc,'Renda total mensal', pdfFmt(rendaTotal), C.success);
+  pdfKpiRow(doc,'Gasto essencial estimado/mês', pdfFmt(gastoEssencial), C.warning);
+  pdfKpiRow(doc,'Sobra para dívidas', pdfFmt(sobra), sobra>=0?C.success:C.danger);
+  pdfKpiRow(doc,'Total de dívidas cadastradas', pdfFmt(totDividas), C.danger);
+  if(maq>0) pdfKpiRow(doc,'Operação maquininha detectada', pdfFmt(maq), C.danger);
+
+  // Dívidas — avalanche
+  if(debts.length){
+    pdfSection(doc,'DÍVIDAS — MÉTODO AVALANCHE (maior juro primeiro)');
+    const rows = debts.sort((a,b)=>(b.juros||0)-(a.juros||0)).map((d,i)=>[
+      String(i+1), d.nome||'Dívida',
+      (d.juros||0).toFixed(2)+'%/mês',
+      pdfFmt(d.saldo||d.valor||0),
+      pdfFmt((d.saldo||d.valor||0)*0.3),
+    ]);
+    doc.autoTable({
+      startY: doc._pdfY, margin:{left:P.ml,right:P.mr},
+      head:[['#','Credor','Juros/mês','Saldo','Atacar/mês']],
+      body: rows, theme:'striped',
+      headStyles:{fillColor:C.primary,textColor:C.white,fontStyle:'bold',fontSize:8},
+      bodyStyles:{fontSize:8,textColor:C.dark},
+      columnStyles:{0:{cellWidth:8},2:{halign:'center'},3:{halign:'right'},4:{halign:'right',fontStyle:'bold',textColor:C.danger}},
+    });
+    doc._pdfY = doc.lastAutoTable.finalY + 6;
+  }
+
+  // Projeção 6 meses
+  pdfSection(doc,'PROJEÇÃO 6 MESES — COM DISCIPLINA FINANCEIRA');
+  const meses6=['1º mês','2º mês','3º mês','4º mês','5º mês','6º mês'];
+  let acum=0, rows6=[];
+  for(let m=0;m<6;m++){
+    acum+=sobra;
+    rows6.push([meses6[m], pdfFmt(sobra), pdfFmt(Math.max(0,acum)), acum>=totDividas?'✓ DÍVIDAS PAGAS':'']);
+  }
+  doc.autoTable({
+    startY:doc._pdfY, margin:{left:P.ml,right:P.mr},
+    head:[['Mês','Sobra/mês','Acumulado','Status']],
+    body:rows6, theme:'striped',
+    headStyles:{fillColor:C.primary,textColor:C.white,fontStyle:'bold',fontSize:8},
+    bodyStyles:{fontSize:8,textColor:C.dark},
+    columnStyles:{1:{halign:'right'},2:{halign:'right',fontStyle:'bold'},3:{textColor:C.success,fontStyle:'bold'}},
+  });
+  doc._pdfY = doc.lastAutoTable.finalY + 6;
+
+  // Plano de ação — boas práticas
+  pdfSection(doc,'PLANO DE AÇÃO — SAIR DO VERMELHO');
+  const acoes = [
+    ['IMEDIATO','Parar operação maquininha. Cada passagem na maquininha custa ~25%/mês.'],
+    ['SEMANA 1','Ligar Itaú (Passaí) e negociar saída do rotativo para parcelamento fixo.'],
+    ['SEMANA 1','Não pagar o empréstimo Nubank R$17.385 (fraude — BO registrado).'],
+    ['MÊS 1','Subir diária da lancha de R$1.200 para R$1.700 (+R$4.000/mês de renda).'],
+    ['MÊS 1','Abrir reclamação no consumidor.gov.br contra Itaú, Nubank e Inter pelo golpe.'],
+    ['MÊS 2','Ativar Airbnb da casa em Cabo Frio (+R$2.000/mês estimado).'],
+    ['MÊS 3','Entrar com ação no JEC (sem advogado, valor abaixo de R$56k).'],
+    ['CONTÍNUO','Todo real extra vai para o cartão de maior juro (Itaú Passaí 15,87%/mês).'],
+  ];
+  doc.autoTable({
+    startY:doc._pdfY, margin:{left:P.ml,right:P.mr},
+    head:[['Prazo','Ação']],
+    body:acoes, theme:'striped',
+    headStyles:{fillColor:C.success,textColor:C.white,fontStyle:'bold',fontSize:8},
+    bodyStyles:{fontSize:8,textColor:C.dark},
+    columnStyles:{0:{cellWidth:22,fontStyle:'bold',textColor:C.primary},1:{cellWidth:150}},
+  });
+  doc._pdfY = doc.lastAutoTable.finalY + 6;
+
+  // Insights finais
+  if(maq>0) pdfAlert(doc,'Foram detectados '+pdfFmt(maq)+' em operações de maquininha. O custo real é ~25%/mês entre comissão e juros do cartão. Esta operação deve ser encerrada imediatamente.','danger');
+  pdfAlert(doc,'Segundo o Banco Central, o método avalanche (pagar o maior juro primeiro) reduz o tempo de quitação em até 40% em relação ao pagamento mínimo igual em todas as dívidas.','warning');
+  pdfAlert(doc,'A taxa Selic está em 15% a.a. (1,25%/mês). Qualquer dívida com juros acima disso está custando mais do que qualquer investimento conservador renderia. Prioridade absoluta: quitar dívidas antes de investir.','warning');
+
+  pdfFooter(doc);
+  doc.save('FinanceAI_Situacao_Consolidada_'+pdfDate().replace(/\//g,'-')+'.pdf');
+  toast('PDF gerado: Situação Consolidada!','ok');
+}
+
+// ──────────────────────────────────────────────────────
+// RELATÓRIO 2: EXTRATO BANCÁRIO
+// ──────────────────────────────────────────────────────
+function gerarRelatorioExtrato(filtros) {
+  const doc = pdfNewDoc('Extrato Bancário');
+  const C = PDF_CFG.colors; const P = PDF_CFG.page;
+  const f = filtros||{};
+  let trans = transacoes.filter(t=>t.src!=='fatura');
+  if(f.banco) trans = trans.filter(t=>t.banco===f.banco);
+  if(f.mesAno) trans = trans.filter(t=>{
+    const p=(t.data||'').split('/'); return p.length>=2&&(p[1]+'/'+(p[2]||''))===f.mesAno||p[1]===f.mesAno.split('/')[0];
+  });
+  if(f.tipo) trans = trans.filter(t=>t.tipo===f.tipo);
+  if(f.categoria) trans = trans.filter(t=>t.categoria===f.categoria);
+  if(f.minValor) trans = trans.filter(t=>Math.abs(t.valor||0)>=parseFloat(f.minValor));
+  trans.sort((a,b)=>(b.data||'').localeCompare(a.data||''));
+
+  const totDeb = trans.filter(t=>t.tipo==='debito').reduce((s,t)=>s+(t.valor||0),0);
+  const totCred = trans.filter(t=>t.tipo==='credito').reduce((s,t)=>s+(t.valor||0),0);
+
+  pdfHeader(doc,'Extrato Bancário',
+    'Banco: '+(f.banco?BANKS[f.banco]:'Todos')+' · Período: '+(f.mesAno||'Completo')+' · '+trans.length+' lançamentos');
+
+  pdfSection(doc,'RESUMO DO PERÍODO');
+  pdfKpiRow(doc,'Total de entradas', pdfFmt(totCred), C.success);
+  pdfKpiRow(doc,'Total de saídas', pdfFmt(totDeb), C.danger);
+  pdfKpiRow(doc,'Resultado do período', pdfFmt(totCred-totDeb), totCred>=totDeb?C.success:C.danger);
+  pdfKpiRow(doc,'Número de lançamentos', String(trans.length));
+
+  // Por categoria
+  const porCat={};
+  trans.filter(t=>t.tipo==='debito').forEach(t=>{ const c=t.categoria||'outros'; porCat[c]=(porCat[c]||0)+(t.valor||0); });
+  const catRows=Object.entries(porCat).sort((a,b)=>b[1]-a[1]).map(([c,v])=>[c,pdfFmt(v),Math.round(v/totDeb*100)+'%']);
+  if(catRows.length){
+    pdfSection(doc,'DESPESAS POR CATEGORIA');
+    doc.autoTable({startY:doc._pdfY,margin:{left:P.ml,right:P.mr},head:[['Categoria','Valor','%']],body:catRows,theme:'striped',headStyles:{fillColor:C.primary,textColor:C.white,fontStyle:'bold',fontSize:8},bodyStyles:{fontSize:8},columnStyles:{1:{halign:'right'},2:{halign:'center'}}});
+    doc._pdfY=doc.lastAutoTable.finalY+6;
+  }
+
+  // Lançamentos
+  pdfSection(doc,'LANÇAMENTOS ('+trans.length+')');
+  const tRows=trans.slice(0,500).map(t=>[t.data||'',t.desc?.slice(0,40)||'',(t.tipo==='credito'?'+':'-')+pdfFmt(t.valor),t.categoria||'',t.obs||'']);
+  doc.autoTable({startY:doc._pdfY,margin:{left:P.ml,right:P.mr},head:[['Data','Descrição','Valor','Categoria','Obs']],body:tRows,theme:'striped',headStyles:{fillColor:C.primary,textColor:C.white,fontStyle:'bold',fontSize:7},bodyStyles:{fontSize:7},columnStyles:{2:{halign:'right'},0:{cellWidth:18},3:{cellWidth:25}}});
+  doc._pdfY=doc.lastAutoTable.finalY+6;
+
+  // Alertas
+  const maqTrans=trans.filter(t=>t.categoria==='maquininha');
+  if(maqTrans.length) pdfAlert(doc,maqTrans.length+' operação(ões) de maquininha detectada(s) neste extrato — total '+pdfFmt(maqTrans.reduce((s,t)=>s+(t.valor||0),0))+'. Parar imediatamente.','danger');
+  if(totDeb>totCred) pdfAlert(doc,'As saídas superaram as entradas em '+pdfFmt(totDeb-totCred)+' neste período. Gastos precisam ser revisados.','warning');
+
+  pdfFooter(doc);
+  doc.save('FinanceAI_Extrato_'+pdfDate().replace(/\//g,'-')+'.pdf');
+  toast('PDF gerado: Extrato Bancário!','ok');
+}
+
+// ──────────────────────────────────────────────────────
+// RELATÓRIO 3: FATURAS DE CARTÃO
+// ──────────────────────────────────────────────────────
+function gerarRelatorioFaturas(filtros) {
+  const doc = pdfNewDoc('Faturas de Cartão');
+  const C = PDF_CFG.colors; const P = PDF_CFG.page;
+  const f = filtros||{};
+  let trans = transacoes.filter(t=>t.src==='fatura');
+  if(f.cartao) trans = trans.filter(t=>(t.cardName||t.banco||'')===(f.cartao||''));
+
+  const totGasto=trans.filter(t=>t.tipo==='debito').reduce((s,t)=>s+(t.valor||0),0);
+  const totJuros=trans.filter(t=>t.categoria==='juros').reduce((s,t)=>s+(t.valor||0),0);
+  const totMaq=trans.filter(t=>t.categoria==='maquininha').reduce((s,t)=>s+(t.valor||0),0);
+  const pctJuros=totGasto>0?Math.round(totJuros/totGasto*100):0;
+
+  pdfHeader(doc,'Faturas de Cartão','Cartão: '+(f.cartao||'Todos')+'  ·  '+(trans.length)+' lançamentos');
+
+  pdfSection(doc,'RESUMO POR CARTÃO');
+  pdfKpiRow(doc,'Total gasto', pdfFmt(totGasto));
+  pdfKpiRow(doc,'Juros e encargos', pdfFmt(totJuros), C.danger);
+  pdfKpiRow(doc,'Maquininha detectada', pdfFmt(totMaq), totMaq>0?C.danger:C.mid);
+  pdfKpiRow(doc,'% do gasto em juros', pctJuros+'%', pctJuros>5?C.danger:C.success);
+
+  // Por cartão
+  const porCartao={};
+  trans.forEach(t=>{ const c=t.cardName||FATCARDS[t.banco]||t.banco||'Cartão'; if(!porCartao[c]) porCartao[c]={g:0,j:0,m:0}; if(t.tipo==='debito')porCartao[c].g+=(t.valor||0); if(t.categoria==='juros')porCartao[c].j+=(t.valor||0); if(t.categoria==='maquininha')porCartao[c].m+=(t.valor||0); });
+  const cRows=Object.entries(porCartao).map(([c,v])=>[c,pdfFmt(v.g),pdfFmt(v.j),pdfFmt(v.m)]);
+  if(cRows.length>1){ pdfSection(doc,'DETALHAMENTO POR CARTÃO'); doc.autoTable({startY:doc._pdfY,margin:{left:P.ml,right:P.mr},head:[['Cartão','Total gasto','Juros','Maquininha']],body:cRows,theme:'striped',headStyles:{fillColor:C.primary,textColor:C.white,fontStyle:'bold',fontSize:8},bodyStyles:{fontSize:8},columnStyles:{1:{halign:'right'},2:{halign:'right',textColor:C.danger},3:{halign:'right'}}}); doc._pdfY=doc.lastAutoTable.finalY+6; }
+
+  // Lançamentos
+  pdfSection(doc,'LANÇAMENTOS ('+trans.length+')');
+  const tR=trans.slice(0,500).map(t=>[t.data||'',(t.cardName||t.banco||'').slice(0,15),t.desc?.slice(0,35)||'',(t.tipo==='credito'?'+':'-')+pdfFmt(t.valor),t.categoria||'']);
+  doc.autoTable({startY:doc._pdfY,margin:{left:P.ml,right:P.mr},head:[['Data','Cartão','Estabelecimento','Valor','Categoria']],body:tR,theme:'striped',headStyles:{fillColor:C.primary,textColor:C.white,fontStyle:'bold',fontSize:7},bodyStyles:{fontSize:7},columnStyles:{3:{halign:'right'},0:{cellWidth:16},1:{cellWidth:30},4:{cellWidth:22}}});
+  doc._pdfY=doc.lastAutoTable.finalY+6;
+
+  if(totJuros>0) pdfAlert(doc,'Foram pagos '+pdfFmt(totJuros)+' em juros e encargos ('+pctJuros+'% do total gasto). O rotativo do cartão é a dívida mais cara do Brasil — pode chegar a 450% ao ano. Prioridade: sair do rotativo.','danger');
+  if(totMaq>0) pdfAlert(doc,'Operação maquininha detectada: '+pdfFmt(totMaq)+'. O custo real inclui comissão (~10%) + juros do cartão (~13-15%/mês). Parar imediatamente é a ação mais eficaz para reduzir a dívida.','danger');
+  pdfAlert(doc,'Para sair do rotativo: ligue no banco e negocie o parcelamento da fatura em prestações fixas. A taxa do parcelado é alta, mas menor que o rotativo. Enquanto paga, use o cartão só para o essencial.','warning');
+
+  pdfFooter(doc);
+  doc.save('FinanceAI_Faturas_'+pdfDate().replace(/\//g,'-')+'.pdf');
+  toast('PDF gerado: Faturas!','ok');
+}
+
+// ──────────────────────────────────────────────────────
+// RELATÓRIO 4: DRE LANCHA
+// ──────────────────────────────────────────────────────
+function gerarRelatorioDRELancha(filtros) {
+  const doc = pdfNewDoc('DRE Lancha — Os Milionários');
+  const C = PDF_CFG.colors; const P = PDF_CFG.page;
+  const marinaL = parseFloat(document.getElementById('lan-marina')?.value)||1450;
+  let pas = [...passeios];
+  const f = filtros||{};
+  if(f.mes) pas = pas.filter(p=>(p.data||'').endsWith('/'+f.mes));
+
+  let totRec=0,totVar=0,totManut=0;
+  pas.forEach(p=>{totRec+=p.receita;totVar+=(p.comb||0)+(p.marim||0)+(p.extras||0);totManut+=p.manut||0;});
+  const margBruta=totRec-totVar;
+  const lucroLiq=margBruta-marinaL;
+  const mrgPct=totRec>0?Math.round(lucroLiq/totRec*100):0;
+  const dMediad=pas.length>0?totRec/pas.length:0;
+
+  pdfHeader(doc,'DRE Lancha — Os Milionários','Sócios: Alan Ventura · Gabriel Gonçalves · Rosane · Marina: Thanaleon do Helinho');
+
+  pdfSection(doc,'DRE CONSOLIDADO ('+pas.length+' passeios)');
+  pdfKpiRow(doc,'Receita bruta (diárias)', pdfFmt(totRec), C.success);
+  pdfKpiRow(doc,'(-) Custo variável (comb+marim+extras)', pdfFmt(totVar), C.danger);
+  pdfKpiRow(doc,'= Margem bruta', pdfFmt(margBruta), margBruta>=0?C.success:C.danger);
+  pdfKpiRow(doc,'(-) Marina mensal (custo fixo)', pdfFmt(marinaL), C.danger);
+  pdfKpiRow(doc,'= Lucro líquido operacional', pdfFmt(lucroLiq), lucroLiq>=0?C.success:C.danger);
+  pdfKpiRow(doc,'Margem líquida', mrgPct+'%', mrgPct>=20?C.success:mrgPct>=0?C.warning:C.danger);
+  pdfKpiRow(doc,'Diária média cobrada', pdfFmt(dMediad));
+  pdfKpiRow(doc,'Manutenção (fundo separado)', pdfFmt(totManut), C.warning);
+  doc._pdfY+=3;
+
+  // Passeios tabela
+  pdfSection(doc,'PASSEIOS DETALHADOS');
+  const pRows=pas.map(p=>{
+    const cV=(p.comb||0)+(p.marim||0)+(p.extras||0);
+    return [p.data||'',p.cliente?.slice(0,20)||'',pdfFmt(p.receita),pdfFmt(cV),pdfFmt(p.receita-cV),p.manut>0?pdfFmt(p.manut):'—'];
+  });
+  doc.autoTable({startY:doc._pdfY,margin:{left:P.ml,right:P.mr},head:[['Data','Cliente','Receita','C.Variável','Margem','Manutenção']],body:pRows,theme:'striped',headStyles:{fillColor:[15,110,86],textColor:C.white,fontStyle:'bold',fontSize:8},bodyStyles:{fontSize:8},columnStyles:{2:{halign:'right'},3:{halign:'right'},4:{halign:'right',fontStyle:'bold'},5:{halign:'right',textColor:C.warning}}});
+  doc._pdfY=doc.lastAutoTable.finalY+6;
+
+  // Benchmarks e insights
+  pdfSection(doc,'ANÁLISE E RECOMENDAÇÕES');
+  doc.autoTable({startY:doc._pdfY,margin:{left:P.ml,right:P.mr},
+    head:[['Indicador','Atual','Meta','Gap']],
+    body:[
+      ['Diária média',pdfFmt(dMediad),'R$ 1.700','R$ '+(1700-dMediad).toFixed(0)+' a subir'],
+      ['Margem líquida',mrgPct+'%','30%',(30-mrgPct)+'pp'],
+      ['Passeios/mês',String(pas.length),'8–10','–'],
+      ['Custo manutenção',pdfFmt(totManut),'Fundo próprio','Separar por saída'],
+    ],
+    theme:'striped',headStyles:{fillColor:[15,110,86],textColor:C.white,fontStyle:'bold',fontSize:8},bodyStyles:{fontSize:8}});
+  doc._pdfY=doc.lastAutoTable.finalY+6;
+
+  if(dMediad>0&&dMediad<1700) pdfAlert(doc,'Subindo a diária de '+pdfFmt(dMediad)+' para R$ 1.700 (preço de mercado em Cabo Frio), o lucro mensal sobe de '+pdfFmt(lucroLiq)+' para aproximadamente '+pdfFmt(lucroLiq+(1700-dMediad)*pas.length)+' no mesmo número de saídas.','warning');
+  if(totManut>0) pdfAlert(doc,'Manutenção acumulada de '+pdfFmt(totManut)+' está sendo lançada contra passeios individuais. A boa prática é manter um fundo de manutenção separado (reserve R$ 200 por saída), para não distorcer a margem de cada passeio.','warning');
+  pdfAlert(doc,'Com 8 passeios/mês a R$ 1.700 e custo variável médio de R$ 740: margem bruta de R$ 7.680/mês, menos marina R$ 1.450 = lucro líquido de R$ 6.230/mês. Esse resultado em 3 meses quita toda a dívida de manutenção acumulada.','success');
+
+  pdfFooter(doc);
+  doc.save('FinanceAI_DRE_Lancha_'+pdfDate().replace(/\//g,'-')+'.pdf');
+  toast('PDF gerado: DRE Lancha!','ok');
+}
+
+// ──────────────────────────────────────────────────────
+// RELATÓRIO 5: DÍVIDAS E PLANO DE QUITAÇÃO
+// ──────────────────────────────────────────────────────
+function gerarRelatorioDividas(filtros) {
+  const doc = pdfNewDoc('Dívidas — Plano de Quitação');
+  const C = PDF_CFG.colors; const P = PDF_CFG.page;
+  const sorted = [...debts].sort((a,b)=>(b.juros||0)-(a.juros||0));
+  const SALARIO=14451; const gastoEss=8000;
+  const lancLucro = passeios.length? Math.max(0,passeios.reduce((s,p)=>s+p.receita,0)-passeios.reduce((s,p)=>s+(p.comb||0)+(p.marim||0)+(p.extras||0),0)-1450) : 0;
+  const sobra = (SALARIO+lancLucro) - gastoEss;
+  const totDiv = sorted.reduce((s,d)=>s+(d.saldo||d.valor||0),0);
+
+  pdfHeader(doc,'Dívidas — Plano de Quitação','Método Avalanche · Maior juro primeiro · '+pdfDate());
+
+  if(!sorted.length){
+    pdfAlert(doc,'Nenhuma dívida cadastrada ainda. Acesse a aba Dívidas no FinanceAI para cadastrar.','warning');
+    pdfFooter(doc); doc.save('FinanceAI_Dividas.pdf'); toast('PDF gerado!','ok'); return;
+  }
+
+  pdfSection(doc,'PANORAMA DAS DÍVIDAS');
+  pdfKpiRow(doc,'Total em dívidas', pdfFmt(totDiv), C.danger);
+  pdfKpiRow(doc,'Sobra mensal disponível', pdfFmt(sobra), sobra>=0?C.success:C.danger);
+  pdfKpiRow(doc,'Meses estimados para quitar (avalanche)', sobra>0?Math.ceil(totDiv/sobra)+'m':'calcule renda extra');
+
+  // Tabela de dívidas
+  pdfSection(doc,'RANKING POR JURO (AVALANCHE)');
+  let restante=sobra;
+  const dRows=sorted.map((d,i)=>{
+    const atq=d.tipo==='consignado'?0:Math.min(Math.max(restante,0),(d.saldo||d.valor||0)*0.3);
+    if(d.tipo!=='consignado') restante-=atq;
+    const juros30=(d.saldo||d.valor||0)*(d.juros||0)/100;
+    return [String(i+1),d.nome||'',((d.juros||0).toFixed(2))+'%',pdfFmt(d.saldo||d.valor||0),pdfFmt(juros30)+'/mês',pdfFmt(atq)];
+  });
+  doc.autoTable({startY:doc._pdfY,margin:{left:P.ml,right:P.mr},head:[['#','Credor','Juro/mês','Saldo','Custo/mês','Atacar/mês']],body:dRows,theme:'striped',headStyles:{fillColor:C.danger,textColor:C.white,fontStyle:'bold',fontSize:8},bodyStyles:{fontSize:8},columnStyles:{2:{halign:'center'},3:{halign:'right'},4:{halign:'right',textColor:C.danger},5:{halign:'right',fontStyle:'bold',textColor:C.success}}});
+  doc._pdfY=doc.lastAutoTable.finalY+6;
+
+  // Projeção mês a mês
+  pdfSection(doc,'PROJEÇÃO DE QUITAÇÃO (MÉTODO AVALANCHE)');
+  let projeRows=[]; let divs=[...sorted.map(d=>({...d,saldo:d.saldo||d.valor||0}))]; let mes=0;
+  while(divs.some(d=>d.saldo>0) && mes<36){
+    mes++; let sob=sobra;
+    for(const d of divs){
+      if(d.saldo<=0||d.tipo==='consignado') continue;
+      const juros=d.saldo*(d.juros||0)/100; d.saldo+=juros;
+      const pag=Math.min(sob,d.saldo); d.saldo-=pag; sob-=pag;
+      if(d.saldo<0) d.saldo=0;
+    }
+    const totRest=divs.reduce((s,d)=>s+d.saldo,0);
+    if(mes%3===0||totRest===0) projeRows.push(['Mês '+mes,pdfFmt(sobra),pdfFmt(totRest),totRest<=0?'✓ QUITADO':'']);
+    if(totRest<=0) break;
+  }
+  doc.autoTable({startY:doc._pdfY,margin:{left:P.ml,right:P.mr},head:[['Mês','Aplicado/mês','Saldo restante','Status']],body:projeRows,theme:'striped',headStyles:{fillColor:C.primary,textColor:C.white,fontStyle:'bold',fontSize:8},bodyStyles:{fontSize:8},columnStyles:{1:{halign:'right'},2:{halign:'right'},3:{textColor:C.success,fontStyle:'bold'}}});
+  doc._pdfY=doc.lastAutoTable.finalY+6;
+
+  pdfAlert(doc,'O método avalanche economiza mais em juros do que pagar o mínimo em todas as dívidas. Concentre toda a sobra na dívida de maior juro até zerá-la, depois passe para a próxima. Não desvie para investimentos enquanto tiver dívidas acima da Selic (15% a.a.).','warning');
+  pdfAlert(doc,'Uma renda extra de R$ 2.000/mês (Airbnb, aulas, bicos) acelera a quitação proporcionalmente. Com R$ 2.000 extras além da sobra atual, o tempo total de quitação cai em média 35%.','success');
+  pdfAlert(doc,'Consulte a Defensoria Pública (0800 728 8400) ou o PROCON do município para renegociar dívidas de cartão. Muitos bancos aceitam descontos de 30–50% no saldo devedor em acordos fora do rotativo.','success');
+
+  pdfFooter(doc);
+  doc.save('FinanceAI_Dividas_'+pdfDate().replace(/\//g,'-')+'.pdf');
+  toast('PDF gerado: Dívidas!','ok');
+}
+
+// ──────────────────────────────────────────────────────
+// RELATÓRIO 6: DOSSIÊ DE GOLPES — para uso jurídico
+// ──────────────────────────────────────────────────────
+function gerarRelatorioDossie(filtros) {
+  const doc = pdfNewDoc('Dossiê de Golpes PIX — Uso Jurídico');
+  const C = PDF_CFG.colors; const P = PDF_CFG.page;
+
+  pdfHeader(doc,'Dossiê de Golpes PIX — Documentação para JEC/Banco',
+    'Rosane Machado Felipe Duarte · CPF 646.158.207-04 · Golpe 18/01/2026');
+
+  // Dados do B.O.
+  pdfSection(doc,'BOLETIM DE OCORRÊNCIA REGISTRADO');
+  const boRows=[
+    ['Número do B.O.','126-00904/2026'],
+    ['Data do fato','18/01/2026 · 18h às 22h'],
+    ['Data do registro','20/01/2026'],
+    ['Delegacia','126ª DP — São Cristóvão · Cabo Frio/RJ'],
+    ['Telefone','(22) 2648-2134'],
+    ['Investigador','Igor de Macedo Lira'],
+    ['Termo de Declaração','014720-1126/2026 (04/02/2026)'],
+    ['Crime','Furto · Art. 155 CP'],
+  ];
+  doc.autoTable({startY:doc._pdfY,margin:{left:P.ml,right:P.mr},head:[['Campo','Informação']],body:boRows,theme:'striped',headStyles:{fillColor:C.danger,textColor:C.white,fontStyle:'bold',fontSize:8},bodyStyles:{fontSize:8}});
+  doc._pdfY=doc.lastAutoTable.finalY+6;
+
+  // Golpistas
+  pdfSection(doc,'GOLPISTAS IDENTIFICADOS');
+  const golp=[
+    ['1','Luana Bandeira da S.','CPF *.386.240-*','Itaú: 5 PIX R$2.449,82 + Nubank: 4 PIX R$10.118,00','R$ 12.567,82'],
+    ['2','Narciso de Lima S.','CPF *.573.790-*','Itaú: 6 PIX R$2.648,57','R$ 2.648,57'],
+    ['3','José Antonio A. da Silva','Cp23862762 · Inter Ag.0001-9 Cta.50071446-0','Inter: R$9.300,00','R$ 9.300,00'],
+    ['4','Luel Ferreira A. da Silva','Pendente aditamento','A confirmar','A confirmar'],
+  ];
+  doc.autoTable({startY:doc._pdfY,margin:{left:P.ml,right:P.mr},head:[['#','Nome','Identificação','Detalhe','Total']],body:golp,theme:'striped',headStyles:{fillColor:C.danger,textColor:C.white,fontStyle:'bold',fontSize:8},bodyStyles:{fontSize:8},columnStyles:{4:{fontStyle:'bold',halign:'right'}}});
+  doc._pdfY=doc.lastAutoTable.finalY+6;
+
+  // Totais
+  pdfSection(doc,'PREJUÍZO TOTAL DOCUMENTADO');
+  pdfKpiRow(doc,'PIX fraudulentos (Itaú + Nubank + Inter)', 'R$ 24.516,39', C.danger);
+  pdfKpiRow(doc,'Empréstimo Nubank contratado pelos golpistas', 'R$ 17.385,88', C.danger);
+  pdfKpiRow(doc,'TOTAL DO GOLPE', 'R$ 41.902,27', C.danger);
+  doc._pdfY+=3;
+
+  // Base legal
+  pdfSection(doc,'BASE LEGAL PARA RESSARCIMENTO');
+  doc.autoTable({startY:doc._pdfY,margin:{left:P.ml,right:P.mr},
+    head:[['Fundamento','Descrição']],
+    body:[
+      ['Súmula 479 STJ','Banco responde objetivamente por fraudes bancárias, independente de culpa.'],
+      ['CDC Art. 14','Responsabilidade objetiva por defeito na prestação do serviço bancário.'],
+      ['Lei 10.741/2003 Art. 71','Estatuto do Idoso — prioridade de tramitação + agravante penal.'],
+      ['Lei Geral de Proteção de Dados','Falha nos sistemas de segurança do banco.'],
+      ['Jurisprudência 2025/26','Bancos têm sido condenados em 95% dos casos de golpe do falso gerente.'],
+    ],
+    theme:'striped',headStyles:{fillColor:C.primary,textColor:C.white,fontStyle:'bold',fontSize:8},bodyStyles:{fontSize:8},columnStyles:{0:{cellWidth:45,fontStyle:'bold'}}});
+  doc._pdfY=doc.lastAutoTable.finalY+6;
+
+  // Plano de ação
+  pdfSection(doc,'PLANO DE AÇÃO IMEDIATO');
+  doc.autoTable({startY:doc._pdfY,margin:{left:P.ml,right:P.mr},
+    head:[['Prazo','Ação','Contato']],
+    body:[
+      ['URGENTE','NÃO pagar empréstimo Nubank R$17.385','Nubank: 0800 591 2340'],
+      ['URGENTE','Adicionar Luel ao BO (aditamento)','(22) 2648-2134'],
+      ['SEMANA 1','Reclamação Itaú no consumidor.gov.br','consumidor.gov.br'],
+      ['SEMANA 1','Reclamação Nubank no consumidor.gov.br','consumidor.gov.br'],
+      ['SEMANA 1','Reclamação Inter no consumidor.gov.br','consumidor.gov.br'],
+      ['SEMANA 1','Verificar empréstimos no CPF — Registrato','registrato.bcb.gov.br · BC: 145'],
+      ['MÊS 1','Ação no JEC (sem advogado, até R$56k)','Fórum de Cabo Frio'],
+      ['ALTERNATIVA','Defensoria Pública','0800 728 8400'],
+    ],
+    theme:'striped',headStyles:{fillColor:C.danger,textColor:C.white,fontStyle:'bold',fontSize:8},bodyStyles:{fontSize:8},columnStyles:{0:{cellWidth:22,fontStyle:'bold'},2:{cellWidth:45,textColor:C.primary}}});
+  doc._pdfY=doc.lastAutoTable.finalY+6;
+
+  pdfAlert(doc,'Este documento deve ser apresentado junto ao B.O. 126-00904/2026 ao JEC, aos bancos e ao consumidor.gov.br. O empréstimo contratado pelos golpistas NÃO deve ser pago — pagar é reconhecer dívida fraudulenta.','danger');
+  pdfAlert(doc,'O Banco Central determina que bancos devem ressarcir clientes vítimas do golpe do falso gerente quando comprovado o acesso não autorizado. A Súmula 479 STJ é jurisprudência consolidada — chance de êxito estimada em 90%+ com B.O. e comprovantes.','success');
+
+  pdfFooter(doc);
+  doc.save('FinanceAI_Dossie_Golpes_'+pdfDate().replace(/\//g,'-')+'.pdf');
+  toast('PDF gerado: Dossiê de Golpes!','ok');
+}
+
+// ──────────────────────────────────────────────────────
+// TELA DE SELEÇÃO DE RELATÓRIOS
+// ──────────────────────────────────────────────────────
+function renderPdfScreen() {
+  const el = document.getElementById('pdf-report-cards'); if(!el) return;
+  const hasExt = transacoes.filter(t=>t.src!=='fatura').length>0;
+  const hasFat = transacoes.filter(t=>t.src==='fatura').length>0;
+  const hasDiv = debts.length>0;
+  const hasLan = passeios.length>0;
+
+  const reports = [
+    {
+      id:'consolidado', icon:'chart-pie', color:'#2563eb', title:'Situação Financeira Consolidada',
+      desc:'Diagnóstico completo, método avalanche, projeção de 6 meses e plano de ação para sair do vermelho.',
+      tag:'Recomendado · Todas as fontes', ready:true,
+      filtros:[
+        {id:'cf-incluir-golpe', label:'Incluir seção de golpes PIX', type:'checkbox', val:true},
+        {id:'cf-incluir-lancha', label:'Incluir DRE da lancha', type:'checkbox', val:hasLan},
+      ],
+      fn: () => gerarRelatorioConsolidado({inclGolpe:document.getElementById('cf-incluir-golpe')?.checked, inclLancha:document.getElementById('cf-incluir-lancha')?.checked}),
+    },
+    {
+      id:'extrato', icon:'file-invoice', color:'#0f766e', title:'Extrato Bancário',
+      desc:'Lançamentos filtrados por período/banco/categoria, totais, categorização de despesas e alertas.',
+      tag:'Requer extrato importado', ready:hasExt,
+      filtros:[
+        {id:'ef-banco', label:'Banco', type:'select', opts:Object.entries(BANKS).map(([k,v])=>({v:k,l:v}))},
+        {id:'ef-tipo', label:'Tipo', type:'select', opts:[{v:'',l:'Todos'},{v:'debito',l:'Débitos'},{v:'credito',l:'Créditos'}]},
+        {id:'ef-minval', label:'Valor mínimo (R$)', type:'number', placeholder:'0'},
+      ],
+      fn: () => gerarRelatorioExtrato({banco:document.getElementById('ef-banco')?.value, tipo:document.getElementById('ef-tipo')?.value, minValor:document.getElementById('ef-minval')?.value}),
+    },
+    {
+      id:'faturas', icon:'credit-card', color:'#a35200', title:'Faturas de Cartão',
+      desc:'Gastos por cartão, juros pagos, parcelamentos, maquininha detectada e plano de saída do rotativo.',
+      tag:'Requer faturas importadas', ready:hasFat,
+      filtros:[
+        {id:'ff-cartao', label:'Cartão', type:'select', opts:[{v:'',l:'Todos'},...Object.entries(FATCARDS).map(([k,v])=>({v,l:v}))]},
+      ],
+      fn: () => gerarRelatorioFaturas({cartao:document.getElementById('ff-cartao')?.value}),
+    },
+    {
+      id:'lancha', icon:'ship', color:'#0f6e56', title:'DRE Lancha — Os Milionários',
+      desc:'Receita, custo variável, margem bruta, lucro líquido por passeio, diária mínima e projeção de melhoria.',
+      tag:'Requer passeios lançados', ready:hasLan,
+      filtros:[
+        {id:'lf-mes', label:'Mês (MM)', type:'text', placeholder:'Ex: 04 para abril'},
+      ],
+      fn: () => gerarRelatorioDRELancha({mes:document.getElementById('lf-mes')?.value}),
+    },
+    {
+      id:'dividas', icon:'coins', color:'#d63333', title:'Dívidas — Plano de Quitação',
+      desc:'Ranking por juro, custo mensal de cada dívida, projeção mês a mês do método avalanche.',
+      tag:'Requer dívidas cadastradas', ready:hasDiv,
+      filtros:[],
+      fn: () => gerarRelatorioDividas({}),
+    },
+    {
+      id:'dossie', icon:'shield-x', color:'#7f1d1d', title:'Dossiê de Golpes PIX',
+      desc:'Documentação completa com B.O., golpistas, base legal (Súmula 479 STJ) e plano de ação para JEC e bancos.',
+      tag:'Dados do B.O. 126-00904/2026', ready:true,
+      filtros:[],
+      fn: () => gerarRelatorioDossie({}),
+    },
+  ];
+
+  let html = '';
+  reports.forEach(r => {
+    const disabled = !r.ready;
+    html += '<div class="card" style="margin-bottom:12px;opacity:'+(disabled?'0.6':'1')+'">';
+    html += '<div style="display:flex;align-items:flex-start;gap:12px">';
+    html += '<div style="width:42px;height:42px;border-radius:10px;background:'+r.color+';display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-size:18px"><i class="ti ti-'+r.icon+'"></i></div>';
+    html += '<div style="flex:1;min-width:0">';
+    html += '<div style="font-size:14px;font-weight:700;color:var(--text)">'+esc(r.title)+'</div>';
+    html += '<div style="font-size:11px;color:var(--text2);margin:3px 0 6px">'+esc(r.desc)+'</div>';
+    html += '<div style="display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;background:var(--bg3);color:'+(r.ready?'var(--green)':'var(--text3)')+'">'+esc(r.tag)+'</div>';
+    // Filtros
+    if(r.filtros.length) {
+      html += '<div style="margin-top:10px;padding-top:10px;border-top:.5px solid var(--border)">';
+      html += '<div style="font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--text3);margin-bottom:6px">Filtros</div>';
+      html += '<div style="display:flex;flex-wrap:wrap;gap:8px">';
+      r.filtros.forEach(fi => {
+        html += '<label style="display:flex;flex-direction:column;gap:3px;font-size:11px;color:var(--text2)">';
+        html += esc(fi.label);
+        if(fi.type==='select') {
+          html += '<select id="'+fi.id+'" style="border:.5px solid var(--border2);border-radius:6px;background:var(--bg2);color:var(--text);font-size:12px;padding:4px 8px">';
+          (fi.opts||[]).forEach(o=>{ html += '<option value="'+esc(o.v)+'">'+esc(o.l)+'</option>'; });
+          html += '</select>';
+        } else if(fi.type==='checkbox') {
+          html += '<input type="checkbox" id="'+fi.id+'"'+(fi.val?' checked':'')+' style="width:16px;height:16px">';
+        } else {
+          html += '<input type="'+(fi.type||'text')+'" id="'+fi.id+'" placeholder="'+(fi.placeholder||'')+'" style="border:.5px solid var(--border2);border-radius:6px;background:var(--bg2);color:var(--text);font-size:12px;padding:4px 8px;width:100px">';
+        }
+        html += '</label>';
+      });
+      html += '</div></div>';
+    }
+    html += '</div></div>';
+    // Botão gerar
+    const onclick = disabled ? '' : 'onclick="('+r.fn.toString()+')()"';
+    html += '<button class="btn-p" '+onclick+' '+(disabled?'disabled':'')+' style="width:100%;margin-top:12px;'+(disabled?'opacity:.5;cursor:not-allowed':'')+'"><i class="ti ti-file-type-pdf" style="font-size:13px"></i> Gerar PDF — '+esc(r.title)+'</button>';
+    html += '</div>';
+  });
+
+  el.innerHTML = html;
+}
+
+// ── MÓDULO FLUXO DE CAIXA ──────────────────────────────────────────
+const FC = {
+  periodo: 6,
+  visao: 'comparativo',
+  cenario: 'conservador',
+  expanded: {},
+};
+
+const FC_SALARIO   = 14451;
+const FC_AIRBNB_C  = 2000;  // conservador
+const FC_AIRBNB_O  = 3500;  // otimista
+const FC_LANCHA_META = 1700; // diária mercado
+
+// ── CONTROLES DE FILTRO ──
+function setFcPeriodo(n, el) {
+  FC.periodo = n;
+  document.querySelectorAll('#sec-fluxo .fc-filter-group:first-child .fc-chip').forEach(c=>c.classList.remove('active'));
+  if(el) el.classList.add('active');
+  const custom = document.getElementById('fc-custom-range');
+  if(custom) custom.style.display = n==='custom' ? 'flex' : 'none';
+  if(n!=='custom') renderFluxo();
+}
+function setFcVisao(v, el) {
+  FC.visao = v;
+  document.querySelectorAll('#sec-fluxo .fc-filter-group:nth-child(2) .fc-chip').forEach(c=>c.classList.remove('active'));
+  if(el) el.classList.add('active');
+  renderFluxo();
+}
+function setFcCenario(c, el) {
+  FC.cenario = c;
+  document.querySelectorAll('#sec-fluxo .fc-filter-group:nth-child(3) .fc-chip').forEach(c=>c.classList.remove('active'));
+  if(el) el.classList.add('active');
+  renderFluxo();
+}
+
+// ── FUNÇÕES AUXILIARES ──
+function fcFmt(v)  { return 'R$'+Math.round(Math.abs(v)).toLocaleString('pt-BR'); }
+function fcFmtFull(v) { return (v<0?'-':'')+'R$'+Math.abs(Math.round(v)).toLocaleString('pt-BR'); }
+function fcColor(v){ return v>=0 ? 'var(--green)' : 'var(--red)'; }
+
+// Gera lista de meses AAAA/MM para o período selecionado
+function fcGetMeses() {
+  if(FC.periodo==='custom') {
+    const de  = document.getElementById('fc-de')?.value;
+    const ate = document.getElementById('fc-ate')?.value;
+    if(!de||!ate) return [];
+    const meses=[];
+    let cur = new Date(de+'-01');
+    const end = new Date(ate+'-01');
+    while(cur<=end) {
+      meses.push(cur.getFullYear()+'/'+String(cur.getMonth()+1).padStart(2,'0'));
+      cur.setMonth(cur.getMonth()+1);
+    }
+    return meses;
+  }
+  // Últimos N meses + próximos 3 (para previsão)
+  const n = parseInt(FC.periodo)||6;
+  const meses=[];
+  const now = new Date();
+  for(let i=n-1; i>=-3; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
+    meses.push(d.getFullYear()+'/'+String(d.getMonth()+1).padStart(2,'0'));
+  }
+  return meses;
+}
+
+// ── MOTOR DE DADOS REAIS (extrato importado) ──
+function fcReal(mesAno) {
+  // mesAno = "AAAA/MM"
+  const [ano, mes] = mesAno.split('/');
+  const t = transacoes.filter(t=>{
+    if(!t.data) return false;
+    const p = t.data.split('/');
+    return p.length>=3 && p[1]===mes && (p[2]===ano||p[2]===ano.slice(2));
+  });
+  const entradas = t.filter(x=>x.tipo==='credito').reduce((s,x)=>s+(x.valor||0),0);
+  const saidas   = t.filter(x=>x.tipo==='debito').reduce((s,x)=>s+(x.valor||0),0);
+  const maq      = t.filter(x=>x.categoria==='maquininha').reduce((s,x)=>s+(x.valor||0),0);
+  const juros    = t.filter(x=>x.categoria==='juros').reduce((s,x)=>s+(x.valor||0),0);
+  const cartoes  = transacoes.filter(t=>t.src==='fatura').filter(t=>{
+    if(!t.data) return false;
+    const p=t.data.split('/');
+    return p.length>=2 && p[1]===mes && (!p[2]||p[2]===ano||p[2]===ano.slice(2));
+  }).reduce((s,x)=>s+(x.valor||0),0);
+  const lanchaR  = passeios.filter(p=>{
+    const d=(p.data||'').split('/');
+    return d.length>=2 && d[1]===mes;
+  }).reduce((s,p)=>s+(p.receita||0),0);
+  const consig   = t.filter(x=>x.categoria==='consignado'||/consign|emprest/i.test(x.desc||'')).reduce((s,x)=>s+(x.valor||0),0);
+  return { entradas, saidas, maq, juros, cartoes, consig, lanchaR, saldo:entradas-saidas, temDados:t.length>0 };
+}
+
+// ── MOTOR DE DADOS PREVISTOS ──
+function fcPrevisto(mesAno, cenario) {
+  const [ano, mes] = mesAno.split('/');
+  const marinaVal = parseFloat(document.getElementById('lan-marina')?.value)||1450;
+  // Passeios do mês para pegar receita lancha real (se houver)
+  const passMes = passeios.filter(p=>{ const d=(p.data||'').split('/'); return d.length>=2&&d[1]===mes; });
+  const lanchaRec = passMes.length ? passMes.reduce((s,p)=>s+(p.receita||0),0) : (cenario==='otimista'?8*1700:4*1200);
+  const lanchaVar = passMes.length ? passMes.reduce((s,p)=>s+(p.comb||0)+(p.marim||0)+(p.extras||0),0) : lanchaRec*0.44;
+  const lanchaLiq = Math.max(0,lanchaRec-lanchaVar-marinaVal);
+  const consigMes = debts.filter(d=>d.tipo==='consignado'||/consign/i.test(d.nome||'')).reduce((s,d)=>s+(d.parcela||0),0);
+  const cartoesMes= debts.filter(d=>d.tipo==='cartao').reduce((s,d)=>s+(d.parcela||Math.round((d.saldo||0)*0.1)),0);
+  const outros    = 1500; // essencial médio não-categorizado
+  const maqPrev   = 0;   // previsto: sem maquininha
+  const entradas  = FC_SALARIO + lanchaLiq + (cenario==='otimista'?FC_AIRBNB_O:0);
+  const saidas    = consigMes + cartoesMes + marinaVal + outros + maqPrev;
+  return { entradas, saidas, lanchaLiq, consigMes, cartoesMes, marinaVal, outros, maqPrev, saldo:entradas-saidas,
+    breakdown:{ 'Salário Marinha':FC_SALARIO, 'Renda Lancha':lanchaLiq },
+    despBreakdown:{ 'Consignados':consigMes, 'Cartões (mínimo)':cartoesMes, 'Essencial':outros } };
+}
+
+// ── MOTOR DO DIAGNÓSTICO (projeção otimizada) ──
+function fcDiagnostico(mesAno, cenario, mesesAnteriores) {
+  const marinaVal = parseFloat(document.getElementById('lan-marina')?.value)||1450;
+  const airbnb    = cenario==='otimista' ? FC_AIRBNB_O : FC_AIRBNB_C;
+  const nPasseios = cenario==='otimista' ? 10 : 7;
+  const diaria    = FC_LANCHA_META;
+  const lanchaRec = nPasseios * diaria;
+  const lanchaVar = nPasseios * 740; // custo variável médio/saída
+  const lanchaLiq = Math.max(0, lanchaRec - lanchaVar - marinaVal);
+  // Avalanche: quanto foi pago de dívidas nos meses anteriores
+  let saldoDevedor = debts.reduce((s,d)=>s+(d.saldo||d.valor||0),0);
+  const sobra = FC_SALARIO + lanchaLiq + airbnb - 8000;
+  // Reduz saldo da dívida proporcional ao meses passados
+  if(mesesAnteriores>0) saldoDevedor = Math.max(0, saldoDevedor - sobra*mesesAnteriores);
+  const entradas = FC_SALARIO + lanchaLiq + airbnb;
+  const cartoesMes = Math.min(saldoDevedor*0.15, debts.filter(d=>d.tipo==='cartao').reduce((s,d)=>s+(d.parcela||Math.round((d.saldo||0)*0.1)),0));
+  const consigMes = debts.filter(d=>/consign/i.test(d.nome||'')).reduce((s,d)=>s+(d.parcela||0),0);
+  const saidas    = consigMes + Math.max(cartoesMes-sobra*0.5,0) + 8000;
+  const saldo     = entradas - saidas;
+  return { entradas, saidas, lanchaLiq, airbnb, saldo,
+    breakdown:{ 'Salário Marinha':FC_SALARIO, 'Lancha (meta R$1.700)':lanchaLiq, 'Airbnb':airbnb },
+    despBreakdown:{ 'Consignados':consigMes, 'Cartões (avalanche)':cartoesMes, 'Essencial':8000 } };
+}
+
+// ── RENDER PRINCIPAL ──
+function renderFluxo() {
+  const elKpi     = document.getElementById('fc-kpis');
+  const elTable   = document.getElementById('fc-table');
+  const elInsight = document.getElementById('fc-insights');
+  if(!elKpi||!elTable||!elInsight) return;
+
+  const meses   = fcGetMeses();
+  if(!meses.length) { elKpi.innerHTML='<div class="data-status empty"><i class="ti ti-info-circle"></i><div class="ds-text">Selecione um período personalizado para começar.</div></div>'; return; }
+
+  const now = new Date();
+  const curMes = now.getFullYear()+'/'+String(now.getMonth()+1).padStart(2,'0');
+
+  // Monta dados para cada mês nas três visões
+  const rows = meses.map((m, idx)=>{
+    const isFuture = m > curMes;
+    const real = isFuture ? null : fcReal(m);
+    const prev = fcPrevisto(m, FC.cenario);
+    const diag = fcDiagnostico(m, FC.cenario, idx);
+    return { mes:m, isFuture, real, prev, diag };
+  });
+
+  // ── KPIs RESUMIDOS ──
+  const pastRows  = rows.filter(r=>!r.isFuture);
+  const futRows   = rows.filter(r=>r.isFuture);
+  const totReal   = pastRows.filter(r=>r.real?.temDados).reduce((s,r)=>s+(r.real.saldo||0),0);
+  const totPrev   = rows.reduce((s,r)=>s+(r.prev.saldo||0),0);
+  const totDiag   = rows.reduce((s,r)=>s+(r.diag.saldo||0),0);
+  const maqTotal  = pastRows.reduce((s,r)=>s+(r.real?.maq||0),0);
+
+  elKpi.innerHTML =
+    `<div class="fc-kpi"><div class="fc-kpi-l">Saldo real acumulado</div><div class="fc-kpi-v" style="color:${fcColor(totReal)}">${fcFmtFull(totReal)}</div><div class="fc-kpi-sub">${pastRows.filter(r=>r.real?.temDados).length} meses com dados</div></div>`+
+    `<div class="fc-kpi"><div class="fc-kpi-l">Saldo previsto</div><div class="fc-kpi-v" style="color:${fcColor(totPrev)}">${fcFmtFull(totPrev)}</div><div class="fc-kpi-sub">Cenário ${FC.cenario}</div></div>`+
+    `<div class="fc-kpi"><div class="fc-kpi-l">Com diagnóstico</div><div class="fc-kpi-v" style="color:${fcColor(totDiag)}">${fcFmtFull(totDiag)}</div><div class="fc-kpi-sub">Recomendações aplicadas</div></div>`+
+    `<div class="fc-kpi"><div class="fc-kpi-l">Impacto do diagnóstico</div><div class="fc-kpi-v" style="color:var(--green)">+${fcFmt(totDiag-totPrev)}</div><div class="fc-kpi-sub">vs. cenário previsto</div></div>`+
+    (maqTotal>0?`<div class="fc-kpi" style="border-color:var(--red)"><div class="fc-kpi-l">Maquininha detectada</div><div class="fc-kpi-v" style="color:var(--red)">${fcFmt(maqTotal)}</div><div class="fc-kpi-sub">parar imediatamente</div></div>`:'');
+
+  // ── GRÁFICO CANVAS ──
+  renderFcChart(rows);
+
+  // ── TABELA DRILLDOWN ──
+  const cols = FC.visao==='real' ? 3 : FC.visao==='previsto' ? 3 : FC.visao==='diagnostico' ? 3 : 4;
+  const gridTpl = cols===4 ? '1fr repeat(4,90px)' : '1fr repeat(3,90px)';
+  let tableHtml = `<div class="fc-table-head" style="grid-template-columns:${gridTpl}"><span>Mês</span>`;
+  if(FC.visao==='comparativo'||FC.visao==='real')      tableHtml+='<span style="text-align:right">Entradas</span><span style="text-align:right">Saídas</span><span style="text-align:right">Saldo</span>';
+  if(FC.visao==='comparativo')                          tableHtml+='<span style="text-align:right">Diagnóstico</span>';
+  if(FC.visao==='previsto')                             tableHtml+='<span style="text-align:right">Entradas</span><span style="text-align:right">Saídas</span><span style="text-align:right">Saldo</span>';
+  if(FC.visao==='diagnostico')                          tableHtml+='<span style="text-align:right">Entradas</span><span style="text-align:right">Saídas</span><span style="text-align:right">Saldo</span>';
+  tableHtml += '</div>';
+
+  const mesNames = ['','Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  rows.forEach((r,i)=>{
+    const [ano,mm] = r.mes.split('/');
+    const label = mesNames[parseInt(mm)]+'/'+ano.slice(2);
+    const D = FC.visao==='real'?r.real:(FC.visao==='diagnostico'?r.diag:r.prev);
+    const salR  = r.real?.saldo||0;
+    const salP  = r.prev.saldo;
+    const salDg = r.diag.saldo;
+    const isCur = r.mes===curMes;
+    const noData= !r.real?.temDados;
+
+    tableHtml += `<div class="fc-row${FC.expanded[r.mes]?' open':''}" onclick="fcToggle('${r.mes}')" style="grid-template-columns:${gridTpl}${r.isFuture?';opacity:.75':''}">`;
+    tableHtml += `<div style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500">${isCur?'<span style="width:6px;height:6px;border-radius:50%;background:var(--blue);display:inline-block"></span>':''}${label}${r.isFuture?'<span style="font-size:9px;color:var(--text3);font-weight:400">previsto</span>':''}${noData&&!r.isFuture?'<span style="font-size:9px;color:var(--text3);font-weight:400">sem dados</span>':''}</div>`;
+
+    if(FC.visao==='comparativo') {
+      const src = r.real?.temDados ? r.real : r.prev;
+      tableHtml += `<span style="text-align:right;font-family:monospace;color:var(--green);font-size:12px">${fcFmt(src.entradas||0)}</span>`;
+      tableHtml += `<span style="text-align:right;font-family:monospace;color:var(--red);font-size:12px">${fcFmt(src.saidas||0)}</span>`;
+      tableHtml += `<span style="text-align:right;font-size:12px"><span class="fc-badge ${salR>=0?'pos':'neg'}">${fcFmtFull(r.real?.temDados?salR:salP)}</span></span>`;
+      tableHtml += `<span style="text-align:right;font-size:12px"><span class="fc-badge ${salDg>=0?'pos':'neg'}">${fcFmtFull(salDg)}</span></span>`;
+    } else if(D) {
+      tableHtml += `<span style="text-align:right;font-family:monospace;color:var(--green);font-size:12px">${fcFmt(D.entradas||0)}</span>`;
+      tableHtml += `<span style="text-align:right;font-family:monospace;color:var(--red);font-size:12px">${fcFmt(D.saidas||0)}</span>`;
+      tableHtml += `<span style="text-align:right;font-size:12px"><span class="fc-badge ${(D.saldo||0)>=0?'pos':'neg'}">${fcFmtFull(D.saldo||0)}</span></span>`;
+    }
+    tableHtml += '</div>';
+
+    // Drilldown
+    if(FC.expanded[r.mes]) {
+      tableHtml += `<div class="fc-drill" style="grid-column:1/-1">`;
+      const src = FC.visao==='real'?r.real:FC.visao==='diagnostico'?r.diag:r.prev;
+      if(!src) { tableHtml+='<div class="fc-drill-row"><span>Sem dados para este período.</span></div></div>'; return; }
+      tableHtml+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">';
+      // Entradas
+      tableHtml+='<div><div style="font-size:10px;font-weight:600;text-transform:uppercase;color:var(--green);margin-bottom:4px">Entradas</div>';
+      const ent = src.breakdown||{};
+      if(Object.keys(ent).length) {
+        Object.entries(ent).forEach(([k,v])=>{
+          if(v<=0) return;
+          const pct = src.entradas>0?Math.round(v/src.entradas*100):0;
+          tableHtml+=`<div class="fc-drill-row"><span>${esc(k)}</span><span class="val" style="color:var(--green)">${fcFmt(v)}</span></div>`;
+          tableHtml+=`<div class="fc-bar" style="width:${pct}%;background:var(--green)"></div>`;
+        });
+      } else {
+        tableHtml+=`<div class="fc-drill-row"><span>Créditos</span><span class="val" style="color:var(--green)">${fcFmt(src.entradas||0)}</span></div>`;
+      }
+      tableHtml+='</div>';
+      // Saídas
+      tableHtml+='<div><div style="font-size:10px;font-weight:600;text-transform:uppercase;color:var(--red);margin-bottom:4px">Saídas</div>';
+      const desp = src.despBreakdown||{};
+      if(Object.keys(desp).length) {
+        Object.entries(desp).forEach(([k,v])=>{
+          if(v<=0) return;
+          const pct = src.saidas>0?Math.round(v/src.saidas*100):0;
+          tableHtml+=`<div class="fc-drill-row"><span>${esc(k)}</span><span class="val" style="color:var(--red)">${fcFmt(v)}</span></div>`;
+          tableHtml+=`<div class="fc-bar" style="width:${pct}%;background:var(--red)"></div>`;
+        });
+      } else {
+        tableHtml+=`<div class="fc-drill-row"><span>Débitos</span><span class="val" style="color:var(--red)">${fcFmt(src.saidas||0)}</span></div>`;
+      }
+      if(r.real?.maq>0) tableHtml+=`<div class="fc-drill-row" style="color:var(--red);font-weight:600"><span>⚠️ Maquininha</span><span class="val">${fcFmt(r.real.maq)}</span></div>`;
+      tableHtml+='</div></div></div>';
+    }
+  });
+  elTable.innerHTML = tableHtml;
+
+  // ── INSIGHTS DO DIAGNÓSTICO ──
+  renderFcInsights(rows, elInsight);
+}
+
+function fcToggle(mes) {
+  FC.expanded[mes] = !FC.expanded[mes];
+  renderFluxo();
+}
+
+// ── GRÁFICO DE BARRAS CANVAS ──
+function renderFcChart(rows) {
+  const canvas = document.getElementById('fc-canvas'); if(!canvas) return;
+  const legend = document.getElementById('fc-legend');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.offsetWidth||300;
+  canvas.width = W * window.devicePixelRatio; canvas.height = 180 * window.devicePixelRatio;
+  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  const w = W; const h = 180;
+  const pad = {t:10,r:10,b:32,l:48};
+  const cw = w-pad.l-pad.r; const ch = h-pad.t-pad.b;
+  ctx.clearRect(0,0,w,h);
+
+  const n = rows.length;
+  if(!n) return;
+
+  // Colors
+  const COLORS = {
+    ent:'#1a9d5e', sai:'#d63333', real:'#2563eb', prev:'#7f77dd', diag:'#f5a623'
+  };
+
+  // Decide what to plot based on visão
+  const series = [];
+  const isDark = document.documentElement.getAttribute('data-theme')==='dark';
+  const textCol = isDark?'#8b95a3':'#5c6570';
+  const gridCol = isDark?'#ffffff0f':'#0000000f';
+
+  if(FC.visao==='comparativo') {
+    series.push({label:'Real/Previsto entradas', col:COLORS.ent, data:rows.map(r=>r.real?.temDados?r.real.entradas:r.prev.entradas)});
+    series.push({label:'Real/Previsto saídas',   col:COLORS.sai, data:rows.map(r=>r.real?.temDados?r.real.saidas:r.prev.saidas)});
+    series.push({label:'Saldo c/ diagnóstico',   col:COLORS.diag, data:rows.map(r=>r.diag.saldo), line:true});
+  } else if(FC.visao==='real') {
+    series.push({label:'Entradas', col:COLORS.ent, data:rows.map(r=>r.real?.entradas||0)});
+    series.push({label:'Saídas',   col:COLORS.sai, data:rows.map(r=>r.real?.saidas||0)});
+  } else if(FC.visao==='previsto') {
+    series.push({label:'Entradas', col:COLORS.prev, data:rows.map(r=>r.prev.entradas)});
+    series.push({label:'Saídas',   col:COLORS.sai,  data:rows.map(r=>r.prev.saidas)});
+  } else {
+    series.push({label:'Entradas', col:COLORS.diag, data:rows.map(r=>r.diag.entradas)});
+    series.push({label:'Saídas',   col:COLORS.sai,  data:rows.map(r=>r.diag.saidas)});
+    series.push({label:'Saldo acum.', col:COLORS.ent, data:rows.map(r=>r.diag.saldo), line:true});
+  }
+
+  const barSeries = series.filter(s=>!s.line);
+  const lineSeries = series.filter(s=>s.line);
+  const allVals = [...barSeries.flatMap(s=>s.data),...lineSeries.flatMap(s=>s.data)];
+  const maxV = Math.max(...allVals, 1);
+  const minV = Math.min(...allVals, 0);
+  const range = maxV - minV;
+  const yScale = (v) => pad.t + ch - ((v-minV)/range)*ch;
+
+  // Grid lines
+  const steps = 4;
+  ctx.strokeStyle = gridCol; ctx.lineWidth = 0.5;
+  for(let i=0;i<=steps;i++) {
+    const v = minV + range*(i/steps);
+    const y = yScale(v);
+    ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(w-pad.r,y); ctx.stroke();
+    ctx.fillStyle = textCol; ctx.font = '9px sans-serif'; ctx.textAlign='right';
+    const lbl = Math.abs(v)>=1000?(v/1000).toFixed(0)+'k':Math.round(v)+'';
+    ctx.fillText(lbl, pad.l-4, y+3);
+  }
+
+  // Zero line
+  const z = yScale(0);
+  ctx.strokeStyle = isDark?'#ffffff28':'#00000018'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(pad.l,z); ctx.lineTo(w-pad.r,z); ctx.stroke();
+
+  // Bars
+  const bw = Math.max(4, (cw/n - 8) / Math.max(barSeries.length,1));
+  const grp = bw * barSeries.length + 4;
+  barSeries.forEach((s,si) => {
+    s.data.forEach((v,i) => {
+      const x = pad.l + (i/n)*cw + (cw/n - grp)/2 + si*bw;
+      const y = yScale(Math.max(v,0));
+      const bh = Math.abs(yScale(0)-yScale(v));
+      ctx.fillStyle = s.col + (rows[i].isFuture?'80':'cc');
+      ctx.beginPath();
+      const rr=2;
+      ctx.roundRect ? ctx.roundRect(x,y,bw-1,Math.max(bh,1),rr) : ctx.rect(x,y,bw-1,Math.max(bh,1));
+      ctx.fill();
+    });
+  });
+
+  // Line series
+  lineSeries.forEach(s => {
+    ctx.strokeStyle = s.col; ctx.lineWidth = 2; ctx.setLineDash([4,2]);
+    ctx.beginPath();
+    s.data.forEach((v,i) => {
+      const x = pad.l + (i+0.5)*(cw/n);
+      const y = yScale(v);
+      i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+    });
+    ctx.stroke(); ctx.setLineDash([]);
+    // Dots
+    s.data.forEach((v,i) => {
+      const x = pad.l + (i+0.5)*(cw/n);
+      const y = yScale(v);
+      ctx.fillStyle = s.col; ctx.beginPath(); ctx.arc(x,y,3,0,Math.PI*2); ctx.fill();
+    });
+  });
+
+  // X labels
+  const mesN=['','Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  ctx.fillStyle = textCol; ctx.font='9px sans-serif'; ctx.textAlign='center';
+  rows.forEach((r,i) => {
+    const x = pad.l + (i+0.5)*(cw/n);
+    const [,mm] = r.mes.split('/');
+    ctx.fillText(mesN[parseInt(mm)]||mm, x, h-pad.b+12);
+    if(r.mes===new Date().getFullYear()+'/'+String(new Date().getMonth()+1).padStart(2,'0')){
+      ctx.fillStyle='var(--blue)'; ctx.fillText('▲',x,h-pad.b+22); ctx.fillStyle=textCol;
+    }
+  });
+
+  // Legend
+  if(legend) legend.innerHTML = series.map(s=>`<div style="display:flex;align-items:center;gap:3px"><div style="width:10px;height:3px;background:${s.col};border-radius:2px;${s.line?'border:1px dashed '+s.col+'':''} "></div>${esc(s.label)}</div>`).join('');
+}
+
+// ── INSIGHTS DO DIAGNÓSTICO ──
+function renderFcInsights(rows, el) {
+  if(!el) return;
+  let html = '';
+  const futRows = rows.filter(r=>r.isFuture);
+  const pastRows = rows.filter(r=>!r.isFuture&&r.real?.temDados);
+  const maqTotal = pastRows.reduce((s,r)=>s+(r.real?.maq||0),0);
+  const saldoRealAcum = pastRows.reduce((s,r)=>s+(r.real?.saldo||0),0);
+  const saldoDiagAcum = rows.reduce((s,r)=>s+(r.diag.saldo||0),0);
+  const ganho = saldoDiagAcum - pastRows.reduce((s,r)=>s+(r.prev.saldo||0),0);
+
+  // Insight 1 — impacto do diagnóstico
+  if(ganho>0) {
+    html += `<div class="fc-insight"><i class="ti ti-trending-up" style="color:var(--green)"></i><div><strong>Aplicar o diagnóstico melhora o fluxo em ${fcFmt(ganho)} no período.</strong> A diferença vem principalmente de subir a diária da lancha para R$1.700, ativar o Airbnb e parar a maquininha. São mudanças operacionais, sem precisar de crédito ou empréstimo.</div></div>`;
+  }
+  // Insight 2 — maquininha
+  if(maqTotal>0) {
+    html += `<div class="fc-insight" style="border-color:var(--red)"><i class="ti ti-device-mobile" style="color:var(--red)"></i><div><strong>Maquininha consome ${fcFmt(maqTotal)} no período.</strong> Parar imediatamente transforma esse custo em sobra mensal. É a ação de maior impacto imediato no fluxo de caixa.</div></div>`;
+  }
+  // Insight 3 — saldo real vs previsto
+  if(pastRows.length) {
+    const diff = saldoRealAcum - pastRows.reduce((s,r)=>s+(r.prev.saldo||0),0);
+    if(Math.abs(diff)>500) {
+      html += `<div class="fc-insight" style="border-color:var(--amber)"><i class="ti ti-scale" style="color:var(--amber)"></i><div><strong>Saldo real ${diff>=0?'superou':'ficou abaixo de'} o previsto em ${fcFmt(Math.abs(diff))}.</strong> ${diff>=0?'Bom sinal — renda extra ou gastos menores que o estimado.':'Revise as categorias de despesa ou verifique se há lançamentos não categorizados.'}</div></div>`;
+    }
+  }
+  // Insight 4 — boas práticas mercado
+  html += `<div class="fc-insight" style="border-color:var(--blue)"><i class="ti ti-bulb" style="color:var(--blue)"></i><div><strong>Regra do mercado: fluxo de caixa positivo por 3 meses consecutivos.</strong> Quando o saldo mensal ficar positivo por 3 meses seguidos, você tem base para montar uma reserva de emergência (3–6× o custo mensal essencial = R$24.000–R$48.000). Esse colchão evita recorrer a crédito caro em imprevistos.</div></div>`;
+  // Insight 5 — lancha meta
+  const avgDiaria = passeios.length>0 ? passeios.reduce((s,p)=>s+(p.receita||0),0)/passeios.length : 0;
+  if(avgDiaria>0&&avgDiaria<FC_LANCHA_META) {
+    const nPas = Math.max(passeios.length,1);
+    const ganhoLancha = (FC_LANCHA_META-avgDiaria)*nPas;
+    html += `<div class="fc-insight" style="border-color:var(--green)"><i class="ti ti-ship" style="color:var(--green)"></i><div><strong>Subir a diária de ${fcFmt(avgDiaria)} para R$1.700 gera +${fcFmt(ganhoLancha)} extras nos ${nPas} passeios registrados.</strong> Com essa correção, o lucro da lancha cobre toda a manutenção acumulada em menos de 3 meses.</div></div>`;
+  }
+  el.innerHTML = html || '<div class="fc-insight"><i class="ti ti-info-circle"></i><div>Importe extratos e lance passeios da lancha para ver insights personalizados do diagnóstico.</div></div>';
+}
+
+// ── PDF DO FLUXO DE CAIXA ──
+async function gerarPdfFluxo() {
+  if(typeof window.jspdf==='undefined') { toast('jsPDF não carregado ainda. Aguarde.','err'); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+  const C = PDF_CFG.colors; const P = PDF_CFG.page;
+
+  const meses   = fcGetMeses();
+  const now     = new Date();
+  const curMes  = now.getFullYear()+'/'+String(now.getMonth()+1).padStart(2,'0');
+  if(!meses.length) { toast('Selecione um período primeiro.','err'); return; }
+
+  const rows = meses.map((m,idx)=>({
+    mes:m, isFuture:m>curMes,
+    real: m<=curMes ? fcReal(m) : null,
+    prev: fcPrevisto(m,FC.cenario),
+    diag: fcDiagnostico(m,FC.cenario,idx),
+  }));
+
+  // Título
+  pdfHeader(doc,'Fluxo de Caixa — '+(['Real','Previsto','Diagnóstico','Comparativo'][['real','previsto','diagnostico','comparativo'].indexOf(FC.visao)]||'Comparativo'),
+    'Período: '+meses[0]+' a '+meses[meses.length-1]+' · Cenário '+FC.cenario+' · '+pdfDate());
+
+  // KPIs
+  const pastRows  = rows.filter(r=>!r.isFuture);
+  const totReal   = pastRows.filter(r=>r.real?.temDados).reduce((s,r)=>s+(r.real.saldo||0),0);
+  const totPrev   = rows.reduce((s,r)=>s+(r.prev.saldo||0),0);
+  const totDiag   = rows.reduce((s,r)=>s+(r.diag.saldo||0),0);
+  pdfSection(doc,'RESUMO DO PERÍODO');
+  pdfKpiRow(doc,'Saldo real acumulado', pdfFmtFull(totReal), totReal>=0?C.success:C.danger);
+  pdfKpiRow(doc,'Saldo previsto', pdfFmtFull(totPrev), totPrev>=0?C.success:C.danger);
+  pdfKpiRow(doc,'Saldo com diagnóstico aplicado', pdfFmtFull(totDiag), C.success);
+  pdfKpiRow(doc,'Impacto do diagnóstico', '+'+pdfFmt(totDiag-totPrev)+' vs. previsto', C.success);
+  doc._pdfY+=3;
+
+  // Gráfico como imagem
+  const canvas = document.getElementById('fc-canvas');
+  if(canvas && canvas.width>0) {
+    try {
+      const img = canvas.toDataURL('image/png');
+      const iw = P.w-P.ml-P.mr; const ih = 40;
+      pdfCheckPage(doc, ih+6);
+      doc.addImage(img,'PNG',P.ml,doc._pdfY,iw,ih);
+      doc._pdfY += ih+6;
+    } catch(e){}
+  }
+
+  // Tabela mensal detalhada
+  pdfSection(doc,'FLUXO MENSAL DETALHADO');
+  const mesN=['','Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  const tRows = rows.map(r=>{
+    const [ano,mm]=r.mes.split('/');
+    const lbl=mesN[parseInt(mm)]+'/'+ano.slice(2)+(r.isFuture?' (prev)':'');
+    const src=r.real?.temDados?r.real:r.prev;
+    const fmtS=v=>(v>=0?'+':'-')+'R$'+Math.round(Math.abs(v)).toLocaleString('pt-BR');
+    return [lbl, pdfFmt(src.entradas||0), pdfFmt(src.saidas||0), fmtS(src.saldo||0), fmtS(r.diag.saldo||0)];
+  });
+  doc.autoTable({startY:doc._pdfY,margin:{left:P.ml,right:P.mr},head:[['Mês','Entradas','Saídas','Saldo','C/ Diagnóstico']],body:tRows,theme:'striped',headStyles:{fillColor:C.primary,textColor:C.white,fontStyle:'bold',fontSize:8},bodyStyles:{fontSize:8},columnStyles:{1:{halign:'right'},2:{halign:'right'},3:{halign:'right',fontStyle:'bold'},4:{halign:'right',textColor:C.success,fontStyle:'bold'}}});
+  doc._pdfY=doc.lastAutoTable.finalY+6;
+
+  // Plano de ação do diagnóstico
+  pdfSection(doc,'PLANO DE AÇÃO — SAIR DO VERMELHO',C.success);
+  const acoesFc=[
+    ['IMEDIATO','Parar operação maquininha','Elimina até '+pdfFmt(rows.reduce((s,r)=>s+(r.real?.maq||0),0))+' em custo no período'],
+    ['MÊS 1','Subir diária lancha p/ R$1.700','Receita extra estimada por passeio: +R$ '+(FC_LANCHA_META-1200)],
+    ['MÊS 1','Ativar Airbnb','+'+(FC.cenario==='otimista'?'R$3.500':'R$2.000')+'/mês no fluxo'],
+    ['MÊS 2','Renegociar cartões com banco','Sair do rotativo (15,87%/mês) para parcelamento fixo'],
+    ['CONTÍNUO','Método avalanche nas dívidas','Jogar toda sobra no maior juro até zerar, depois próximo'],
+    ['CONTÍNUO','Reserva emergência','Meta: 3× gastos mensais essenciais = R$24.000'],
+  ];
+  doc.autoTable({startY:doc._pdfY,margin:{left:P.ml,right:P.mr},head:[['Prazo','Ação','Impacto no fluxo']],body:acoesFc,theme:'striped',headStyles:{fillColor:C.success,textColor:C.white,fontStyle:'bold',fontSize:8},bodyStyles:{fontSize:8},columnStyles:{0:{cellWidth:24,fontStyle:'bold'},2:{textColor:C.success}}});
+  doc._pdfY=doc.lastAutoTable.finalY+6;
+
+  pdfAlert(doc,'O fluxo de caixa positivo por 3 meses consecutivos é o primeiro marco para saúde financeira. Com as ações do diagnóstico (lancha R$1.700, Airbnb, sem maquininha), o saldo projetado é de '+pdfFmtFull(totDiag)+' no período.','success');
+  pdfAlert(doc,'Boas práticas de mercado: separe contas correntes de diferentes finalidades (operacional, reserva, dívidas). Automatize transferências fixas todo dia de salário. Nunca use crédito para pagar crédito — renegocie diretamente com o credor.','warning');
+
+  pdfFooter(doc);
+  doc.save('FinanceAI_FluxoCaixa_'+pdfDate().replace(/\//g,'-')+'.pdf');
+  toast('PDF gerado: Fluxo de Caixa!','ok');
+}
+
+function pdfFmtFull(v){ return (v<0?'-':'+')+' R$'+Math.abs(Math.round(v)).toLocaleString('pt-BR'); }
 
 window.addEventListener('load',()=>{
   initMSAL();
